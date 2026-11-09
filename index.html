@@ -760,6 +760,31 @@ body.modal-on{overflow:hidden}
 .thumb .kind-tag small{font-size:12px;font-weight:400;color:var(--muted)}
 .thumb .kind-tag[data-k="水電"]{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
 .thumb .kind-tag[data-k="3D"]{border-color:var(--warn);background:var(--warn-soft);color:var(--ink)}
+
+/* 燈具圖帶入 */
+.lt-from{margin:6px 0;padding:8px 12px;border-radius:12px;background:var(--ok-soft);color:var(--ink);font-size:14px}
+.lt-from[hidden]{display:none}
+.lamp-list{margin:0 0 10px;padding-left:1.2em;display:grid;gap:4px;font-size:15px}
+.lamp-list small{display:block;color:var(--muted);font-size:12.5px}
+
+/* 第 2、3 步二選一 */
+.flow-or{display:flex;align-items:center;gap:10px;margin:-6px 0 10px;color:var(--muted);font-size:15px;font-weight:600}
+.flow-or::before,.flow-or::after{content:"";flex:1;height:0;border-top:2px dashed var(--line)}
+.flow-or[hidden]{display:none}
+.step-card.flow-off{background:var(--tile);box-shadow:none}
+.step-card.flow-off > :not(.step-h):not(.flow-note){display:none}
+.step-card.flow-off .step-h{opacity:.55;margin-bottom:6px}
+.step-card.flow-off .step-no{background:var(--muted);color:var(--surface)}
+.flow-note{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;margin:0;font-size:15px;color:var(--muted)}
+.flow-link{border:0;background:none;padding:6px 0;min-height:40px;font:inherit;font-size:15px;font-weight:600;color:var(--accent);text-decoration:underline;cursor:pointer}
+.step-card.flow-locked > :not(.step-h):not(.flow-lock-note){opacity:.4;filter:grayscale(.5)}
+.flow-lock-note{margin:0 0 10px;padding:8px 12px;border-radius:12px;background:var(--warn-soft);color:var(--ink);font-size:15px;font-weight:600}
+.flow-box{align-content:center;gap:16px;text-align:center}
+.flow-q{margin:6px 0 0;font-size:20px;font-weight:600}
+.flow-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* 新成屋範本櫃體 */
+.flag.need-q{background:var(--warn-soft);color:var(--bad)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol><symbol id="i-sheet" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="M8.5 11h7M8.5 15h5"/></symbol><symbol id="i-plan" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h7v9M14 3v6h7"/></symbol><symbol id="i-helper" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 20 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></symbol><symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v3.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V15"/></symbol><symbol id="i-export" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M4 15v3.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V15"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 5h6a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H3z"/><path d="M21 5h-6a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H21z"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 0 1 3 3L8 18.5z"/><path d="M13.5 7l3 3"/></symbol><symbol id="i-wood" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M3 12h18M9 6v6M15 12v6"/></symbol><symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v4"/></symbol><symbol id="i-brush" viewBox="0 0 24 24"><path d="M7 3h10v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><path d="M7 7h10"/><path d="M12 12v3"/><rect x="10.5" y="15" width="3" height="6" rx="1.5"/></symbol><symbol id="i-helmet" viewBox="0 0 24 24"><path d="M3 17.5h18"/><path d="M5 17.5a7 7 0 0 1 14 0"/><path d="M10 11V6.5h4V11"/><path d="M4 17.5V20h16v-2.5"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></symbol><symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol><symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><path d="M7.5 8h.01"/></symbol></svg>
@@ -787,12 +812,17 @@ body.modal-on{overflow:hidden}
     <button type="button" class="big-btn step-btn" id="plan-open" aria-haspopup="dialog"><span class="ico" aria-hidden="true"><svg><use href="#i-upload"/></svg></span><span class="big-t">上傳平面圖<small id="plan-sum">還沒有上傳</small></span><span class="chev" aria-hidden="true">›</span></button>
   </section>
 
+  <p class="flow-or" id="flow-or" hidden><span>二選一即可</span></p>
+
   <section class="panel step-card" id="sec-tpl" aria-labelledby="h-tpl">
         <h2 class="step-h" id="h-tpl"><span class="step-no" aria-hidden="true">3</span><span class="step-t"><small>第 3 步</small>選擇範本</span><button type="button" class="h-more h-link" id="tpl-all" aria-expanded="false">查看全部 ›</button></h2>
         <p class="hint">按範本上的「套用」。數量依第 4 步的室內坪數換算（牆面 ≈ 坪數 × 2.8），改坪數後再按一次「套用」即可更新；之後都可以在估價單上改。</p>
         <div class="row">
           <div class="fld" style="flex:0 1 auto"><label>用料等級</label>
             <div class="seg" id="tier"><button data-t="low">經濟</button><button data-t="mid" class="on">標準</button><button data-t="high">精緻</button></div>
+          </div>
+          <div class="fld" id="cab-sys-fld" style="flex:0 1 auto" hidden><label>櫃體</label>
+            <div class="seg" id="cab-sys"><button type="button" data-v="wood">木作櫃</button><button type="button" data-v="sys" class="on">系統櫃</button></div>
           </div>
           <button class="btn acc" id="apply" hidden>套用範本</button>
         </div>
@@ -897,6 +927,7 @@ body.modal-on{overflow:hidden}
         <label class="lt-mat"><input type="checkbox" id="light-mat"> 含燈具材料</label>
         <p class="hint">不勾：只算安裝工，直接在下方填數量。勾選後輸入各燈型數量，系統自動帶入對應的安裝工數量（崁燈→E-009、吸頂／蛋糕／美術燈→E-008、軌道條→E-020、磁吸→E-021、鋁槽→E-022），可再修改。</p>
         <p class="cell-tip" id="light-tip" role="alert" hidden></p>
+        <p class="lt-from" id="light-from" hidden></p>
         <div id="light-lamps" class="lt-wrap" hidden></div>
         <div id="light-inst" class="lt-wrap"></div>
       </section>
@@ -979,6 +1010,12 @@ body.modal-on{overflow:hidden}
   </div>
 </div>
 
+<div class="modal" id="flow-modal" role="dialog" aria-modal="true" aria-labelledby="flow-q" hidden>
+  <div class="modal-box flow-box">
+    <p class="flow-q" id="flow-q">目前帶入的項目會被取代，確定嗎？</p>
+    <div class="flow-btns"><button type="button" class="btn ghost big-close" id="flow-no">取消</button><button type="button" class="btn big-close" id="flow-yes">確定</button></div>
+  </div>
+</div>
 <div class="modal" id="set-modal" role="dialog" aria-modal="true" aria-labelledby="h-set" hidden>
   <div class="modal-box settings" id="sec-settings">
     <div class="modal-head"><span class="itile sm" aria-hidden="true"><svg><use href="#i-gear"/></svg></span><b id="h-set">師傅設定</b><button type="button" class="vw-x" id="set-close" aria-label="關閉設定"><svg class="bi" aria-hidden="true"><use href="#i-x"/></svg></button></div>
@@ -2817,7 +2854,7 @@ for (const k in DB.trades) for (const it of DB.trades[k]) ITEMS[it.code] = {...i
 const NEED_SURVEY = {"P-004":"移位距離與洩水坡度需現場確認","A-404":"需先抓漏，確認漏水源","E-013":"牆內管路是否可沿用需現勘","P-011":"牆內管路狀況需現勘","W-503":"軌道與牆體結構需現勘","A-402":"需確認鷹架與外牆狀況","A-202":"特殊塗料需看樣板確認"};
 const W = a => Math.round(a*2.8);
 const TEMPLATES = [
-  {id:"paint", name:"新成屋油漆", note:"保護＋牆面＋天花板", lines:a=>[["A-001",a],["A-102",W(a)],["A-105",a]]},
+  {id:"paint", name:"新成屋", note:"保護＋牆面＋天花板＋櫃體", cabs:true, lines:a=>[["A-001",a],["A-102",W(a)],["A-105",a]]},
   {id:"old", name:"老屋水電翻新", note:"換線、配電、插座、油漆", lines:a=>[["E-006",1],["E-013",1],["E-002",Math.max(2,Math.round(a/3))],["E-005",3],["E-010",3],["P-010",1],["A-001",a],["A-102",W(a)],["A-105",a]]},
   {id:"bath", name:"浴室翻修水電", note:"給排水、設備安裝", lines:a=>[["P-001",2],["P-002",2],["P-003",2],["P-005",1],["P-006",1],["P-007",2],["P-008",1],["P-010",1]]},
   {id:"ceil", name:"全室天花板", note:"平釘＋燈溝＋嵌燈＋油漆", lines:a=>[["W-101",Math.round(a*0.85)],["W-104",Math.round(a*1.2)],["W-105",Math.round(a*0.5)],["E-009",Math.round(a*0.6)],["A-303",Math.round(a*0.85)]]},
@@ -2861,7 +2898,7 @@ const scopedTitle = () => SCOPE_TITLE[state.scope];
 const LIGHT_KEY = "shifu-estimate-lights-v1";
 const lightPrice = {};
 try { const s = JSON.parse(localStorage.getItem(LIGHT_KEY)||"null"); if (s) for (const k in s) if (LAMP_SET.has(k) && Number.isFinite(+s[k]) && +s[k]>=0) lightPrice[k] = +s[k]; } catch (e) {}
-const light = {mat:false, qty:{}, inst:{}, other:{name:"", price:0}};
+const light = {mat:false, qty:{}, inst:{}, other:{name:"", price:0}, src:{}, plan:null};
 
 function price(it){
   if (LAMP_SET.has(it.code)) return it.code==="E-199" ? (light.other.price||0) : ((isPro() ? lightPrice[it.code] : undefined) ?? LAMP_DEF_PRICE[it.code]);
@@ -2936,6 +2973,18 @@ function lightSync(){
   state.lines.forEach(l=>{ if (l.light && ov[l.code]!=null) l.ov = ov[l.code]; });
   ITEMS["E-199"].item = light.other.name.trim() || "其他燈具";
 }
+// 圖面分析的燈具數量 → 燈具材料選單（自動勾選「含燈具材料」，安裝工依燈型自動帶入）
+function applyPlanLamps(lp){
+  if (!lp || !(state.scope==="all" || state.scope==="plumbing_electrical")) return 0;
+  let n = 0;
+  for (const [code] of LAMPS){ if (code==="E-199") continue;
+    if (lp.qty[code] > 0){ light.qty[code] = lp.qty[code]; light.src[code] = "plan"; n++; }
+    else if (lp.confirmCodes.includes(code)){ light.qty[code] = 0; light.src[code] = "confirm"; } }
+  for (const code of INST){ const i = light.inst[code]; if (i) i.manual = false; }
+  light.mat = true; light.plan = {drawing:lp.drawing, confirm:lp.confirm.slice()};
+  lightSync();
+  return n;
+}
 function lightFromLine(ln){
   if (LAMP_SET.has(ln.code)) light.qty[ln.code] = ln.qty;
   else if (INST.includes(ln.code)) light.inst[ln.code] = {qty:ln.qty, manual:true};
@@ -2944,44 +2993,82 @@ function lightFromLine(ln){
 function renderLightPanel(){
   const lp = $("#light-panel"); lp.hidden = !(state.scope==="all" || state.scope==="plumbing_electrical");
   $("#light-mat").checked = light.mat; $("#light-lamps").hidden = !light.mat;
+  const fp = $("#light-from"); fp.hidden = !light.plan;
+  if (light.plan) fp.innerHTML = `燈具數量來自燈具圖${light.plan.drawing ? `（${escH(light.plan.drawing)}）` : ""}，可直接修改，也可取消勾選「含燈具材料」。${light.plan.confirm.length ? `<br><b>請師傅確認：</b>${light.plan.confirm.map(escH).join("；")}` : ""}`;
   const pr = code => fmt(adjPrice(ITEMS[code]));
   const qin = (f, v, ph="0") => `<input class="lt-in" data-f="${f}" inputmode="decimal" autocomplete="off" value="${v ? escH(fq(v)) : ""}" placeholder="${ph}" aria-label="數量">`;
   if (light.mat) $("#light-lamps").innerHTML = `<table class="lt"><thead><tr><th>燈型（材料）</th><th class="num">單價</th><th class="num">數量</th><th>單位</th></tr></thead><tbody>${LAMPS.map(([code,name,unit])=> code==="E-199"
       ? `<tr><td><span class="code">${code}</span> <input class="lt-name" data-f="oname" autocomplete="off" placeholder="其他燈具名稱" value="${escH(light.other.name)}" aria-label="其他燈具名稱"></td><td class="num"><input class="lt-in" data-f="oprice" inputmode="numeric" autocomplete="off" value="${light.other.price||""}" placeholder="單價" aria-label="其他燈具單價"></td><td class="num">${qin("q."+code, light.qty[code])}</td><td>${unit}</td></tr>`
-      : `<tr><td><span class="code">${code}</span> ${name}</td><td class="num">${pr(code)}</td><td class="num">${qin("q."+code, light.qty[code])}</td><td>${unit}</td></tr>`).join("")}</tbody></table>`;
+      : `<tr><td><span class="code">${code}</span> ${name}${light.src[code]==="plan" ? ' <span class="chip ok">來自燈具圖</span>' : light.src[code]==="confirm" ? ' <span class="chip warn">請師傅確認</span>' : ""}</td><td class="num">${pr(code)}</td><td class="num">${qin("q."+code, light.qty[code])}</td><td>${unit}</td></tr>`).join("")}</tbody></table>`;
   $("#light-inst").innerHTML = `<table class="lt"><thead><tr><th>安裝工</th><th class="num">單價</th><th class="num">數量</th><th>單位</th></tr></thead><tbody>${INST.map(code=>{
     const i = light.inst[code], manual = !!(i && i.manual), a = autoInst(code);
-    const tag = light.mat ? (manual ? ` <span class="chip warn">已手動</span><button class="rst lt-auto" data-c="${code}">改回自動（${fq(a)}）</button>` : (a ? ' <span class="chip ok">自動</span>' : "")) : "";
+    const tag = light.mat ? (manual ? ` <span class="chip warn">已手動</span><button class="rst lt-auto" data-c="${code}">改回自動（${fq(a)}）</button>` : (a ? (light.plan ? ' <span class="chip ok">來自燈具圖</span>' : ' <span class="chip ok">自動</span>') : "")) : "";
     return `<tr><td><span class="code">${code}</span> ${ITEMS[code].item}${tag}</td><td class="num">${pr(code)}</td><td class="num">${qin("i."+code, instQty(code))}</td><td>${ITEMS[code].unit}</td></tr>`; }).join("")}</tbody></table>`;
 }
 
 // ----- build UI
 const TPL_TAG = {old:"常用", paint:"新成屋", bath:"浴室", ceil:"天花板", room:"收納"};
 function renderTpls(){
-  const list = TEMPLATES.filter(t=>t.lines(28).some(([c])=>inScope(c)));
+  const tl = t => t.lines(28).concat(t.cabs ? [["CAB",0]] : []);   // 「新成屋」另含櫃體
+  const inS = c => c==="CAB" ? inScope("W-303") : inScope(c);
+  const nm = c => c==="CAB" ? "櫃體" : ITEMS[c].item.replace(/\(.*?\)|（.*?）/g,"");
+  const list = TEMPLATES.filter(t=>tl(t).some(([c])=>inS(c)));
   if (!list.some(t=>t.id===state.tpl)) state.tpl = list[0] ? list[0].id : state.tpl;
-  $("#tpls").innerHTML = list.map(t=>{ const n = state.scope==="all" ? t.note : t.lines(28).filter(([c])=>inScope(c)).map(([c])=>ITEMS[c].item.replace(/\(.*?\)|（.*?）/g,"")).slice(0,3).join("、");
-    const tradesIn = [...new Set(t.lines(28).filter(([c])=>inScope(c)).map(([c])=>TRADES[ITEMS[c].trade]))].join("＋");
+  $("#tpls").innerHTML = list.map(t=>{ const n = state.scope==="all" ? t.note : tl(t).filter(([c])=>inS(c)).map(([c])=>nm(c)).slice(0,3).join("、");
+    const tradesIn = [...new Set(tl(t).filter(([c])=>inS(c)).map(([c])=>TRADES[ITEMS[c==="CAB" ? "W-303" : c].trade]))].join("＋");
     const tag = TPL_TAG[t.id] || "";
     return `<div class="tpl${t.id===state.tpl?" on":""}" data-id="${t.id}" role="group" aria-label="${escH(t.name)}">${tag?`<span class="tpl-tag${t.id==="old"?"":" plain"}">${tag}</span>`:""}<b>${t.name}</b><small>${escH(n)}</small><div class="tpl-foot"><span class="tpl-info">${escH(String(+$("#area").value||28))} 坪・${tradesIn}</span><button type="button" class="tpl-apply" data-id="${t.id}">套用</button></div></div>`; }).join("") || `<p class="hint">這個工種沒有現成範本，請直接從單價庫加入工項。</p>`;
+  showCabSys();
 }
 renderTpls();
-$("#tpls").addEventListener("click", e=>{ const b=e.target.closest(".tpl"); if(!b) return; state.tpl=b.dataset.id; [...$("#tpls").children].forEach(x=>x.classList.toggle("on",x===b)); if (e.target.closest(".tpl-apply")) $("#apply").click(); });
+$("#tpls").addEventListener("click", e=>{ const b=e.target.closest(".tpl"); if(!b) return; state.tpl=b.dataset.id; [...$("#tpls").children].forEach(x=>x.classList.toggle("on",x===b)); showCabSys(); if (e.target.closest(".tpl-apply")) $("#apply").click(); });
+function showCabSys(){ const tp = TEMPLATES.find(t=>t.id===state.tpl); const f = document.getElementById("cab-sys-fld"); if (f) f.hidden = !(tp && tp.cabs && inScope("W-303")); }
 $("#region").innerHTML = Object.entries(DB.adjustments.region).map(([k,v])=>`<option value="${k}"${k==="台北市"?" selected":""}>${k}（×${v.toFixed(2)}）</option>`).join("");
 seg("#tier","t","tier",()=>{render(); renderLib();});
 seg("#cplx","c","cplx"); seg("#wall","w","wall");
 seg("#trade","k","trade",renderLib);
 $("#apply").addEventListener("click", ()=>{
   const a = Math.max(1, +$("#area").value||1);
+  const keptPlanCabs = state.lines.filter(l=>l.fromPlan && TPL_CAB_SET.has(l.code));   // 已由平面圖推算的櫃體
   // 只替換目前工種的工項；其他工種與燈具選項的資料保留
   state.lines = state.lines.filter(l=>l.auto || l.light || !inScope(l.code));
   const tp = TEMPLATES.find(t=>t.id===state.tpl); if (!tp) return;
   tp.lines(a).filter(([c])=>inScope(c)).forEach(([c,q])=>{ if (c==="A-001" || c==="W-001" || c==="P-000"){ if (!protectSet[state.scope]) state.protect[state.scope] = true; return; } addLine(c,q); markTpl(c, tp.id, q); });
+  if (tp.cabs) addTplCabs(tp.id, keptPlanCabs);
   $("#protect").checked = !!state.protect[state.scope];
+  setFlow("tpl");
   render(); renderLib(); helperAuto();
 });
 ["#cust","#region","#age","#floor","#lift","#leak","#dark","#rush","#mgmt","#tax","#area","#hide"].forEach(s=>$(s).addEventListener("input",render));
 // ----- 室內坪數來源：圖面分析自動填入／師傅手動調整；範本工項記住「範本給的數量」，坪數變動時可依坪數重新換算
+// ----- 「新成屋」範本的櫃體：木作櫃／系統櫃（範本不知道櫃長，尺數填 0 請師傅填）
+const TPL_CABS = {sys:[["衣櫃","W-401"],["高櫃","W-402"],["矮櫃","W-303"],["吊櫃","W-403"]], wood:[["衣櫃","W-305"],["高櫃","W-301"],["矮櫃","W-303"],["吊櫃","W-304"],["鞋櫃","W-306"]]};
+const TPL_CAB_SET = new Set(["W-301","W-302","W-303","W-304","W-305","W-306","W-307","W-401","W-402","W-403"]);
+let cabSys = "sys";
+let planCabsHook = null;   // 圖面分析模組提供：已推算出尺數的櫃體
+function addTplCabs(id, keptPlanCabs){
+  if (!inScope("W-303")) return;
+  // 已有平面圖推算的櫃體：沿用推算尺數，不帶範本櫃體
+  if (keptPlanCabs && keptPlanCabs.length){ keptPlanCabs.forEach(l=>state.lines.push(l)); return; }
+  const est = planCabsHook ? planCabsHook() : [];
+  if (est.length){ est.forEach(c=>{ addLine(c.code, c.chi); const ln = state.lines.find(l=>l.code===c.code && !l.auto && !l.light); if (ln){ ln.src = "圖面推算"; markTpl(c.code, id, 0); } }); return; }
+  for (const [role, code] of TPL_CABS[cabSys]){
+    if (state.lines.some(l=>l.code===code && !l.auto && !l.light)) continue;   // 已經有同代碼工項就不重複帶入
+    state.lines.push({code, qty:0, auto:false, tplCab:role, needQty:true, tpl:{id, q:0}});
+  }
+}
+function swapTplCabs(){   // 切換木作櫃／系統櫃：同類型保留已填尺數
+  const cur = state.lines.filter(l=>l.tplCab); if (!cur.length) return;
+  const byRole = Object.fromEntries(cur.map(l=>[l.tplCab, l.qty]));
+  const id = cur[0].tpl ? cur[0].tpl.id : "paint";
+  state.lines = state.lines.filter(l=>!l.tplCab);
+  for (const [role, code] of TPL_CABS[cabSys]){
+    if (state.lines.some(l=>l.code===code && !l.auto && !l.light)) continue;
+    state.lines.push({code, qty:byRole[role] || 0, auto:false, tplCab:role, needQty:true, tpl:{id, q:0}});
+  }
+}
+$("#cab-sys").addEventListener("click", e=>{ const b = e.target.closest("button[data-v]"); if (!b || b.dataset.v===cabSys) return;
+  cabSys = b.dataset.v; [...$("#cab-sys").children].forEach(x=>x.classList.toggle("on", x===b)); swapTplCabs(); render(); renderLib(); });
 function markTpl(code, id, q){ const ln = state.lines.find(l=>l.code===code && !l.auto && !l.light); if (ln) ln.tpl = {id, q:(ln.tpl && ln.tpl.id===id ? ln.tpl.q : 0) + q}; }
 let areaSrc = "", areaBySystem = false;
 const AREA_TAG = {ai:"來自圖面分析", manual:"已手動調整", none:"圖面未判讀出坪數，請手動輸入"};
@@ -3016,8 +3103,8 @@ $("#wallhelp-btn").addEventListener("click", ()=>{ const box=$("#wallhelp"), ope
 $("#q").addEventListener("input", renderLib);
 $("#clear").addEventListener("click", ()=>{
   // 清空目前工種的工項（合併單＝全部清空）
-  if (state.scope==="all"){ state.lines=[]; light.qty={}; light.inst={}; }
-  else { state.lines = state.lines.filter(l=>!inScope(l.code)); if (state.scope==="plumbing_electrical"){ light.qty={}; light.inst={}; } }
+  if (state.scope==="all"){ state.lines=[]; light.qty={}; light.inst={}; light.src={}; light.plan=null; }
+  else { state.lines = state.lines.filter(l=>!inScope(l.code)); if (state.scope==="plumbing_electrical"){ light.qty={}; light.inst={}; light.src={}; light.plan=null; } }
   render(); renderLib();
 });
 // 估價工種切換
@@ -3051,7 +3138,7 @@ $("#light-panel").addEventListener("change", e=>{
     const v = el.value.trim().replace(/[,，\s]/g, ""), n = v==="" ? 0 : Number(v);
     if (!Number.isFinite(n) || n<0){ cellTipLight("請輸入 0 以上的數字，已還原。"); renderLightPanel(); return; }
     if (f==="oprice") light.other.price = Math.round(n);
-    else if (f.startsWith("q.")) light.qty[f.slice(2)] = n;
+    else if (f.startsWith("q.")){ light.qty[f.slice(2)] = n; delete light.src[f.slice(2)]; }
     else if (f.startsWith("i.")) light.inst[f.slice(2)] = {qty:n, manual:true};
   }
   lightSync();
@@ -3153,12 +3240,12 @@ function render(){
         if (k==="painting" && $("#dark").checked && /牆面/.test(it.category)) p = Math.round(p*1.2);
       }
       const amt = p*billQty(it.unit, l.qty); sub[k]+=amt;
-      xrows.push({tk:k, code:l.code, auto:!!l.auto, ov:l.ov!=null, light:!!l.light, survey:NEED_SURVEY[l.code] || l.survey || "", trade:TRADES[k], item:it.item, unit:it.unit, qty:billQty(it.unit, l.qty), price:p, amt});
+      if (!(l.needQty && !(l.qty>0))) xrows.push({tk:k, code:l.code, auto:!!l.auto, ov:l.ov!=null, light:!!l.light, survey:NEED_SURVEY[l.code] || l.survey || "", trade:TRADES[k], item:it.item, unit:it.unit, qty:billQty(it.unit, l.qty), price:p, amt});
       const qu = uf(it.unit), note = convNote(it.unit, l.qty);
       const sv = NEED_SURVEY[l.code] || l.survey || "";
       if (sv) flags.push(`${it.item}：${sv}`);
       const big = billQty(it.unit, l.qty) > 1000 || amt > 1e7;
-      rows += `<tr><td>${it.item}${l.auto?' <span class="auto">（依條件自動加入）</span>':""}${l.code==="P-000"?' <span class="auto">（沿用 W-001 單價，可於師傅設定修改）</span>':""}${l.src?` <span class="auto">（圖面辨識：${l.src.split("／").map(s=>s==="3D"?"3D 透視圖":s+"圖").join("／")}）</span>`:""}${sv?'<span class="flag">▲ 需現勘</span>':""}${big?'<span class="flag big"><svg class="bi"><use href="#i-warn"/></svg>請確認數量</span>':""}${isOv?`<span class="flag ov"><svg class="bi"><use href="#i-pencil"/></svg>已手動調整<button class="rst" data-i="${idx}" aria-label="還原 ${it.item} 單價">還原</button></span>`:""}</td>
+      rows += `<tr><td>${it.item}${l.needQty && !(l.qty>0) ? ' <span class="flag need-q">請填尺數</span>' : ""}${l.auto?' <span class="auto">（依條件自動加入）</span>':""}${l.code==="P-000"?' <span class="auto">（沿用 W-001 單價，可於師傅設定修改）</span>':""}${l.src?` <span class="auto">（圖面辨識：${l.src.split("／").map(s=>s==="3D"?"3D 透視圖":s+"圖").join("／")}）</span>`:""}${sv?'<span class="flag">▲ 需現勘</span>':""}${big?'<span class="flag big"><svg class="bi"><use href="#i-warn"/></svg>請確認數量</span>':""}${isOv?`<span class="flag ov"><svg class="bi"><use href="#i-pencil"/></svg>已手動調整<button class="rst" data-i="${idx}" aria-label="還原 ${it.item} 單價">還原</button></span>`:""}</td>
         <td class="num"><input class="up${isOv?" ov":""}" type="text" inputmode="numeric" autocomplete="off"${isPro()?"":` readonly title="手動改價屬於進階方案"`} value="${p}" data-i="${idx}" aria-label="${it.item} 單價"></td><td class="num"><input class="q" type="text" inputmode="decimal" autocomplete="off" value="${fq(toDisp(it.unit, l.qty))}" data-i="${idx}" aria-label="${it.item} 數量（${qu?qu.l:it.unit}）"${l.auto?" disabled":""}>${note?`<span class="conv">${note}</span>`:""}</td>
         <td>${it.unit}</td><td class="num">${fmt(amt)}</td><td>${l.auto?"":`<button class="x" data-i="${idx}" aria-label="移除 ${it.item}">×</button>`}</td></tr>`;
     }
@@ -3212,7 +3299,7 @@ function render(){
   $("#risk").innerHTML = `<b>現勘提醒</b><ul>${flags.map(f=>`<li>${f}</li>`).join("")}</ul>`;
 
   state._text = [`【${SCOPE_TITLE[state.scope]}】${$("#qno").textContent}`, `客戶：${$("#m-cust").textContent}　案場：${$("#m-site").textContent}`, `估價日期：${$("#m-date").textContent}　有效期限：${$("#m-exp").textContent}`, "",
-    ...Object.keys(TRADES).flatMap(k=>vis.filter(l=>ITEMS[l.code].trade===k)).map(l=>{const it=ITEMS[l.code]; return `${TRADES[it.trade]}｜${it.item}　${fq(billQty(it.unit, l.qty))} ${it.unit}`;}), "",
+    ...Object.keys(TRADES).flatMap(k=>vis.filter(l=>ITEMS[l.code].trade===k && !(l.needQty && !(l.qty>0)))).map(l=>{const it=ITEMS[l.code]; return `${TRADES[it.trade]}｜${it.item}　${fq(billQty(it.unit, l.qty))} ${it.unit}`;}), "",
     sub.painting?`牆面狀況：${WALL_LABEL[state.wall]}`:"", old?`隱蔽工程預備金（客戶選加，10%）：NT$ ${fmt(old)}`:"",
     `未稅合計：NT$ ${fmt(pre)}`, tax?`營業稅：NT$ ${fmt(tax)}`:"", `含稅總價：NT$ ${fmt(pre+tax)}`, flags.length?`\n※ 需現勘：${flags.join("；")}`:"", "※ 本單為預算報價，正式金額以現場丈量為準。"].filter(x=>x!=="").join("\n");
   afterRender.forEach(f=>{ try { f(); } catch (e) { console.error(e); } });
@@ -3370,7 +3457,8 @@ $("#hard").innerHTML = DB.hard_to_estimate.map(h=>`<details class="h"><summary><
   <dl><dt>為什麼難估</dt><dd>${h.why}</dd><dt>價格變數</dt><dd>${h.variables}</dd><dt>系統做法</dt><dd>${h.system_approach}</dd><dt>計價方式</dt><dd>${h.pricing}</dd><dt>風險預備</dt><dd>${h.contingency}</dd></dl></details>`).join("");
 
 // ----- 估價小幫手（只給師傅看；結果不進入客戶估價單、複製文字或任何匯出檔）
-let aiInfo = null;   // 圖面分析模組會提供：需現勘、單價庫缺項、差異、待確認
+let aiInfo = null;
+let planResetHook = null;   // 圖面分析模組提供：改用範本時重設已套用狀態   // 圖面分析模組會提供：需現勘、單價庫缺項、差異、待確認
 const HP_AUTO_KEY = "shifu-estimate-helper-auto-v1";
 const hp = {result:null, at:null, hash:"", running:false, ctl:null, lastAutoHash:""};
 try { const v = localStorage.getItem(HP_AUTO_KEY); if (v==="0") $("#hp-auto").checked = false; } catch (e) {}
@@ -3574,6 +3662,62 @@ $("#fs-pop").addEventListener("change", e=>{ if (e.target.name==="fs") applyFs(e
 $("#fs-pop").addEventListener("click", e=>e.stopPropagation());
 document.addEventListener("click", ()=>{ if (!$("#fs-pop").hidden) fsPop(false); });
 document.addEventListener("keydown", e=>{ if (e.key==="Escape" && !$("#fs-pop").hidden){ fsPop(false); $("#btn-font").focus(); } });
+
+
+// ----- 第 2 步（上傳平面圖）與第 3 步（選擇範本）二選一；第 4、5 步完成其中一種才能使用
+let flowMode = "tpl";   // 開啟時已預先套用範例範本
+const FLOW_TXT = {
+  tplOff:{note:"已由平面圖帶入項目，不需選範本", link:"改用範本"},
+  planOff:{note:"已選範本，不需上傳平面圖", link:"改用平面圖"}
+};
+function flowNote(card, key){
+  let n = card.querySelector(":scope > .flow-note");
+  if (!key){ if (n) n.remove(); return; }
+  if (!n){ n = document.createElement("p"); n.className = "flow-note"; card.querySelector(":scope > .step-h").after(n); }
+  n.innerHTML = `<span>${FLOW_TXT[key].note}</span><button type="button" class="flow-link" data-flow="${key==="tplOff" ? "tpl" : "plan"}">${FLOW_TXT[key].link}</button>`;
+}
+function flowLock(card, on){
+  card.classList.toggle("flow-locked", on);
+  [...card.children].forEach(el=>{ if (!el.classList.contains("step-h") && !el.classList.contains("flow-lock-note")) el.inert = on; });
+  let n = card.querySelector(":scope > .flow-lock-note");
+  if (on && !n){ n = document.createElement("p"); n.className = "flow-lock-note"; n.textContent = "請先完成第 2 步「上傳平面圖」或第 3 步「選擇範本」（二選一）"; card.querySelector(":scope > .step-h").after(n); }
+  if (!on && n) n.remove();
+}
+function applyFlow(){
+  const p = $("#sec-plan-step"), t = $("#sec-tpl");
+  p.classList.toggle("flow-off", flowMode==="tpl"); t.classList.toggle("flow-off", flowMode==="plan");
+  [...p.children].forEach(el=>{ if (!el.classList.contains("step-h") && !el.classList.contains("flow-note")) el.inert = flowMode==="tpl"; });
+  [...t.children].forEach(el=>{ if (!el.classList.contains("step-h") && !el.classList.contains("flow-note")) el.inert = flowMode==="plan"; });
+  flowNote(p, flowMode==="tpl" ? "planOff" : null); flowNote(t, flowMode==="plan" ? "tplOff" : null);
+  $("#flow-or").hidden = !!flowMode;
+  flowLock($("#sec-cond"), !flowMode); flowLock($("#sec-gen"), !flowMode);
+}
+function setFlow(m){ flowMode = m; applyFlow(); }
+let flowPending = null;
+document.addEventListener("click", e=>{
+  const b = e.target.closest(".flow-link"); if (!b) return;
+  flowPending = b.dataset.flow; $("#flow-modal").hidden = false; document.body.classList.add("modal-on"); setTimeout(()=>$("#flow-no").focus({preventScroll:true}), 30);
+});
+function flowClose(){ $("#flow-modal").hidden = true; if (![...document.querySelectorAll(".modal")].some(x=>!x.hidden)) document.body.classList.remove("modal-on"); flowPending = null; }
+$("#flow-no").addEventListener("click", flowClose);
+$("#flow-modal").addEventListener("click", e=>{ if (e.target.id==="flow-modal") flowClose(); });
+$("#flow-yes").addEventListener("click", ()=>{
+  const to = flowPending; flowClose();
+  if (to==="tpl"){   // 改用範本：清掉圖面帶入的工項、櫃體與燈具
+    state.lines = state.lines.filter(l=>!l.fromPlan);
+    let lampTouched = false;
+    for (const k of Object.keys(light.src)){ if (light.src[k]==="plan" || light.src[k]==="confirm"){ delete light.qty[k]; delete light.src[k]; lampTouched = true; } }
+    if (light.plan || lampTouched){ light.plan = null; light.mat = false; for (const c of INST){ const i = light.inst[c]; if (!i || !i.manual) delete light.inst[c]; } lightSync(); }
+    if (planResetHook) try { planResetHook(); } catch (err) {}
+    setFlow("");
+    toast("已清掉平面圖帶入的項目，請在第 3 步選擇範本。");
+  } else if (to==="plan"){   // 改用平面圖：清掉範本帶入的工項
+    state.lines = state.lines.filter(l=>!l.tpl);
+    setFlow("");
+    toast("已清掉範本帶入的項目，請在第 2 步上傳平面圖。");
+  }
+  render(); renderLib(); renderLightPanel(); renderTpls();
+});
 function planSum(t){ const e = document.getElementById("plan-sum"); if (e) e.textContent = t; }
 // 明亮／深色模式（深色＝原高對比配色），記住選擇
 function applyTheme(dark){
@@ -3606,6 +3750,7 @@ document.addEventListener("keydown", e=>{ if (e.key!=="Escape") return; for (con
 // 第 5 步：產生估價單 → 在按鈕下方顯示預覽（不捲動）
 function showGen(){ const o = $("#gen-out"); if (!o.hidden) return; o.hidden = false; $("#gen-btn").classList.add("done"); render(); renderLib(); renderLightPanel(); }
 $("#gen-btn").addEventListener("click", ()=>{ const was = !$("#gen-out").hidden; showGen(); if (was) render(); helperAuto(); toast("估價單已更新，就在按鈕下方。"); });
+applyFlow();
 // 頂部副標、第 5 步按鈕摘要
 afterRender.push(()=>{
   const S = state._sheet; $("#gen-sum").textContent = S && S.rows.length ? `目前 ${S.rows.length} 項・含稅 NT$ ${fmt(S.total)}` : "依上面的工種、範本與條件試算";
@@ -4061,7 +4206,7 @@ try {
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const MAX_BYTES = 20*1024*1024, PDF_PAGES = 12;
   const ups = []; let seq = 0, aiCtl = null, busyNow = false;
-  const ai = {cabs:[], items:[], area:null, areaBasis:"", areaConf:"中", spaces:[], confirm:[], diffs:[], specs:[], others:[], missing:[], darkWall:false, only3d:false, scale:"", kinds:{}};
+  const ai = {lamps:null, cabs:[], items:[], area:null, areaBasis:"", areaConf:"中", spaces:[], confirm:[], diffs:[], specs:[], others:[], missing:[], darkWall:false, only3d:false, scale:"", kinds:{}};
   aiInfo = () => (ai.raw || ai.items.length || (ai.missing && ai.missing.length)) ? {
     survey: ai.items.filter(x=>x.survey).map(x=>`${x.code} ${ITEMS[x.code].item}：${x.survey}`),
     missing: (ai.missing||[]).map(m=>m.name),
@@ -4069,6 +4214,14 @@ try {
     confirm: ai.confirm.map(c=>[c.topic, c.detail].filter(Boolean).join("："))
   } : null;
   const msg = (t, err) => { const m=$("#ai-msg"); m.textContent=t; m.classList.toggle("err", !!err); };
+  planCabsHook = () => ai.cabs.filter(c=>c.ok && c.chi>0 && ITEMS[c.code] && inScope(c.code)).map(c=>({code:c.code, chi:c.chi}));
+  planResetHook = () => {   // 改用範本：圖面帶入的結果恢復成「可再套用」
+    ai.items.forEach(x=>{ if (x.added){ x.added = false; x.checked = x.qty>0 && x.conf!=="低"; } });
+    ai.cabs.forEach(c=>{ if (c.added){ c.added = false; c.checked = c.ok && !!c.chi && !c.pendingHc && c.conf!=="低"; } });
+    ai.lampApplied = false;
+    if ($("#ai-out") && !$("#ai-out").hidden) try { renderAi(); } catch (e) {}
+    planSum(ups.length ? `已上傳 ${ups.length} 張圖面` : "還沒有上傳");
+  };
 
   let sampleP = null;
   const getSample = () => sampleP ??= (window.claude && typeof window.claude.use==="function" ? Promise.resolve(window.claude.use("sample")).catch(()=>null) : Promise.resolve(null));
@@ -4223,18 +4376,50 @@ L. 牆面狀況與木作造型複雜度只能「建議」，由師傅人工確�
 12. indoor_area_ping 是室內實際使用坪數（不含陽台、公設）；無法確定就填 null 並寫進 to_confirm。
 
 估價工種：${scopeRule}
-燈具材料（崁燈、吸頂燈、軌道、磁吸、鋁槽燈條等燈具本身）不要列，師傅會在燈具選項另外輸入；燈具「安裝」照常用 E-008（一般燈具）、E-009（嵌燈開孔）、E-020（軌道，米）、E-021（磁吸明裝，條）、E-022（鋁槽燈條，米）。
+燈具材料（崁燈、吸頂燈、軌道、磁吸、鋁槽燈條等燈具本身）不要列進 items；燈具「安裝」照常用 E-008（一般燈具）、E-009（嵌燈開孔）、E-020（軌道，米）、E-021（磁吸明裝，條）、E-022（鋁槽燈條，米）。
+燈具圖：附圖中有燈具迴路圖／燈具配置圖／燈具圖時，請依圖例分別數出每一種燈具，放進 lamps：{"drawing":"圖N","counts":[{"type":"崁燈","size_cm":9,"qty":10,"unit":"盞","confidence":"高","basis":"圖例 ⊙9 共 10 個"}],"unclear":["說明看不清或對不到燈型的燈具"]}。type 只能是：崁燈（size_cm 填開孔尺寸，例如 7、9、12、15）、吸頂燈、蛋糕燈、美術燈（含吊燈）、軌道燈頭、軌道（長度，unit 米）、磁吸燈頭、磁吸軌道（長度，unit 米）、鋁槽燈條（含線燈，長度，unit 米）、磁吸變壓器、燈條驅動器。圖例看不清楚、數量不確定、尺寸看不出來或對不到燈型的，不要猜：qty 填 null 並寫進 unclear。平面圖或水電圖的燈具數量與 3D 透視圖不一致時，以平面圖／水電圖為準，差異寫進 differences。有 lamps 時，E-008、E-009、E-020、E-021、E-022 安裝工不要再列進 items（系統會依燈具數量自動帶入）。
 
 單價庫（代碼｜名稱｜單位｜工種）：
 ${catalog}
 
 只回覆一個 JSON 物件，不要其他文字，格式如下：
-{"scale":"圖上的比例尺，例如 1/50；看不到就填 null","cabinets":[{"name":"主臥衣櫃","space":"主臥","wall_label":"主臥-B牆","kind":"衣櫃","system":false,"height_class":"高","height_cm":null,"shape":"一字","scale_basis":"door_width_scale","reference_door":{"type":"臥室平開門","measure":"door_opening","pixels":120},"extra_doors":[],"cabinet_pixels":243,"distorted":false,"drawing":"圖1","confidence":"中","needs_site_survey":false,"notes":"門洞與櫃長的量測說明"}],"indoor_area_ping":28.5,"indoor_area_basis":"依據說明","indoor_area_confidence":"中","spaces":[{"name":"客廳","area_ping":6.5,"basis":"圖1 標註 420×510 cm"}],"items":[{"code":"E-009","qty":18,"unit":"盞","basis":"施工平面圖嵌燈符號 ⊙ 共 18 個","drawing":"圖2","source":"施工","confidence":"高","needs_survey":false,"survey_reason":""}],"specs":[{"topic":"天花板","detail":"客廳為雙層造型天花板含間接照明","drawing":"圖3"}],"dark_wall":false,"differences":[{"topic":"主臥插座","existing":"現況圖 2 處","construction":"施工圖 4 處（新增 2 處）","drawing":"圖1／圖2"}],"to_confirm":[{"topic":"天花高度","detail":"圖上沒有標註天花高度，無法計算牆面油漆面積","drawing":"圖1"}]}`;
+{"scale":"圖上的比例尺，例如 1/50；看不到就填 null","lamps":null,"cabinets":[{"name":"主臥衣櫃","space":"主臥","wall_label":"主臥-B牆","kind":"衣櫃","system":false,"height_class":"高","height_cm":null,"shape":"一字","scale_basis":"door_width_scale","reference_door":{"type":"臥室平開門","measure":"door_opening","pixels":120},"extra_doors":[],"cabinet_pixels":243,"distorted":false,"drawing":"圖1","confidence":"中","needs_site_survey":false,"notes":"門洞與櫃長的量測說明"}],"indoor_area_ping":28.5,"indoor_area_basis":"依據說明","indoor_area_confidence":"中","spaces":[{"name":"客廳","area_ping":6.5,"basis":"圖1 標註 420×510 cm"}],"items":[{"code":"E-009","qty":18,"unit":"盞","basis":"施工平面圖嵌燈符號 ⊙ 共 18 個","drawing":"圖2","source":"施工","confidence":"高","needs_survey":false,"survey_reason":""}],"specs":[{"topic":"天花板","detail":"客廳為雙層造型天花板含間接照明","drawing":"圖3"}],"dark_wall":false,"differences":[{"topic":"主臥插座","existing":"現況圖 2 處","construction":"施工圖 4 處（新增 2 處）","drawing":"圖1／圖2"}],"to_confirm":[{"topic":"天花高度","detail":"圖上沒有標註天花高度，無法計算牆面油漆面積","drawing":"圖1"}]}`;
   }
 
   const CONF = c => /高|high/i.test(String(c))?"高":/低|low/i.test(String(c))?"低":"中";
 
-  // ===== 櫃體尺數（floorplan-guide §9）：依標註／比例尺／門洞推算，系統端換算與 0.5 尺進位 =====
+
+  // ===== 燈具圖：依圖例數量對應 E-101～E-114 =====
+  function mapLamp(c){
+    const t = String(c.type||""), sz = Number(c.size_cm), u = String(c.unit||"");
+    if (/崁|嵌|筒燈/.test(t)) return ({7:"E-101", 9:"E-102", 12:"E-103", 15:"E-104"})[sz] || null;
+    if (/蛋糕/.test(t)) return "E-106";
+    if (/吸頂/.test(t)) return "E-105";
+    if (/美術|吊燈|水晶/.test(t)) return "E-107";
+    if (/磁吸/.test(t)) return /變壓|電源/.test(t) ? "E-112" : /軌道|軌/.test(t) || /米|m|公尺|cm/.test(u) ? "E-111" : "E-110";
+    if (/軌道/.test(t)) return /燈頭|投射/.test(t) || /盞|顆|個/.test(u) ? "E-108" : "E-109";
+    if (/驅動/.test(t)) return "E-114";
+    if (/鋁槽|燈條|線燈|燈帶/.test(t)) return "E-113";
+    return null;
+  }
+  const LAMP_M = new Set(["E-109","E-111","E-113"]);
+  function parseLamps(lp){
+    if (!lp || typeof lp!=="object" || !Array.isArray(lp.counts)) return null;
+    const out = {drawing:String(lp.drawing||""), qty:{}, conf:{}, basis:{}, confirm:[], confirmCodes:[]};
+    for (const c of lp.counts){ if (!c || typeof c!=="object") continue;
+      const code = mapLamp(c), label = `${String(c.type||"燈具")}${c.size_cm ? ` ${c.size_cm}cm` : ""}`;
+      let q = Number(c.qty); if (/cm|公分/.test(String(c.unit||"")) && code && LAMP_M.has(code)) q = q/100;
+      const conf = CONF(c.confidence);
+      if (!code){ const why = /崁|嵌|筒燈/.test(String(c.type||"")) ? (c.size_cm ? `單價庫沒有 ${c.size_cm}cm 崁燈` : "崁燈尺寸看不出來") : "對不到燈型";
+        out.confirm.push(`${label}${Number.isFinite(q)&&q>0 ? ` ${fq(q)} ${String(c.unit||"")}`.trimEnd() : ""}：${why}`); continue; }
+      if (!(Number.isFinite(q) && q>0) || conf==="低"){ out.confirmCodes.push(code); out.confirm.push(`${label}：圖例或數量不確定`); continue; }
+      q = LAMP_M.has(code) ? Math.round(q*10)/10 : Math.round(q);
+      out.qty[code] = (out.qty[code]||0) + q; out.conf[code] = conf; out.basis[code] = String(c.basis||"");
+    }
+    for (const u of Array.isArray(lp.unclear) ? lp.unclear : []) if (u) out.confirm.push(String(u));
+    return out;
+  }
+  // ===== 櫃體尺數（floorplan-guide §9）：依標註／比例尺／門洞推算，系統端換算並四捨五入到 0.1 尺 =====
   const CAB = {
     doorCm:{bedroom:90, bath:75, kitchen:90, entry:110},          // 門洞（含框）預設
     relErr:0.05, hLow:90, hHigh:180,                              // 預設，可調
@@ -4243,8 +4428,13 @@ ${catalog}
   const CAB_SET = new Set(["W-301","W-302","W-303","W-304","W-305","W-306","W-307","W-401","W-402","W-403"]);
   function doorKey(t){ t = String(t||""); if (/雙向|子母|對開|推拉.*雙|double/i.test(t)) return "bad"; if (/浴|廁|衛/.test(t)) return "bath"; if (/廚/.test(t)) return "kitchen"; if (/玄關|大門|入口|entry/i.test(t)) return "entry"; if (/臥|房|書|bed/i.test(t)) return "bedroom"; return null; }
   const DOOR_LABEL = {bedroom:"臥室門洞", bath:"浴室門洞", kitchen:"廚房門洞", entry:"玄關門洞"};
-  // 尺數：四捨五入到兩位，剛好 0.5 倍數不進位，否則無條件進位到下一個 0.5 尺（整數運算避免浮點誤差）
-  function chiRound(cm){ const c2 = Math.round(cm / 30.3 * 100); const raw = c2/100; const r = c2 % 50===0 ? c2/100 : Math.ceil(c2/50)*50/100; return {raw, chi:r}; }
+  // 尺數：公分 ÷ 30.3，四捨五入到 0.1 尺（整數運算避免浮點誤差：公分先換成 0.01 cm 的整數）
+  function chiRound(cm){
+    const c = Math.round(cm * 100);                       // 0.01 cm 整數
+    const tenths = Math.floor((2 * c + 303) / 606);       // round(c / 303) = 0.1 尺單位（30.3 cm = 3030 個 0.01 cm）
+    const hund = Math.floor((20 * c + 303) / 606);        // round(c * 10 / 303) = 0.01 尺單位（僅供說明）
+    return {raw: hund / 100, chi: tenths / 10};
+  }
   function cabKind(k, hc){ k = String(k||"") + " " + String(hc||"");
     if (/衣櫃|衣櫥/.test(k)) return "衣櫃"; if (/吊櫃|吊/.test(k)) return "吊櫃"; if (/鞋/.test(k)) return "鞋櫃"; if (/書櫃|展示|開放/.test(k)) return "書櫃";
     if (/半高/.test(k)) return "矮櫃"; if (/電視|矮/.test(k)) return "矮櫃"; if (/高/.test(k)) return "高櫃"; return ""; }
@@ -4292,7 +4482,7 @@ ${catalog}
       if (/scale/.test(basis) && conf==="高" && c.distorted===true) conf = "中";
     }
     let raw = null, chi = null;
-    if (ok && Lcm>0){ const r = chiRound(Lcm); raw = r.raw; chi = r.chi; basisTxt += ` → ÷30.3 ≈ ${raw.toFixed(2)} 尺${chi!==raw ? ` → 進位 ${chi} 尺` : "（剛好 0.5 倍數，不進位）"}`; }
+    if (ok && Lcm>0){ const r = chiRound(Lcm); raw = r.raw; chi = r.chi; basisTxt += ` → ÷30.3 ≈ ${raw.toFixed(2)} 尺 → 取 ${chi.toFixed(1)} 尺`; }
     // 高／矮判定：功能櫃依名稱；一般櫃依高度門檻（≤180 歸矮、≥180 或頂天為高；半高歸矮）
     const sys = c.system===true || /系統/.test(String(c.kind||"") + String(c.name||""));
     let kind = cabKind(c.kind, c.height_class), hcLabel = "";
@@ -4313,7 +4503,7 @@ ${catalog}
   const RANK = {高:3, 中:2, 低:1};
   function mergeResults(rs){
     ai.raw = rs.length===1 ? rs[0] : rs; ai.drawMeta = null; ai.objMatches = [];
-    Object.assign(ai, {cabs:[], items:[], spaces:[], confirm:[], diffs:[], specs:[], others:[], missing:[], suggest:{}, protNote:false, darkWall:false, scale:"", area:null, areaBasis:"", areaConf:"中", areaUse:true, areaApplied:false, areaNoted:false});
+    Object.assign(ai, {lamps:null, lampUse:true, lampApplied:false, cabs:[], items:[], spaces:[], confirm:[], diffs:[], specs:[], others:[], missing:[], suggest:{}, protNote:false, darkWall:false, scale:"", area:null, areaBasis:"", areaConf:"中", areaUse:true, areaApplied:false, areaNoted:false});
     rs.forEach((r, ri)=>{
       if (!r || typeof r!=="object") return;
       const n0 = ai.items.length, c0 = ai.cabs.length;
@@ -4344,6 +4534,7 @@ ${catalog}
     ai.specs = uniq(ai.specs, x=>x.topic + x.detail); ai.diffs = uniq(ai.diffs, x=>x.topic + x.detail + x.existing + x.construction);
     ai.confirm = uniq(ai.confirm, x=>x.topic + x.detail); ai.others = uniq(ai.others, x=>x.trade + x.item); ai.missing = uniq(ai.missing, x=>x.name);
     ai.spaces = uniq(ai.spaces, x=>x.name + "|" + x.area);
+    if (ai.lamps){ ai.lamps.confirm = [...new Set(ai.lamps.confirm)]; ai.lamps.confirmCodes = [...new Set(ai.lamps.confirmCodes)].filter(c=>!(ai.lamps.qty[c]>0)); }
   }
   function mergeOne(r){
     {
@@ -4353,6 +4544,12 @@ ${catalog}
         const c = CONF(r.indoor_area_confidence);
         if (ai.area==null || RANK[c]>RANK[ai.areaConf]) Object.assign(ai, {area:Math.round(a*10)/10, areaBasis:String(r.indoor_area_basis||""), areaConf:c});
       }
+      const lpx = (inScope("E-009") ? parseLamps(r.lamps) : null);
+      if (lpx){ if (!ai.lamps) ai.lamps = lpx; else {   // 多批：同燈型取較大值，不重複相加
+          for (const k in lpx.qty) ai.lamps.qty[k] = Math.max(ai.lamps.qty[k]||0, lpx.qty[k]);
+          ai.lamps.confirm.push(...lpx.confirm); ai.lamps.confirmCodes.push(...lpx.confirmCodes);
+          ai.lamps.drawing = [...new Set([ai.lamps.drawing, lpx.drawing].filter(Boolean))].join("、"); } }
+      const hasLamps = !!lpx;
       const hasCabs = Array.isArray(r.cabinets) && r.cabinets.length;
       if (hasCabs && (inScope("W-301") || inScope("W-401"))) for (const c of r.cabinets) if (c && typeof c==="object") ai.cabs.push(buildCabinet(c, ai.kinds||{}));
       for (const s of Array.isArray(r.spaces)?r.spaces:[]) if (s && typeof s==="object") ai.spaces.push({name:String(s.name||"—"), area:Number.isFinite(+s.area_ping)&&+s.area_ping>0?Math.round(s.area_ping*10)/10:null, basis:String(s.basis||"")});
@@ -4360,7 +4557,8 @@ ${catalog}
         if (!it || typeof it!=="object") continue;
         const code = String(it.code||"").trim().toUpperCase(), q = Number(it.qty);
         if (code==="W-001" || code==="A-001" || code==="P-000"){ ai.protNote = true; continue; }
-        if (hasCabs && CAB_SET.has(code)) continue;   // 櫃體改由櫃體清單計算，避免重複
+        if (hasCabs && CAB_SET.has(code)) continue;
+        if ((hasLamps || ai.lamps) && ["E-008","E-009","E-020","E-021","E-022"].includes(code)) continue;   // 安裝工由燈具數量自動帶入   // 櫃體改由櫃體清單計算，避免重複
         if (ITEMS[code] && (!inScope(code) || LAMP_SET.has(code))){ ai.others.push({trade:TRADES[ITEMS[code].trade], item:ITEMS[code].item + (Number(it.qty)>0 ? `　${fq(Number(it.qty))} ${ITEMS[code].unit}` : ""), basis:String(it.basis||"")}); continue; }
         if (!ITEMS[code]){ ai.missing.push({name:String(it.name||it.basis||code||"未命名工項"), action:`單價庫缺項（分析回報代碼「${code||"無"}」），未加入金額`}); continue; }
         const conf = CONF(it.confidence);
@@ -4390,7 +4588,8 @@ ${catalog}
   const confChip = c => `<span class="chip ${c==="高"?"ok":c==="中"?"warn":"bad"}">${c}</span>`;
   function addCount(){ return ai.items.filter(x=>x.checked && !x.added && x.qty>0).length + ai.cabs.filter(c=>c.checked && !c.added && c.chi>0).length; }
   const areaPending = () => ai.area>0 && ai.areaUse!==false && !ai.areaApplied;
-  function updateAddBtn(){ const b=$("#ai-add"); if (b){ const n=addCount(), a=areaPending(); b.textContent = `套用到估價單（${[a ? `坪數 ${ai.area}` : "", n ? `${n} 項` : ""].filter(Boolean).join("＋") || "沒有可套用的內容"}）`; b.disabled = !n && !a && !(ai.area==null && !ai.areaNoted); } }
+  const lampPending = () => !!ai.lamps && ai.lampUse!==false && !ai.lampApplied && (Object.keys(ai.lamps.qty).length || ai.lamps.confirm.length);
+  function updateAddBtn(){ const b=$("#ai-add"); if (b){ const n=addCount(), a=areaPending(), l=lampPending(); b.textContent = `套用到估價單（${[a ? `坪數 ${ai.area}` : "", l ? "燈具" : "", n ? `${n} 項` : ""].filter(Boolean).join("＋") || "沒有可套用的內容"}）`; b.disabled = !n && !a && !l && !(ai.area==null && !ai.areaNoted); } }
   function renderAi(){
     let h = "";
     h += ai.area!=null
@@ -4398,16 +4597,23 @@ ${catalog}
       : `<div class="ai-area"><span class="hint">圖面未判讀出坪數，請手動輸入（套用後到第 4 步填室內坪數）。</span></div>`;
     if (ai.scale) h += `<p class="hint">比例尺：${esc(ai.scale)}</p>`;
     if (ai.spaces.length) h += `<details class="h"><summary>空間與坪數（${ai.spaces.length} 個空間）</summary><dl>${ai.spaces.map(s=>`<dt>${esc(s.name)}</dt><dd>${s.area!=null?`<b class="mono">${s.area} 坪</b>　`:""}${esc(s.basis)}</dd>`).join("")}</dl></details>`;
+    if (ai.lamps){
+      const L = ai.lamps, codes = Object.keys(L.qty);
+      h += `<h3 class="ai-h">燈具清單（來自燈具圖${L.drawing ? `・${esc(L.drawing)}` : ""}）</h3>`
+        + (codes.length ? `<ul class="lamp-list">${codes.map(c=>{ const m = LAMPS.find(x=>x[0]===c); return `<li><span class="code">${c}</span> ${esc(m ? m[1] : c)}　<b class="mono">${fq(L.qty[c])}</b> ${m ? m[2] : ""}${confChip(L.conf[c]||"中")}${L.basis[c] ? `<small>${esc(L.basis[c])}</small>` : ""}</li>`; }).join("")}</ul>` : `<p class="hint">燈具圖上沒有數出可確定的燈具數量。</p>`)
+        + (L.confirm.length ? `<div class="ai-confirm"><b>請師傅確認（填 0）</b><ul>${L.confirm.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>` : "")
+        + `<label class="ai-area-use"><input type="checkbox" id="ai-lamp-use"${ai.lampUse!==false?" checked":""}${ai.lampApplied?" disabled":""}> ${ai.lampApplied ? "已帶入「燈具（水電）」的燈具材料與安裝工" : "按「套用到估價單」時，填入「燈具（水電）」的燈具材料並勾選「含燈具材料」，安裝工一起帶入"}</label>`;
+    }
     if (ai.cabs.length){
       const opt = cur => CAB.codes.map(c=>`<option value="${c}"${c===cur?" selected":""}>${c} ${esc(ITEMS[c].item)}</option>`).join("");
-      h += `<h3 class="ai-h">櫃體清單（${ai.cabs.length}）</h3><p class="hint">長度量「靠牆邊」；先算公分，再 ÷30.3 四捨五入到兩位，剛好 0.5 倍數不進位，其餘無條件進位到 0.5 尺。半高櫃歸矮櫃（W-303）。可直接修改代碼與尺數，按「套用到估價單」帶入。</p><div class="cab-list">`
+      h += `<h3 class="ai-h">櫃體清單（${ai.cabs.length}）</h3><p class="hint">長度量「靠牆邊」；先算公分，再 ÷30.3 四捨五入到 0.1 尺。半高櫃歸矮櫃（W-303）。可直接修改代碼與尺數，按「套用到估價單」帶入。</p><div class="cab-list">`
         + ai.cabs.map((c,i)=>`<div class="cab-card${c.added?" done":""}">
           <label class="cab-top"><input type="checkbox" class="cab-ck" data-i="${i}"${c.checked&&!c.added?" checked":""}${c.added?" disabled":""} aria-label="選取 ${esc(c.name)}"><span class="cab-name"><b>${esc(c.name)}</b><small>${esc([c.space, c.wall].filter(Boolean).join("・") || "位置未標")}${c.drawing?`・${esc(c.drawing)}`:""}</small></span>
             ${c.est?'<span class="chip warn">推算值</span>':""}${confChip(c.conf)}${c.added?' <span class="auto">（已加入）</span>':""}</label>
           <div class="cab-fields">
             <label>高／矮櫃<select class="cab-hc" data-i="${i}"${c.added?" disabled":""}>${["高櫃","矮櫃","吊櫃","衣櫃","鞋櫃","書櫃"].map(k=>`<option value="${k}"${k===c.kind?" selected":""}>${{高櫃:"高櫃",矮櫃:"矮櫃（含半高）",吊櫃:"吊櫃",衣櫃:"衣櫃",鞋櫃:"鞋櫃",書櫃:"開放書櫃／展示櫃"}[k]}</option>`).join("")}${c.kind?"":'<option value="" selected>待確認</option>'}</select></label>
             <label>代碼<select class="cab-code" data-i="${i}"${c.added?" disabled":""}>${opt(c.code)}</select></label>
-            <label>長度（尺）<input class="cab-len" type="number" min="0" step="0.5" inputmode="decimal" data-i="${i}" value="${c.chi ?? ""}" placeholder="請填"${c.added?" disabled":""}></label>
+            <label>長度（尺）<input class="cab-len" type="number" min="0" step="0.1" inputmode="decimal" data-i="${i}" value="${c.chi ?? ""}" placeholder="請填"${c.added?" disabled":""}></label>
           </div>
           <p class="cab-basis">${c.basis ? esc(c.basis) : ""}${c.hcLabel ? `${c.basis?"<br>":""}高矮：${esc(c.hcLabel)}${c.pendingHc?"（無 3D／立面，請確認）":""}${c.sys?"・系統櫃":""}` : ""}${c.notes ? `<br><span class="cab-note">${esc(c.notes)}</span>` : ""}${c.survey ? `<br><span class="flag">${esc(c.survey)}</span>` : ""}</p>
         </div>`).join("") + `</div>`;
@@ -4446,6 +4652,7 @@ ${catalog}
     if (e.target.id==="ai-all"){ ai.items.forEach(x=>{ if(!x.added) x.checked=e.target.checked; }); document.querySelectorAll(".ai-ck:not(:disabled)").forEach(c=>c.checked=e.target.checked); updateAddBtn(); return; }
     if (e.target.matches(".ai-ck")){ ai.items[+e.target.dataset.i].checked = e.target.checked; updateAddBtn(); }
     if (e.target.id==="ai-area-use"){ ai.areaUse = e.target.checked; updateAddBtn(); }
+    if (e.target.id==="ai-lamp-use"){ ai.lampUse = e.target.checked; updateAddBtn(); }
     if (e.target.matches(".cab-ck")){ ai.cabs[+e.target.dataset.i].checked = e.target.checked; updateAddBtn(); }
     if (e.target.matches(".cab-code")){ ai.cabs[+e.target.dataset.i].code = e.target.value; }
     if (e.target.matches(".cab-hc")){ const c = ai.cabs[+e.target.dataset.i]; c.kind = e.target.value; c.pendingHc = !c.kind; const nc = cabCode(c.kind, c.sys); if (nc){ c.code = nc; const sel = e.target.closest(".cab-card").querySelector(".cab-code"); if (sel) sel.value = nc; } c.hcLabel = HC_LABEL[c.kind] || "待確認"; }
@@ -4488,7 +4695,7 @@ ${catalog}
     };
   }
   function fromGuideJSON(o){
-    Object.assign(ai, {cabs:[], items:[], spaces:[], confirm:[], diffs:[], specs:[], others:[], missing:[], suggest:{}, protNote:false, darkWall:false, scale:"", area:null, areaBasis:"", areaConf:"中", areaUse:true, areaApplied:false, areaNoted:false, kinds:{}});
+    Object.assign(ai, {lamps:null, lampUse:true, lampApplied:false, cabs:[], items:[], spaces:[], confirm:[], diffs:[], specs:[], others:[], missing:[], suggest:{}, protNote:false, darkWall:false, scale:"", area:null, areaBasis:"", areaConf:"中", areaUse:true, areaApplied:false, areaNoted:false, kinds:{}});
     const S = v => v==null ? "" : String(v);
     const dmap = {};
     ai.drawMeta = {}; ai.objMatches = (Array.isArray(o.object_matches)?o.object_matches:[]).filter(m=>m && typeof m==="object").map(m=>({object_id:S(m.object_id), wall_label:S(m.wall_label), status:["matched","unmatched","conflict"].includes(m.status) ? m.status : "unmatched"}));
@@ -4566,21 +4773,24 @@ ${catalog}
       let gotArea = false;
       if (areaPending()){ gotArea = setAreaFromPlan(ai.area); ai.areaApplied = gotArea; }
       else if (ai.area==null){ setAreaFromPlan(null); ai.areaNoted = true; }
-      if (!pick.length && !cabPick.length && !gotArea && ai.area!=null) return;
+      let lampN = -1;
+      if (lampPending()){ lampN = applyPlanLamps(ai.lamps); ai.lampApplied = true; }
+      if (!pick.length && !cabPick.length && !gotArea && lampN<0 && ai.area!=null) return;
       pick.forEach(x=>{
         addLine(x.code, x.qty);
         const ln = state.lines.find(l=>l.code===x.code && !l.auto);
-        if (ln){ const s = new Set(String(ln.src||"").split("／").filter(Boolean)); s.add(x.src); ln.src = [...s].join("／"); if (x.survey) ln.survey = x.survey; }
+        if (ln){ const s = new Set(String(ln.src||"").split("／").filter(Boolean)); s.add(x.src); ln.src = [...s].join("／"); if (x.survey) ln.survey = x.survey; ln.fromPlan = true; }
         x.added=true; x.checked=false;
       });
       cabPick.forEach(c=>{
         addLine(c.code, c.chi);
         const ln = state.lines.find(l=>l.code===c.code && !l.auto);
-        if (ln){ const s = new Set(String(ln.src||"").split("／").filter(Boolean)); s.add(c.est ? "圖面推算" : "施工"); ln.src = [...s].join("／"); if (c.survey) ln.survey = c.survey; }
+        if (ln){ const s = new Set(String(ln.src||"").split("／").filter(Boolean)); s.add(c.est ? "圖面推算" : "施工"); ln.src = [...s].join("／"); if (c.survey) ln.survey = c.survey; ln.fromPlan = true; }
         c.added = true; c.checked = false;
       });
-      render(); renderLib(); renderAi();
-      msg(`已套用：${gotArea ? `室內坪數 ${ai.area} 坪、` : ""}${pick.length} 個工項${cabPick.length ? `、${cabPick.length} 個櫃體` : ""}。`); planSum([gotArea ? `坪數 ${ai.area}` : "", `已套用 ${pick.length + cabPick.length} 個工項`].filter(Boolean).join("・"));
+      render(); renderLib(); renderAi(); renderLightPanel();
+      msg(`已套用：${lampN>=0 ? `燈具 ${lampN} 種、` : ""}${gotArea ? `室內坪數 ${ai.area} 坪、` : ""}${pick.length} 個工項${cabPick.length ? `、${cabPick.length} 個櫃體` : ""}。`); planSum([gotArea ? `坪數 ${ai.area}` : "", `已套用 ${pick.length + cabPick.length} 個工項`].filter(Boolean).join("・"));
+      if (pick.length || cabPick.length || lampN>=0) setFlow("plan");
       closeModal("plan-modal"); showGen(); helperAuto();
       toast(gotArea ? `圖面分析已套用：室內坪數 ${ai.area} 坪、${pick.length + cabPick.length} 個工項。` : ai.area==null ? `圖面分析已套用 ${pick.length} 個工項。圖面未判讀出坪數，請手動輸入。` : `圖面分析已套用 ${pick.length} 個工項。`);
     }
