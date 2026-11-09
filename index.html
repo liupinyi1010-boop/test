@@ -1515,10 +1515,15 @@ img, svg, canvas, video { max-width: 100%; height: auto; }
     }
   }
 
+  // Model IDs (verified 2026-11-10 against Anthropic docs):
+  // Sonnet 4 (dated 20250514) retired 2026-06-15 → use claude-sonnet-5-5
+  // Haiku 4.5 dated 20251001 still Active
+  // Docs: platform.claude.com/docs/en/about-claude/models
+  //       platform.claude.com/docs/en/about-claude/model-deprecations
   function pickModel(tier) {
     if (tier === "quick") return "claude-haiku-4-5-20251001";
-    if (tier === "complex") return "claude-sonnet-4-20250514";
-    return "claude-sonnet-4-20250514";
+    if (tier === "complex") return "claude-sonnet-5-5";
+    return "claude-sonnet-5-5";
   }
 
   async function callAnthropic(prompt, options) {
