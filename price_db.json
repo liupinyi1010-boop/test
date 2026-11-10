@@ -779,6 +779,17 @@
                                         "source":  "市場行情估算(需在地驗證)"
                                     },
                                     {
+                                        "code":  "A-108",
+                                        "category":  "牆面",
+                                        "item":  "跳色（局部牆面換色）",
+                                        "unit":  "坪",
+                                        "price_low":  440,
+                                        "price_high":  770,
+                                        "price_mode":  "連工帶料",
+                                        "note":  "局部牆面換色",
+                                        "source":  "乳膠漆二底三度市場行情 ×1.1"
+                                    },
+                                    {
                                         "code":  "A-201",
                                         "category":  "特殊塗料",
                                         "item":  "珪藻土",
