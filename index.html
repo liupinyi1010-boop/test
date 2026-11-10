@@ -600,7 +600,7 @@ body.vw-on{overflow:hidden}
 .vw-status.err{color:var(--bad);font-weight:600}
 .vw-lbl{font-size:15px;font-weight:600}
 #vw-text{font-size:18px;min-height:96px;resize:vertical}
-.vw-actions{display:flex;flex-wrap:wrap;gap:10px}
+.vw-actions{display:flex;flex-wrap:wrap;gap:10px;position:sticky;bottom:0;z-index:3;background:var(--surface);padding:8px 0 4px}
 .vw-actions .btn{flex:1 1 120px}
 .vw-foot{display:flex;flex-wrap:wrap;gap:10px}
 .vw-foot .btn{flex:1 1 160px}
@@ -3951,6 +3951,7 @@ const NUM = "([0-9]+(?:\\.[0-9]+)?|[零〇一二兩三四五六七八九十百]+
 const NOT_AFTER = "(?![0-9零〇一二兩三四五六七八九十百個組盞樘處只座口坪米公顆條])";
 const RE_CHI = new RegExp(`${NUM}台?尺${DIG}寸?(?:${DIG}分)?${NOT_AFTER}`, "g");   // 三尺二、三尺二寸五分
 const RE_CUN = new RegExp(`${NUM}寸(?:${DIG}分)?`, "g");
+const RE_FOOT = new RegExp(`${NUM}台?尺(?!${DIG}|半|寸)`, "g");   // 二十尺、8尺（沒有後面的寸）
 const RE_HALF = new RegExp(`${NUM}台?尺半`, "g");                                     // 三尺半 = 3 尺 5 寸
 const fmtChi = v => String(Math.round(v*100)/100);
 function normalizeAnswer(text){
@@ -3966,6 +3967,7 @@ function normalizeAnswer(text){
   });
   out = out.replace(RE_HALF, (m, a)=>{ const r = `${fmtChi(cnNum(a) + 0.5)} 尺`; hits.push({from:m, to:r}); return r; });
   out = out.replace(RE_CHI, (m, a, b, c)=>{ const v = cnNum(a) + cnNum(b)/10 + (c ? cnNum(c)/100 : 0); const r = `${fmtChi(v)} 尺`; hits.push({from:m, to:r}); return r; });
+  out = out.replace(RE_FOOT, (m, a)=>{ const r = `${fmtChi(cnNum(a))} 尺`; if (r===m || r===m.replace(/\s/g,"")) return m; hits.push({from:m, to:r}); return r; });
   out = out.replace(RE_CUN, (m, a, c)=>{ const v = cnNum(a)/10 + (c ? cnNum(c)/100 : 0); const r = `${fmtChi(v)} 尺`; hits.push({from:m, to:r}); return r; });
   return {text:out, hits};
 }
@@ -4376,6 +4378,139 @@ function vwMerge(r, answer){
   vw.unclear = Array.isArray(r && r.unclear) ? r.unclear.map(String).filter(Boolean) : [];
 }
 const CONF_V = c => /高|high/i.test(String(c)) ? "高" : /低|low/i.test(String(c)) ? "低" : "中";
+function vwAiTimeoutMs(){ return (typeof window.__vwAiTimeoutMs === "number" && window.__vwAiTimeoutMs > 0) ? window.__vwAiTimeoutMs : 20000; }
+function vwAiErrText(e){
+  const c = e && (e.code || e.name) || "";
+  const status = e && (e.status || e.statusCode);
+  const msg = e && (e.message || e.err) ? String(e.message || e.err).replace(/\s+/g," ").slice(0,120) : "";
+  const map = {needs_api_key:"未設定 AI 金鑰", not_granted:"AI 金鑰無效或未授權", rate_limited:"AI 使用量已達上限", timeout:"AI 回覆逾時（20秒）", unavailable:"沒有 AI 分析功能", upstream_error:"AI 服務連線或回應錯誤", invalid_json:"AI 回覆格式無法解讀", empty_completion:"AI 沒有回覆內容", cancelled:"已取消", TypeError:"網路或瀏覽器阻擋了 AI 連線", NetworkError:"網路連線失敗"};
+  const reason = map[c] || (c && c!=="Error" ? c : "連線失敗");
+  const extra = [status ? "HTTP "+status : "", msg && msg!==reason ? msg : ""].filter(Boolean).join(" ");
+  return extra ? `${reason}（${extra}）` : reason;
+}
+function vwHasAiKey(){ try { return !!(localStorage.getItem("shifu-ai-key-v1")||"").trim(); } catch (e) { return false; } }
+function vwDetectRegion(text){
+  const t = String(text||"");
+  if (/台北市|臺北市|台北|臺北/.test(t) && !/新北/.test(t)) return "台北市";
+  if (/新北|桃園|新竹/.test(t)) return "新北/桃園/新竹";
+  if (/台中|臺中|彰化/.test(t)) return "台中/彰化";
+  if (/台南|臺南|高雄/.test(t)) return "台南/高雄";
+  if (/基隆|宜蘭|苗栗|南投|雲林|嘉義|屏東|花蓮|台東|臺東|澎湖|金門|連江|馬祖/.test(t)) return "其他縣市";
+  return null;
+}
+function vwDetectRemote(text){
+  const t = String(text||"");
+  if (/澎湖|金門|馬祖|連江|綠島|蘭嶼|小琉球|離島/.test(t)) return "island";
+  if (/花蓮|台東|臺東|花東/.test(t)) return "east";
+  if (/偏遠山|尖石|五峰|復興鄉|梨山|阿里山|信義鄉|仁愛鄉|海端|那瑪夏|茂林|桃源區|延平鄉|金峰鄉|本島偏遠/.test(t)) return "mountain";
+  return "city";
+}
+function vwDetectSite(text){
+  const t = String(text||"").replace(/\s+/g," ").trim();
+  const m = t.match(/((?:台北|臺北|新北|桃園|台中|臺中|台南|臺南|高雄|基隆|新竹|苗栗|彰化|南投|雲林|嘉義|屏東|宜蘭|花蓮|台東|臺東|澎湖|金門|連江)(?:市|縣))?\s*([^\s，,。]{1,4}(?:市|區|鎮|鄉|島))?/);
+  if (!m) return null;
+  const site = `${m[1]||""}${m[2]||""}`.trim();
+  return site.length >= 3 ? site : (m[1]||null);
+}
+function vwParseNumber(text){
+  const t = String(text||"").trim();
+  if (!t) return null;
+  if (/^[0-9]+(?:\.[0-9]+)?$/.test(t)) return parseFloat(t);
+  const n = cnNum(t);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+function vwQtyIn(text, unit){
+  const src = String(text||"");
+  const u = String(unit||"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  const re = new RegExp(`(?:${NUM})\\s*${u}`, "g");
+  let best = null, m;
+  while ((m = re.exec(src))){ const n = vwParseNumber(m[1]); if (n!=null) best = n; }
+  return best;
+}
+function vwLocalParse(answer){
+  const norm = normalizeAnswer(answer||"");
+  const text = norm.text || String(answer||"");
+  const fields = {region:null, ping:null, age:null, floor:null, elevator:null, wall_condition:null};
+  const items = [];
+  const unclear = [];
+  fields.region = vwDetectRegion(text);
+  const site = vwDetectSite(text);
+  const remoteType = /高雄|台北|臺北|台中|臺中|台南|臺南|新北|桃園|新竹/.test(text) || site ? vwDetectRemote(text) : (/(都會區|偏遠|花東|離島)/.test(text) ? vwDetectRemote(text) : null);
+  const pingM = text.match(new RegExp(`(?:室內|大概|坪數)?\\s*(${NUM.slice(1,-1)})\\s*坪`));
+  const pingOk = pingM && ((VQ[vw.idx] && VQ[vw.idx].k==="ping") || /室內|大概|坪數/.test(text) || !/貼|磁磚|泰魯|太魯/.test(text));
+  if (pingOk){ const n = vwParseNumber(pingM[1]); if (n!=null) fields.ping = Math.round(n*10)/10; }
+  const ageM = text.match(new RegExp(`(?:屋齡)?\\s*(${NUM.slice(1,-1)})\\s*年`));
+  if (ageM){ const n = vwParseNumber(ageM[1]); if (n!=null) fields.age = Math.round(n); }
+  const floorM = text.match(new RegExp(`(?:在)?\\s*(${NUM.slice(1,-1)})\\s*樓`));
+  if (floorM){ const n = vwParseNumber(floorM[1]); if (n!=null) fields.floor = Math.round(n); }
+  if (/沒有電梯|無電梯|沒電梯/.test(text)) fields.elevator = false;
+  else if (/有電梯/.test(text)) fields.elevator = true;
+  if (/牆面.{0,4}差|狀況差/.test(text)) fields.wall_condition = "差";
+  else if (/牆面.{0,4}良好|狀況良好/.test(text)) fields.wall_condition = "良好";
+  else if (/牆面.{0,4}普通|狀況普通/.test(text)) fields.wall_condition = "普通";
+  const used = new Set();
+  for (const h of (norm.hits||[])){
+    const code = h.code && ITEMS[h.code] ? h.code : null;
+    if (!code || used.has(code) || !inScope(code) || LAMP_SET.has(code) || ["W-001","A-001","P-000"].includes(code)) continue;
+    const unit = ITEMS[code].unit;
+    const q = vwQtyIn(text, unit) ?? vwQtyIn(text, "尺") ?? vwQtyIn(text, "坪");
+    const fuzzy = FUZZY.test(text);
+    items.push({code, name:ITEMS[code].item, quantity:q, unit, confidence:"中", needs_confirm: fuzzy || termUnsure({standard:h.to, note:""}) || !(q>0)});
+    used.add(code);
+  }
+  // 單價庫沒有對應代碼的術語（水泥、磁磚等）→ 請師傅確認，不自編工項
+  for (const h of (norm.hits||[])){
+    if (h.code || h.unsure===undefined && !h.to) continue;
+    if (h.code) continue;
+    if (h.unsure || /水泥|磁磚|混凝土|天花板/.test(String(h.to||""))){
+      const qHint = (text.match(new RegExp(`(?:${NUM.slice(1,-1)})\\s*(?:包|坪|尺|處)`))||[])[0];
+      unclear.push(`${h.to}${qHint? " "+qHint : ""}（單價庫沒有對應工項，請師傅確認或自行加入）`);
+    }
+  }
+  const bits = [];
+  if (site) bits.push(site);
+  if (fields.region) bits.push("地區「"+fields.region+"」");
+  if (remoteType) bits.push(remoteType==="city"?"都會區":(REMOTE_LABEL[remoteType]||remoteType));
+  if (fields.ping) bits.push(fields.ping+" 坪");
+  if (items.length) bits.push(items.map(it=>`${it.name}${it.quantity?it.quantity+it.unit:""}`).join("、"));
+  const reply = bits.length ? `好，我記下來了：${bits.join("，")}。` : (text ? `好，我先記下「${text}」。` : tx("ok"));
+  return {fields, items, unclear, reply, site, remoteType, local:true};
+}
+async function vwAskAI(answer){
+  const ms = vwAiTimeoutMs();
+  const timeout = (code, msg) => new Promise((_, rej)=>setTimeout(()=>rej(Object.assign(new Error(msg), {code})), ms));
+  if (!(window.claude && typeof window.claude.use==="function")) throw Object.assign(new Error("這個頁面沒有 AI 分析介面"), {code:"unavailable"});
+  if (!vwHasAiKey()) throw Object.assign(new Error("請到右上角「設定」填入 AI 金鑰"), {code:"needs_api_key"});
+  const sample = await Promise.race([
+    Promise.resolve(window.claude.use("sample")).catch(e=>{ throw e && e.code ? e : Object.assign(new Error(String(e&&e.message||e)), {code:"unavailable"}); }),
+    timeout("timeout", "等候 AI 介面逾時")
+  ]);
+  if (!sample || typeof sample.json!=="function") throw Object.assign(new Error("AI 介面不可用"), {code:"unavailable"});
+  return await Promise.race([
+    sample.json(vwPrompt(answer), {modelTier:"quick", cache:false}),
+    timeout("timeout", "AI 回覆逾時（20秒）")
+  ]);
+}
+async function vwFinishAnswer(answer, r, aiNote){
+  vw.log.push({q:VQ[vw.idx].q(), raw:vw.rawNow, final:answer, local:!!(r&&r.local), aiNote:aiNote||""});
+  vwMerge(r, answer);
+  if (r && r.site) vw.fields.site = r.site;
+  if (r && r.remoteType) vw.fields.remoteType = r.remoteType;
+  const reply = String(r && r.reply || "").trim() || (vw.unclear.length ? tx("again") : tx("ok"));
+  const box = $("#vw-reply"); box.hidden = false;
+  const note = aiNote ? `<p class="hint" id="vw-ai-note">本機規則已整理，可繼續下一題。AI：${escH(aiNote)}</p>` : "";
+  box.innerHTML = `<b>小精靈：</b>${escH(reply)}${vw.unclear.length ? `<ul>${vw.unclear.map(u=>`<li>${escH(u)}</li>`).join("")}</ul>` : ""}${note}`;
+  // AI 成功且需要追問時才停在本題；AI 失敗時一定往下走，不卡死
+  if (!aiNote && vw.unclear.length){
+    speak(reply);
+    $("#vw-text").value = ""; vw.rawNow = "";
+    vwStatus("請補充或更正後再按「確認內容」；不確定可以按「跳過」。");
+  } else {
+    vwNext(reply);
+    if (aiNote) vwStatus(`已用本機規則整理。AI 無法使用：${aiNote}`, false);
+  }
+}
+window.__vwLocalParse = vwLocalParse;
 $("#vw-send").addEventListener("click", async ()=>{
   vwCdCancel();
   if (vw.busy) return;
@@ -4383,26 +4518,21 @@ $("#vw-send").addEventListener("click", async ()=>{
   const answer = vwApplyTerms().trim();
   if (!answer){ vwStatus("還沒有內容，可以按麥克風說，或直接打字；不知道就按「跳過」。", true); return; }
   vw.busy = true; $("#vw-send").disabled = true; vwStatus("小精靈整理中…");
+  let r = null, aiNote = "";
   try {
-    const sample = window.claude && typeof window.claude.use==="function" ? await Promise.race([Promise.resolve(window.claude.use("sample")), new Promise(r=>setTimeout(()=>r(null), 12000))]) : null;
-    if (!sample){ vwStatus("此功能需要設定 AI 金鑰。請到右上角「設定」填入 AI 金鑰後再試；其他估價功能不受影響。", true); return; }
-    const r = await sample.json(vwPrompt(answer), {modelTier:"quick", cache:false});
-    vw.log.push({q:VQ[vw.idx].q(), raw:vw.rawNow, final:answer});
-    vwMerge(r, answer);
-    const reply = String(r && r.reply || "").trim() || (vw.unclear.length ? tx("again") : tx("ok"));
-    const box = $("#vw-reply"); box.hidden = false;
-    box.innerHTML = `<b>小精靈：</b>${escH(reply)}${vw.unclear.length ? `<ul>${vw.unclear.map(u=>`<li>${escH(u)}</li>`).join("")}</ul>` : ""}`;
-    if (vw.unclear.length){
-      speak(reply);
-      $("#vw-text").value = ""; vw.rawNow = "";
-      vwStatus("請補充或更正後再按「確認內容」；不確定可以按「跳過」。");
-    } else {
-      vwNext(reply);
-    }
+    r = await vwAskAI(answer);
   } catch (e) {
-    const c = e && e.code;
-    vwStatus(c==="not_granted" ? "你沒有允許估價通使用分析功能，小精靈無法整理；可以關掉小精靈改用一般方式估價。" : c==="rate_limited" ? "分析功能使用量已達上限，請稍後再按「確認內容」。" : "小精靈連線失敗，請再按一次「確認內容」。估價功能不受影響。", true);
-  } finally { vw.busy = false; $("#vw-send").disabled = false; }
+    aiNote = vwAiErrText(e);
+    r = vwLocalParse(answer);
+  }
+  try {
+    if (!r) r = vwLocalParse(answer);
+    await vwFinishAnswer(answer, r, aiNote);
+  } catch (e) {
+    vwStatus("整理時發生問題：" + vwAiErrText(e) + "。請再試一次，或按「跳過」。", true);
+  } finally {
+    vw.busy = false; $("#vw-send").disabled = false;
+  }
 });
 const WALL_TO = {"良好":"A","普通":"B","差":"C"};
 function vwShowResult(prefix){
@@ -4413,7 +4543,9 @@ function vwShowResult(prefix){
   const regionSel = `<select data-v="region">${REGION_KEYS.map(r=>`<option${(F.region||$("#region").value)===r ? " selected" : ""}>${r}</option>`).join("")}</select>`;
   box.innerHTML = `<h3 class="vw-h">基本報價單範本</h3><p class="hint">勾選要套用的項目，數量可以直接改。按「套用到估價單」之前，估價單不會有任何變動。</p>
     <div class="vw-card"><b>案場條件</b>
+      ${row("site","案場地點", `<input data-v="site" value="${escH(F.site||"")}" placeholder="例如高雄市仁武區">`, !!F.site)}
       ${row("region","地區", regionSel, !!F.region)}
+      ${row("remote","都會區／偏遠", `<select data-v="remote">${[["city","都會區"],["mountain","本島偏遠山區"],["east","花東"],["island","離島"]].map(([v,l])=>`<option value="${v}"${(F.remoteType||"city")===v?" selected":""}>${l}</option>`).join("")}</select>`, F.remoteType!=null && F.remoteType!==undefined)}
       ${row("ping","室內坪數", `<input data-v="ping" inputmode="decimal" value="${F.ping ?? ""}" placeholder="坪">`, F.ping!=null)}
       ${row("age","屋齡（年）", `<input data-v="age" inputmode="numeric" value="${F.age ?? ""}">`, F.age!=null)}
       ${row("floor","樓層", `<input data-v="floor" inputmode="numeric" value="${F.floor ?? ""}">`, F.floor!=null)}
@@ -4437,6 +4569,7 @@ $("#vw-result").addEventListener("click", e=>{
   const fire = (sel, ev="input") => $(sel).dispatchEvent(new Event(ev));
   let nF = 0, nI = 0;
   if (on("region")){ $("#region").value = val("region"); fire("#region"); nF++; }
+  if (on("remote")){ const rv = val("remote")||"city"; const b = $(`#remote [data-v="${rv}"]`); if (b){ b.click(); nF++; } }
   if (on("ping") && +val("ping")>0){ $("#area").value = +val("ping"); fire("#area"); nF++; }
   if (on("age") && val("age")!=="" && +val("age")>=0){ $("#age").value = Math.round(+val("age")); fire("#age"); nF++; }
   if (on("floor") && +val("floor")>0){ $("#floor").value = Math.round(+val("floor")); fire("#floor"); nF++; }
@@ -5073,7 +5206,6 @@ ${catalog}
   });
 
   const ERR = {
-    needs_api_key: "此功能需要設定 AI 金鑰。請到右上角「設定」填入 AI 金鑰後再試。",
     unavailable: "此功能需要設定 AI 金鑰。請到右上角「設定」填入 AI 金鑰後再試；其他估價功能可以正常使用。",
     not_granted: "你沒有允許估價通使用分析功能，所以無法分析圖面。其他估價功能不受影響；若要使用，請重新整理頁面，在詢問時按「允許」。",
     sampling_disabled: "你的帳號或組織目前無法使用估價通的分析功能，所以無法分析圖面。其他估價功能不受影響。",
