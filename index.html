@@ -585,9 +585,10 @@ header.top{position:relative}
 body.vw-on{overflow:hidden}
 .vw-box{width:100%;max-width:480px;max-height:100%;overflow:auto;background:var(--bg);border-radius:22px 22px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
 @media (min-width:600px){.vw{align-items:center}.vw-box{border-radius:22px;max-height:92vh}}
-.vw-head{display:flex;align-items:center;gap:10px}
-.vw-head b{font-size:20px;font-weight:700}
-.vw-prog{margin-left:auto;font-size:14px;font-weight:600;color:var(--muted)}
+.vw-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px}
+.vw-head b{font-size:20px;font-weight:700;white-space:nowrap}
+.vw-prog{margin-left:auto;font-size:13px;font-weight:600;color:var(--muted);text-align:right;line-height:1.25;max-width:52%}
+@media (max-width:420px){.vw-prog{flex:1 0 calc(100% - 58px);max-width:none;order:3;margin:0;text-align:left}.vw-x{margin-left:auto;order:2}}
 .vw-x{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
 .vw-x .bi{margin:0}
 .vw-body{display:grid;gap:12px;background:var(--surface);border-radius:18px;padding:18px 16px}
@@ -606,6 +607,17 @@ body.vw-on{overflow:hidden}
 #vw-text{font-size:18px;min-height:96px;resize:vertical}
 .vw-actions{display:flex;flex-wrap:wrap;gap:10px;position:sticky;bottom:0;z-index:3;background:var(--surface);padding:8px 0 4px}
 .vw-actions .btn{flex:1 1 120px}
+.vw-basics{margin:4px 0 0;padding:16px 0 8px;border-top:2px solid var(--line)}
+.vw-basics-h{margin:0 0 6px;font-size:20px;font-weight:800;color:var(--ink);letter-spacing:.06em}
+.vw-basics>.hint{margin:0 0 14px;font-size:15px}
+.vw-frow{margin:0 0 14px}
+.vw-flab{display:block;font-size:16px;font-weight:700;margin:0 0 8px;color:var(--ink)}
+.vw-chips{display:flex;flex-wrap:wrap;gap:8px}
+.vw-chip{min-height:52px;min-width:52px;padding:10px 16px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:18px;font-weight:700;letter-spacing:.05em;cursor:pointer;line-height:1.2;-webkit-tap-highlight-color:transparent}
+.vw-chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.vw-basics select,.vw-basics input[inputmode],.vw-basics input[type=text],.vw-basics input[type=number],.vw-basics input[type=tel]{min-height:52px;width:100%;font:inherit;font-size:20px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.vw-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+@media (max-width:360px){.vw-fgrid{grid-template-columns:1fr}}
 .vw-foot{display:flex;flex-wrap:wrap;gap:10px}
 .vw-foot .btn{flex:1 1 160px}
 .vw-h{margin:0;font-size:22px;font-weight:700}
@@ -873,7 +885,7 @@ details.fold[open] .fold-arrow{transform:rotate(90deg)}
     </div>
   </header>
 
-  <button type="button" class="big-btn primary voice-hero" id="vw-open"><span class="ico" aria-hidden="true"><svg><use href="#i-mic"/></svg></span><span class="big-t">用講的開始估價<small>小精靈問、你回答，大約 8 題</small></span><span class="chev" aria-hidden="true">›</span></button>
+  <button type="button" class="big-btn primary voice-hero" id="vw-open"><span class="ico" aria-hidden="true"><svg><use href="#i-mic"/></svg></span><span class="big-t">用講的開始估價<small>勾選基本資料，再說施工內容</small></span><span class="chev" aria-hidden="true">›</span></button>
   <section class="panel step-card scope-quick" id="sec-scope" aria-labelledby="h-scope">
     <h2 class="step-h" id="h-scope"><span class="step-no" aria-hidden="true">1</span><span class="step-t"><small>第 1 步</small>選擇工種</span><span class="step-sub">點一下就換</span></h2>
     <div class="scope-cards" id="scope" role="group" aria-labelledby="h-scope"><button type="button" class="sc-card" data-s="carpentry" aria-pressed="false" title="天花板、隔間、櫃體、門、地板"><span class="sc-ic" aria-hidden="true"><svg><use href="#i-wood"/></svg></span><b>木作工程估價單</b><small>天花板、隔間、櫃體、門、地板</small><span class="sc-check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></button><button type="button" class="sc-card" data-s="plumbing_electrical" aria-pressed="false" title="插座、迴路、給排水、燈具"><span class="sc-ic" aria-hidden="true"><svg><use href="#i-plug"/></svg></span><b>水電工程估價單</b><small>插座、迴路、給排水、燈具</small><span class="sc-check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></button><button type="button" class="sc-card" data-s="painting" aria-pressed="false" title="牆面、天花、木作面、防水"><span class="sc-ic" aria-hidden="true"><svg><use href="#i-brush"/></svg></span><b>油漆工程估價單</b><small>牆面、天花、木作面、防水</small><span class="sc-check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></button><button type="button" class="sc-card on" data-s="all" aria-pressed="true" title="木作＋水電＋油漆，三種合併"><span class="sc-ic" aria-hidden="true"><svg><use href="#i-helmet"/></svg></span><b>統包工程估價單</b><small>木作＋水電＋油漆，三種合併</small><span class="sc-check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></button><button type="button" class="sc-card" data-s="system_cabinet" data-pro-scope="1" aria-pressed="false" title="系統衣櫃、高櫃、吊櫃"><span class="sc-ic" aria-hidden="true"><svg><use href="#i-wood"/></svg></span><b>系統櫃估價單</b><small>系統衣櫃、高櫃、吊櫃</small><span class="sc-pro-badge">進階方案才開通</span><span class="sc-check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></button><button type="button" class="sc-card" data-s="masonry_waterproofing" data-pro-scope="1" aria-pressed="false" title="室內／外牆防水、泥作復原"><span class="sc-ic" aria-hidden="true"><svg><use href="#i-brush"/></svg></span><b>泥作防水估價單</b><small>室內／外牆防水、泥作復原</small><span class="sc-pro-badge">進階方案才開通</span><span class="sc-check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></button><button type="button" class="sc-card" data-s="demolition_hauling" data-pro-scope="1" aria-pressed="false" title="櫃體／天花拆除、清運"><span class="sc-ic" aria-hidden="true"><svg><use href="#i-helmet"/></svg></span><b>拆除清運估價單</b><small>櫃體／天花拆除、清運</small><span class="sc-pro-badge">進階方案才開通</span><span class="sc-check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></button></div>
@@ -1176,17 +1188,83 @@ details.fold[open] .fold-arrow{transform:rotate(90deg)}
       <div class="vw-reply" id="vw-reply" hidden></div>
       <button type="button" class="vw-mic" id="vw-mic" aria-pressed="false"><span class="mic-ring" aria-hidden="true"></span><svg class="bi" aria-hidden="true"><use href="#i-mic"/></svg><span id="vw-mic-t">按住說話</span></button>
       <div class="vw-yating-row" id="vw-yating-row" hidden>
-        <label><input type="checkbox" id="vw-yating"> 用雅婷辨識（剩 <span id="vw-yating-n">—</span> 次）</label>
+        <label><input type="checkbox" id="vw-yating"> 用台語辨識（剩 <span id="vw-yating-n">—</span> 次）</label>
         <p class="hint" id="vw-yating-hint"></p>
       </div>
       <p class="vw-status" id="vw-status" aria-live="polite"></p>
       <div class="mic-check"><span class="mic-perm" id="mic-perm" aria-live="polite">麥克風：尚未檢查</span><button type="button" class="btn ghost" id="mic-test"><svg class="bi" aria-hidden="true"><use href="#i-mic"/></svg>測試麥克風</button></div>
       <div class="mic-err" id="mic-err" role="alert" hidden></div>
-      <label for="vw-text" class="vw-lbl">聽到的內容（可以直接修改，或用打字回答）</label>
-      <textarea id="vw-text" rows="3" placeholder="例如：台北市大安區，大概二十八坪"></textarea>
+      <label for="vw-text" class="vw-lbl">施工內容（用講的或直接打字都可以，打字不會扣辨識次數）</label>
+      <textarea id="vw-text" rows="3" placeholder="例如：客廳天花板做平釘六坪，踢腳板二十尺"></textarea>
       <p class="vw-dict-hint" id="vw-dict-hint">也可以把游標放進回答框，用鍵盤的麥克風來說（打字或鍵盤語音一樣會轉成國語）。</p>
       <p class="vw-terms" id="vw-terms" hidden></p>
       <div class="vw-actions"><button type="button" class="btn" id="vw-send">確認內容</button><button type="button" class="btn ghost" id="vw-redo">重講</button><button type="button" class="btn ghost" id="vw-skip">跳過</button></div>
+      <section class="vw-basics" id="vw-basics" aria-label="案場基本資料">
+        <h3 class="vw-basics-h">案場基本資料</h3>
+        <p class="hint" id="vw-basics-hint">用勾選或填寫就好，不用講出來，也不會扣辨識次數。</p>
+        <div class="vw-frow">
+          <span class="vw-flab" id="vw-flab-scope">工種</span>
+          <div class="vw-chips" id="vw-f-scope" role="group" aria-labelledby="vw-flab-scope"></div>
+        </div>
+        <div class="vw-frow">
+          <label class="vw-flab" for="vw-f-city">縣市</label>
+          <select id="vw-f-city" aria-label="縣市"></select>
+        </div>
+        <div class="vw-frow">
+          <label class="vw-flab" for="vw-f-region">地區</label>
+          <select id="vw-f-region" aria-label="地區"></select>
+        </div>
+        <div class="vw-frow">
+          <span class="vw-flab" id="vw-flab-remote">都會／偏遠</span>
+          <div class="vw-chips" id="vw-f-remote" role="group" aria-labelledby="vw-flab-remote">
+            <button type="button" class="vw-chip" data-g="remote" data-v="city">都會區</button>
+            <button type="button" class="vw-chip" data-g="remote" data-v="mountain">本島偏遠山區</button>
+            <button type="button" class="vw-chip" data-g="remote" data-v="east">花東</button>
+            <button type="button" class="vw-chip" data-g="remote" data-v="island">離島</button>
+          </div>
+        </div>
+        <div class="vw-fgrid">
+          <div class="vw-frow">
+            <label class="vw-flab" for="vw-f-ping">室內坪數</label>
+            <input id="vw-f-ping" name="vw-ping" inputmode="decimal" enterkeyhint="done" value="0" aria-label="室內坪數">
+          </div>
+          <div class="vw-frow">
+            <label class="vw-flab" for="vw-f-age">屋齡（年）</label>
+            <input id="vw-f-age" name="vw-age" inputmode="numeric" enterkeyhint="done" value="0" aria-label="屋齡">
+          </div>
+          <div class="vw-frow">
+            <label class="vw-flab" for="vw-f-floor">樓層</label>
+            <input id="vw-f-floor" name="vw-floor" inputmode="numeric" enterkeyhint="done" value="0" aria-label="樓層">
+          </div>
+          <div class="vw-frow">
+            <span class="vw-flab" id="vw-flab-bath">衛浴套數</span>
+            <div class="vw-chips" id="vw-f-bath" role="group" aria-labelledby="vw-flab-bath">
+              <button type="button" class="vw-chip" data-g="bath" data-v="0">0</button>
+              <button type="button" class="vw-chip" data-g="bath" data-v="1">1</button>
+              <button type="button" class="vw-chip" data-g="bath" data-v="2">2</button>
+              <button type="button" class="vw-chip" data-g="bath" data-v="3">3</button>
+              <button type="button" class="vw-chip" data-g="bath" data-v="4">4</button>
+              <button type="button" class="vw-chip" data-g="bath" data-v="5">5</button>
+              <button type="button" class="vw-chip" data-g="bath" data-v="6">6</button>
+            </div>
+          </div>
+        </div>
+        <div class="vw-frow">
+          <span class="vw-flab" id="vw-flab-elev">電梯</span>
+          <div class="vw-chips" id="vw-f-elevator" role="group" aria-labelledby="vw-flab-elev">
+            <button type="button" class="vw-chip" data-g="elevator" data-v="1">有電梯</button>
+            <button type="button" class="vw-chip" data-g="elevator" data-v="0">沒有電梯</button>
+          </div>
+        </div>
+        <div class="vw-frow">
+          <span class="vw-flab" id="vw-flab-wall">牆面狀況</span>
+          <div class="vw-chips" id="vw-f-wall" role="group" aria-labelledby="vw-flab-wall">
+            <button type="button" class="vw-chip" data-g="wall" data-v="A">良好</button>
+            <button type="button" class="vw-chip" data-g="wall" data-v="B">普通</button>
+            <button type="button" class="vw-chip" data-g="wall" data-v="C">差</button>
+          </div>
+        </div>
+      </section>
     </div>
     <div class="vw-body" id="vw-result" hidden></div>
     <div class="vw-foot"><button type="button" class="btn ghost" id="vw-report"><svg class="bi" aria-hidden="true"><use href="#i-flag"/></svg>回報聽錯的字</button><button type="button" class="btn ghost" id="vw-end">直接看整理結果</button></div>
@@ -1794,7 +1872,7 @@ img, svg, canvas, video { max-width: 100%; height: auto; }
       headers["X-Shifu-Plan"] = plan;
       res = await fetch(proxyEndpoint("/v1/asr/quota"), { headers, signal: opts && opts.signal });
     } catch (e) {
-      throw makeErr("upstream_error", "無法查詢雅婷剩餘次數，請稍後再試。");
+      throw makeErr("upstream_error", "無法查詢台語辨識剩餘次數，請稍後再試。");
     }
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data.ok === false) {
@@ -1828,7 +1906,7 @@ img, svg, canvas, video { max-width: 100%; height: auto; }
       });
     } catch (e) {
       if (opts && opts.signal && opts.signal.aborted) throw makeErr("cancelled", "已取消辨識。");
-      throw makeErr("upstream_error", "無法連線到雅婷代理，請改用瀏覽器辨識。");
+      throw makeErr("upstream_error", "無法連線到台語辨識代理，請改用瀏覽器辨識。");
     }
     const data = await res.json().catch(() => ({}));
     if ((!res.ok && res.status !== 202) || data.ok === false) {
@@ -1867,7 +1945,7 @@ img, svg, canvas, video { max-width: 100%; height: auto; }
       last = data;
       if (!data.pending && (data.text != null || data.status === "completed")) return data;
     }
-    const err = makeErr("timeout", "雅婷辨識逾時，請再試一次或改用瀏覽器辨識。");
+    const err = makeErr("timeout", "台語辨識逾時，請再試一次或改用瀏覽器辨識。");
     if (last && last.remaining != null) err.remaining = last.remaining;
     throw err;
   }
@@ -5290,7 +5368,7 @@ const isNan = () => false;   // 小精靈一律用國語文字
 function speak(){}
 // 介面文字：國語／台語（台語用漢字、簡短親切）
 const TX = {
-  zh:{hi:"嗨，我是報價小精靈，問你幾個問題就好。", done:"整理好了，請看一下，沒問題就按套用到估價單。", again:"這邊我沒聽清楚，可以再說一次嗎？", ok:"好，我記下來了。"},
+  zh:{hi:"嗨，我是報價小精靈。先勾選下面的基本資料，施工內容用講的或打字都可以。", done:"整理好了，請看一下，沒問題就按套用到估價單。", again:"這邊我沒聽清楚，可以再說一次嗎？", ok:"好，我記下來了。"},
 };
 const tx = k => TX.zh[k];
 
@@ -5393,15 +5471,98 @@ const VQ = [
 ];
 const vw = {idx:0, fields:{}, items:{}, unclear:[], log:[], rawNow:"", base:"", rec:null, listening:false, busy:false};
 const vwStatus = (t, err) => { const m=$("#vw-status"); m.textContent = t; m.classList.toggle("err", !!err); };
+const VW_PROG = "勾選基本資料，再說施工內容";
+const VW_WALL_FROM = {A:"良好",B:"普通",C:"差"};
+const VW_BASICS_HELP = "下面的案場基本資料用勾選或填寫就好，不用講出來。";
+function vwSetChip(group, value){
+  document.querySelectorAll(`#vw-basics .vw-chip[data-g="${group}"]`).forEach(c=>{
+    const on = String(c.dataset.v)===String(value);
+    c.classList.toggle("on", on);
+    c.setAttribute("aria-pressed", String(on));
+  });
+}
+function vwChipVal(group, fallback){
+  const on = document.querySelector(`#vw-basics .vw-chip[data-g="${group}"].on`);
+  return on ? on.dataset.v : fallback;
+}
+function vwFillBasicsForm(){
+  const citySel = $("#vw-f-city");
+  if (citySel){
+    const cur = citySel.dataset.userSet==="1" ? citySel.value : (jobCity() || "");
+    citySel.innerHTML = ['<option value="">（請選縣市）</option>'].concat(cityFeeRows().map(c=>`<option value="${escH(c.city)}">${escH(c.city)}</option>`)).join("");
+    if (cur && [...citySel.options].some(o=>o.value===cur)) citySel.value = cur;
+    else if (!cur && ($("#region")||{}).value==="台北市" && [...citySel.options].some(o=>o.value==="臺北市")) citySel.value = "臺北市";
+    citySel.dataset.userSet = "0";
+  }
+  const regionSel = $("#vw-f-region");
+  if (regionSel){
+    regionSel.innerHTML = REGION_KEYS.map(r=>`<option value="${escH(r)}">${escH(r)}</option>`).join("");
+    const rv = ($("#region")||{}).value;
+    regionSel.value = REGION_KEYS.includes(rv) ? rv : (vwDetectRegion((citySel&&citySel.value)||"") || REGION_KEYS[0]);
+  }
+  const scopeBox = $("#vw-f-scope");
+  if (scopeBox){
+    const keys = ["all","carpentry","plumbing_electrical","painting"].concat(Object.keys(EXTRA_TRADES||{}));
+    scopeBox.innerHTML = keys.map(k=>{
+      const pro = !!(EXTRA_TRADES && EXTRA_TRADES[k]);
+      return `<button type="button" class="vw-chip" data-g="scope" data-v="${k}"${pro?' data-pro="1"':""}${pro && !isPro()?" hidden":""}>${escH(SCOPE_SHORT[k]||k)}</button>`;
+    }).join("");
+  }
+  vwSetChip("scope", state.scope||"all");
+  vwSetChip("remote", state.remoteType||"city");
+  vwSetChip("elevator", ($("#lift")||{}).checked ? "1" : "0");
+  const wallBtn = document.querySelector("#wall button.on");
+  vwSetChip("wall", (wallBtn && wallBtn.dataset.w) || state.wall || "B");
+  const bathN = ($("#bath-n")||{}).value;
+  vwSetChip("bath", (bathN!=null && bathN!=="") ? String(bathN) : String(state.bathN!=null?state.bathN:1));
+  if ($("#vw-f-ping")) $("#vw-f-ping").value = ($("#area")&&$("#area").value!=="" ? $("#area").value : "28");
+  if ($("#vw-f-age")) $("#vw-f-age").value = ($("#age")&&$("#age").value!=="" ? $("#age").value : "32");
+  if ($("#vw-f-floor")) $("#vw-f-floor").value = ($("#floor")&&$("#floor").value!=="" ? $("#floor").value : "4");
+}
+function vwCollectBasics(){
+  const city = ($("#vw-f-city")||{}).value || "";
+  const region = ($("#vw-f-region")||{}).value || vwDetectRegion(city) || "";
+  const pingRaw = $("#vw-f-ping") ? String($("#vw-f-ping").value||"").trim() : "";
+  const ageRaw = $("#vw-f-age") ? String($("#vw-f-age").value||"").trim() : "";
+  const floorRaw = $("#vw-f-floor") ? String($("#vw-f-floor").value||"").trim() : "";
+  const elev = vwChipVal("elevator", ($("#lift")||{}).checked ? "1" : "0");
+  const wallKey = vwChipVal("wall", "B");
+  const bath = vwChipVal("bath", "1");
+  const scope = vwChipVal("scope", state.scope||"all");
+  const ping = pingRaw==="" ? null : Number(pingRaw);
+  const age = ageRaw==="" ? null : Number(ageRaw);
+  const floor = floorRaw==="" ? null : Number(floorRaw);
+  Object.assign(vw.fields, {
+    region,
+    site: city,
+    remoteType: vwChipVal("remote","city"),
+    ping: (ping!=null && Number.isFinite(ping)) ? ping : vw.fields.ping,
+    age: (age!=null && Number.isFinite(age)) ? age : vw.fields.age,
+    floor: (floor!=null && Number.isFinite(floor)) ? floor : vw.fields.floor,
+    elevator: elev==="1",
+    wall: VW_WALL_FROM[wallKey] || "普通",
+    bathN: Number.isFinite(+bath) ? +bath : vw.fields.bathN,
+    scope: scope
+  });
+  return vw.fields;
+}
+function vwApplyFormFields(){
+  const note = vw.fields.scopeNote;
+  vwCollectBasics();
+  if (note) vw.fields.scopeNote = note;
+}
 function vwRenderQ(sayIt, prefix){
+  vw.idx = VQ.length - 1;
   const Q = VQ[vw.idx];
   $("#vw-ask").hidden = false; $("#vw-result").hidden = true;
-  $("#vw-prog").textContent = `第 ${vw.idx+1}／${VQ.length} 題`;
+  $("#vw-prog").textContent = VW_PROG;
   $("#vw-q").textContent = Q.q();
-  $("#vw-help").hidden = !Q.help; $("#vw-help").textContent = Q.help || "";
+  const help = [Q.help || "", VW_BASICS_HELP].filter(Boolean).join("");
+  $("#vw-help").hidden = !help; $("#vw-help").textContent = help;
   vwCdCancel(); $("#vw-text").value = ""; vw.rawNow = ""; vw.base = ""; vw.termHits = []; $("#vw-terms").hidden = true; $("#vw-terms").innerHTML = "";
-  if (!SR) vwStatus("這台裝置的瀏覽器不支援語音辨識，請直接在下面打字回答。");
-  else vwStatus(voiceCfg.micMode==="tap" ? "點一下麥克風開始說，說完再點一下停止；也可以直接打字。" : "按住麥克風說話，說完放開；短按一下則改成點一下開始、再點一下停止。也可以直接打字。");
+  vwFillBasicsForm();
+  if (!SR) vwStatus("這台裝置的瀏覽器不支援語音辨識，請直接在下面打字回答施工內容。");
+  else vwStatus(voiceCfg.micMode==="tap" ? "點一下麥克風開始說施工內容，說完再點一下停止；也可以直接打字，打字不會扣辨識次數。" : "按住麥克風說施工內容，說完放開；短按一下則改成點一下開始、再點一下停止。也可以直接打字，打字不會扣辨識次數。");
   if (sayIt) speak([prefix, Q.q()].filter(Boolean).join(" "));
 }
 function vwOpen(){
@@ -5419,6 +5580,20 @@ function vwClose(){
 }
 $("#vw-open").addEventListener("click", vwOpen);
 $("#vw-close").addEventListener("click", vwClose);
+if ($("#vw-basics") && !$("#vw-basics").dataset.bound){
+  $("#vw-basics").dataset.bound = "1";
+  $("#vw-basics").addEventListener("click", e=>{
+    const chip = e.target.closest(".vw-chip");
+    if (!chip || !$("#vw-basics").contains(chip)) return;
+    e.preventDefault();
+    vwSetChip(chip.dataset.g, chip.dataset.v);
+  });
+  if ($("#vw-f-city")) $("#vw-f-city").addEventListener("change", ()=>{
+    $("#vw-f-city").dataset.userSet = "1";
+    const r = vwDetectRegion($("#vw-f-city").value);
+    if (r && $("#vw-f-region")) $("#vw-f-region").value = r;
+  });
+}
 document.addEventListener("keydown", e=>{ if (e.key==="Escape" && !$("#vw").hidden) vwClose(); });
 function vwStopRec(){ vw._stopRec = true; if (vw.yating){ vwStopYating(); return; } if (vw.rec){ try { vw.rec.stop(); } catch (e) {} } }
 const MIC_TXT = {idle:()=>voiceCfg.micMode==="tap" ? "點一下開始說" : "按住說話", listen:()=>vw.tapMode ? "正在聽…再點一下停止" : "正在聽…", proc:()=>"辨識中…"};
@@ -5582,10 +5757,10 @@ async function vwRefreshYatingQuota(){
     vw.yatingRemain = rem; vw.yatingLimit = lim;
     if (nEl) nEl.textContent = String(rem);
     if (box){ box.disabled = rem<=0; if (rem<=0) box.checked = false; }
-    if (hint){ hint.textContent = rem<=0 ? "本月雅婷辨識次數已用完，已改用瀏覽器辨識。" : ""; hint.classList.toggle("err", rem<=0); }
+    if (hint){ hint.textContent = rem<=0 ? "本月台語辨識次數已用完，已改用瀏覽器辨識。" : ""; hint.classList.toggle("err", rem<=0); }
   } catch (e) {
     if (nEl) nEl.textContent = "—";
-    if (hint){ hint.textContent = "暫時查不到剩餘次數，仍可嘗試雅婷；失敗會改用瀏覽器辨識。"; hint.classList.remove("err"); }
+    if (hint){ hint.textContent = "暫時查不到剩餘次數，仍可嘗試台語辨識；失敗會改用瀏覽器辨識。"; hint.classList.remove("err"); }
   }
 }
 function vwApplyYatingQuota(q){
@@ -5595,24 +5770,24 @@ function vwApplyYatingQuota(q){
   const nEl = $("#vw-yating-n"), box = $("#vw-yating"), hint = $("#vw-yating-hint");
   if (nEl && vw.yatingRemain!=null) nEl.textContent = String(vw.yatingRemain);
   if (box && vw.yatingRemain!=null){ box.disabled = vw.yatingRemain<=0; if (vw.yatingRemain<=0) box.checked = false; }
-  if (hint && vw.yatingRemain!=null && vw.yatingRemain<=0){ hint.textContent = "本月雅婷辨識次數已用完，已改用瀏覽器辨識。"; hint.classList.add("err"); }
+  if (hint && vw.yatingRemain!=null && vw.yatingRemain<=0){ hint.textContent = "本月台語辨識次數已用完，已改用瀏覽器辨識。"; hint.classList.add("err"); }
 }
 function micBeginYating(src){
   if (vw.yatingRemain!=null && vw.yatingRemain<=0){
     const box = $("#vw-yating"); if (box) box.checked = false;
-    vwStatus("本月雅婷辨識次數已用完，改用瀏覽器辨識。");
+    vwStatus("本月台語辨識次數已用完，改用瀏覽器辨識。");
     return micBegin(src);
   }
   if (!window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
     const box = $("#vw-yating"); if (box) box.checked = false;
-    vwStatus("這個瀏覽器不能錄音給雅婷，改用瀏覽器辨識。");
+    vwStatus("這個瀏覽器不能錄音給台語辨識，改用瀏覽器辨識。");
     return micBegin(src);
   }
   micErrHide();
   releaseMicStream();
   vw._stopRec = false;
   vw.yatingBusy = true;
-  micDbg(`${src}：雅婷錄音`);
+  micDbg(`${src}：台語辨識錄音`);
   navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
     if (vw._stopRec){ try { stream.getTracks().forEach(t=>t.stop()); } catch (e) {} vw.yatingBusy = false; return; }
     const types = ["audio/mp4","audio/aac","audio/webm;codecs=opus","audio/webm"];
@@ -5627,7 +5802,7 @@ function micBeginYating(src){
     try { rec.start(250); } catch (e) { try { stream.getTracks().forEach(t=>t.stop()); } catch (er) {} throw e; }
     vw.yating.timer = setTimeout(()=>{ if (vw.micState==="listen" && vw.yating) micEnd("已滿 30 秒"); }, 30000);
     vwMicUI("listen");
-    vwStatus("雅婷錄音中…說完請放開，或再點一下停止。");
+    vwStatus("台語辨識錄音中…說完請放開，或再點一下停止。");
     showMicPerm();
   }).catch(e=>{
     vw.yatingBusy = false;
@@ -5635,7 +5810,7 @@ function micBeginYating(src){
     micErrShow(k, e && (e.message||e.name));
     const box = $("#vw-yating"); if (box) box.checked = false;
     vwMicUI("idle");
-    vwStatus("無法開啟麥克風給雅婷，已改用瀏覽器辨識或請直接打字。", true);
+    vwStatus("無法開啟麥克風給台語辨識，已改用瀏覽器辨識或請直接打字。", true);
   });
   vwMicUI("listen");
   return true;
@@ -5653,7 +5828,7 @@ function vwStopYating(){
     setTimeout(done, 1500);
   });
   vw.yatingBusy = true;
-  vwMicUI("proc"); vwStatus("雅婷辨識中…");
+  vwMicUI("proc"); vwStatus("台語辨識中…");
   finished.then(async ()=>{
     try { y.stream && y.stream.getTracks().forEach(t=>t.stop()); } catch (e) {}
     const blob = new Blob(y.chunks||[], {type: y.mime || "audio/webm"});
@@ -5673,7 +5848,7 @@ function vwStopYating(){
         vwCdStart();
       } else {
         vwMicUI("idle");
-        vwStatus("雅婷沒有辨識到文字。請再按一次麥克風改用瀏覽器辨識，或直接打字。");
+        vwStatus("台語辨識沒有辨識到文字。請再按一次麥克風改用瀏覽器辨識，或直接打字。");
         const box = $("#vw-yating"); if (box) box.checked = false;
       }
     } catch (e) {
@@ -5682,7 +5857,7 @@ function vwStopYating(){
       if (e && e.remaining!=null) vwApplyYatingQuota(e);
       else if (e && e.code==="quota_exceeded") vwRefreshYatingQuota();
       const box = $("#vw-yating"); if (box) box.checked = false;
-      const why = (e && e.code==="quota_exceeded") ? "本月雅婷辨識次數已用完" : "雅婷辨識沒有成功";
+      const why = (e && e.code==="quota_exceeded") ? "本月台語辨識次數已用完" : "台語辨識沒有成功";
       vwStatus(why + "，已改用瀏覽器辨識。請再按一次麥克風，或直接打字。", true);
     }
   });
@@ -5862,7 +6037,7 @@ function vwPrompt(answer){
 7. 只回覆一個 JSON 物件：{"fields":{"region":null,"ping":null,"age":null,"floor":null,"elevator":null,"wall_condition":null},"items":[{"code":"E-009","name":"嵌燈開孔安裝","quantity":8,"unit":"盞","confidence":"高","needs_confirm":false}],"unclear":[],"reply":"…"}
 
 目前工種：${SCOPE_TITLE[state.scope]}（只能列這個工種的工項）
-現在問的是第 ${vw.idx+1} 題：「${Q.q()}」。主要抽這題的資訊，師傅順便講到的其他欄位或工項也要抽。${Q.k==="scope"?"\n這題是自由描述施工內容：把提到的工程整理成 items（只能用單價庫代碼與單位），單價庫沒有的寫進 unclear 並註明請師傅確認；不可新增代碼、不可提到或新增任何價格。原文會由系統存成施工內容摘要／備註。":""}
+現在只要整理師傅描述的施工內容（案場基本資料已在畫面上勾選，不必從這段話抽地區、坪數、屋齡、樓層、電梯、牆面）。主要抽出工項。${Q.k==="scope"?"\n這題是自由描述施工內容：把提到的工程整理成 items（只能用單價庫代碼與單位），單價庫沒有的寫進 unclear 並註明請師傅確認；不可新增代碼、不可提到或新增任何價格。原文會由系統存成施工內容摘要／備註。":""}
 已經整理好的資料：${JSON.stringify(have)}
 
 【工地術語對照表】（版本 ${terms.version}）
@@ -6025,16 +6200,15 @@ async function vwAskAI(answer){
 async function vwFinishAnswer(answer, r, aiNote){
   vw.log.push({q:VQ[vw.idx].q(), raw:vw.rawNow, final:answer, local:!!(r&&r.local), aiNote:aiNote||""});
   vwMerge(r, answer);
-  if (r && r.site) vw.fields.site = r.site;
-  if (r && r.remoteType) vw.fields.remoteType = r.remoteType;
   if (VQ[vw.idx] && VQ[vw.idx].k==="scope"){
     const note = String(answer||"").replace(/\s+/g," ").trim();
     if (note) vw.fields.scopeNote = note;
   }
   if (r && r.scopeNote) vw.fields.scopeNote = String(r.scopeNote).replace(/\s+/g," ").trim() || vw.fields.scopeNote;
+  vwApplyFormFields();
   const reply = String(r && r.reply || "").trim() || (vw.unclear.length ? tx("again") : tx("ok"));
   const box = $("#vw-reply"); box.hidden = false;
-  const note = aiNote ? `<p class="hint" id="vw-ai-note">本機規則已整理，可繼續下一題。AI：${escH(aiNote)}</p>` : "";
+  const note = aiNote ? `<p class="hint" id="vw-ai-note">本機規則已整理施工內容。AI：${escH(aiNote)}</p>` : "";
   box.innerHTML = `<b>小精靈：</b>${escH(reply)}${vw.unclear.length ? `<ul>${vw.unclear.map(u=>`<li>${escH(u)}</li>`).join("")}</ul>` : ""}${note}`;
   // AI 成功且需要追問時才停在本題；AI 失敗時一定往下走，不卡死
   if (!aiNote && vw.unclear.length){
@@ -6050,15 +6224,20 @@ window.__vwLocalParse = vwLocalParse;
 window.__vwCdStart = vwCdStart;
 window.__vwCdCancel = vwCdCancel;
 window.__vwRefreshYatingQuota = vwRefreshYatingQuota;
-window.__vwMeta = () => ({count:VQ.length, last:(VQ[VQ.length-1]&&VQ[VQ.length-1].q())||"", lastKey:(VQ[VQ.length-1]&&VQ[VQ.length-1].k)||"", keys:VQ.map(q=>q.k)});
+window.__vwMeta = () => ({count:1, last:(VQ[VQ.length-1]&&VQ[VQ.length-1].q())||"", lastKey:(VQ[VQ.length-1]&&VQ[VQ.length-1].k)||"", keys:["scope"], mode:"basics_form", voiceKeys:["scope"], formKeys:["scope","city","region","remote","ping","age","floor","elevator","wall","bath"]});
 window.__vwGoto = k => { const i = typeof k==="number" ? k : VQ.findIndex(q=>q.k===k); if (i>=0 && i<VQ.length){ vw.idx=i; vwRenderQ(false,""); } };
 window.__vwFields = () => ({fields:{...vw.fields}, items:Object.values(vw.items), unclear:vw.unclear.slice()});
 $("#vw-send").addEventListener("click", async ()=>{
   vwCdCancel();
   if (vw.busy) return;
   vwStopRec();
+  vwCollectBasics();
   const answer = vwApplyTerms().trim();
-  if (!answer){ vwStatus("還沒有內容，可以按麥克風說，或直接打字；不知道就按「跳過」。", true); return; }
+  if (!answer){
+    vw.log.push({q:VQ[vw.idx].q(), raw:vw.rawNow, final:"（未填施工內容）"});
+    vwShowResult();
+    return;
+  }
   vw.busy = true; $("#vw-send").disabled = true; vwStatus("小精靈整理中…");
   let r = null, aiNote = "";
   try {
@@ -6093,6 +6272,8 @@ function vwShowResult(prefix){
       ${row("floor","樓層", `<input data-v="floor" inputmode="numeric" value="${F.floor ?? ""}">`, F.floor!=null)}
       ${row("elevator","電梯", `<select data-v="elevator"><option value="1"${F.elevator===true?" selected":""}>有電梯</option><option value="0"${F.elevator===false?" selected":""}>沒有電梯</option></select>`, typeof F.elevator==="boolean")}
       ${row("wall","牆面狀況", `<select data-v="wall">${["良好","普通","差"].map(w=>`<option${(F.wall||"普通")===w?" selected":""}>${w}</option>`).join("")}</select>`, !!F.wall)}
+      ${row("scope","工種", `<select data-v="scope">${Object.keys(SCOPE_SHORT).filter(k=>!EXTRA_TRADES[k]||isPro()).map(k=>`<option value="${k}"${(F.scope||state.scope)===k?" selected":""}>${SCOPE_SHORT[k]}</option>`).join("")}</select>`, !!F.scope)}
+      ${row("bath","衛浴套數", `<select data-v="bath">${[0,1,2,3,4,5,6].map(n=>`<option value="${n}"${Number(F.bathN)===n?" selected":""}>${n}</option>`).join("")}</select>`, F.bathN!=null && F.bathN!==undefined)}
     </div>
     <div class="vw-card"><b>工項清單（${items.length}）</b>
       ${items.length ? items.map(it=>`<div class="vw-it"><label class="vw-itl"><input type="checkbox" data-code="${it.code}"${it.quantity && !it.needs_confirm ? " checked" : ""}><span><b>${escH(it.name)}</b><small>${it.code}・信心 ${it.confidence}</small></span></label>
@@ -6123,6 +6304,8 @@ $("#vw-result").addEventListener("click", e=>{
   if (on("floor") && +val("floor")>0){ $("#floor").value = Math.round(+val("floor")); fire("#floor"); nF++; }
   if (on("elevator")){ $("#lift").checked = val("elevator")==="1"; fire("#lift"); nF++; }
   if (on("wall")){ const b = $(`#wall [data-w="${WALL_TO[val("wall")]}"]`); if (b) b.click(); nF++; }
+  if (on("scope")){ const sc = val("scope"); const b = $(`#scope [data-s="${sc}"]`); if (b){ if (b.dataset.s!==state.scope) b.click(); nF++; } }
+  if (on("bath")){ if ($("#bath-n")){ $("#bath-n").value = String(val("bath")||0); fire("#bath-n","change"); nF++; } }
   if (on("scopeNote")){
     const t = String(val("scopeNote")||"").replace(/\s+/g," ").trim();
     state.scopeNote = t;
