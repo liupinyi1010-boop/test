@@ -720,6 +720,9 @@ body.modal-on{overflow:hidden}
 .mic-err p{margin:6px 0;font-size:17px}
 .mic-err .mic-tip{font-size:18px}
 .mic-err .mic-detail{font-size:13px;color:var(--muted);word-break:break-all}
+.mic-err .mic-type{margin-top:8px}
+.mic-err .mic-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 6px}
+.mic-err .mic-actions .btn{flex:1 1 140px;text-align:center;justify-content:center}
 
 /* 按住說話 */
 .vw-mic{position:relative;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;transition:transform .12s ease,background .12s ease}
@@ -817,6 +820,20 @@ header.top .brand{background:var(--hdr-veil);border-radius:14px;padding:4px 6px}
 .q-sum tr.grand td{color:var(--qtot,var(--qp));font-size:13.5px}
 .q-sum-note{margin:4px 0 0;font-size:11.5px;color:#555}
 .q-pgbreak{margin:18px 0 8px;padding-top:8px;border-top:2px dashed #bbb;font-weight:700;color:var(--qti,var(--qp))}
+
+/* 摺疊的提示區：不容易估價、現勘提醒、待確認 */
+details.fold > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:40px}
+details.fold > summary::-webkit-details-marker{display:none}
+details.fold > summary h2{display:flex;align-items:center;gap:8px;margin:0;flex:1 1 auto}
+details.fold .fold-n{font-weight:400;color:var(--muted);font-size:.95em}
+details.fold .fold-arrow{margin-left:auto;transition:transform .15s;color:var(--muted)}
+details.fold[open] .fold-arrow{transform:rotate(90deg)}
+.contact-h{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.contact-line{margin:0;font-size:17px}
+.site-footer{margin:36px 0 0;padding:20px 0 8px;border-top:1px solid var(--line);width:100%}
+.site-footer .contact-h{font-size:18px;font-weight:700;color:var(--ink)}
+.site-footer .contact-line{color:var(--muted);font-size:16px}
+@media (max-width:480px){.site-footer{margin-top:28px;padding-top:16px}.site-footer .contact-line{font-size:15px}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol><symbol id="i-sheet" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="M8.5 11h7M8.5 15h5"/></symbol><symbol id="i-plan" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h7v9M14 3v6h7"/></symbol><symbol id="i-helper" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 20 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></symbol><symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v3.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V15"/></symbol><symbol id="i-export" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M4 15v3.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V15"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 5h6a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H3z"/><path d="M21 5h-6a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H21z"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 0 1 3 3L8 18.5z"/><path d="M13.5 7l3 3"/></symbol><symbol id="i-wood" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M3 12h18M9 6v6M15 12v6"/></symbol><symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v4"/></symbol><symbol id="i-brush" viewBox="0 0 24 24"><path d="M7 3h10v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><path d="M7 7h10"/><path d="M12 12v3"/><rect x="10.5" y="15" width="3" height="6" rx="1.5"/></symbol><symbol id="i-helmet" viewBox="0 0 24 24"><path d="M3 17.5h18"/><path d="M5 17.5a7 7 0 0 1 14 0"/><path d="M10 11V6.5h4V11"/><path d="M4 17.5V20h16v-2.5"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></symbol><symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol><symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><path d="M7.5 8h.01"/></symbol></svg>
@@ -997,24 +1014,14 @@ header.top .brand{background:var(--hdr-veil);border-radius:14px;padding:4px 6px}
     </div>
   </section>
 
-  <section class="panel step-card helper" id="sec-helper" aria-labelledby="h-helper">
-        <div class="helper-h"><h2 class="step-h" id="h-helper"><span class="step-no" aria-hidden="true">6</span><span class="step-t"><small>第 6 步</small>估價小幫手</span></h2><span class="chip ok">只有你看得到・不會出現在估價單</span></div>
-        <p class="lock-note lock-big" data-lock hidden><svg class="bi" aria-hidden="true"><use href="#i-lock"/></svg><span><b>估價小幫手只有進階方案（NT$700/月）開通</b>小幫手會檢查漏項、數量是否合理、哪些要現勘。到「設定」把方案切到進階方案即可使用。</span></p>
-        <div class="helper-bar pro-body" data-pro>
-          <button class="btn" id="hp-run"><svg class="bi" aria-hidden="true"><use href="#i-helper"/></svg>小幫手檢查</button>
-          <button class="btn ghost" id="hp-stop" hidden>停止</button>
-          <button class="btn ghost" id="hp-copy"><svg class="bi" aria-hidden="true"><use href="#i-copy"/></svg>送給估價客服檢查</button>
-          <label class="hp-auto"><input type="checkbox" id="hp-auto" checked> 產生／匯出時自動檢查</label>
-        </div>
-        <p class="hp-msg" id="hp-msg" aria-live="polite">勾選或修改工項後，可按「小幫手檢查」看看有沒有漏項、數量是否合理、哪些要現勘。</p>
-        <div id="hp-out" class="hp-out" hidden></div>
-        <textarea id="hp-copytext" class="copy" hidden readonly aria-label="送給估價客服的文字"></textarea>
-      </section>
+  <div id="hp-stub" hidden aria-hidden="true"><button type="button" id="hp-run"></button><button type="button" id="hp-stop"></button><button type="button" id="hp-copy"></button><input type="checkbox" id="hp-auto"><p id="hp-msg"></p><div id="hp-out"></div><textarea id="hp-copytext"></textarea></div>
 
   <section class="panel" id="sec-hard" aria-labelledby="h-hard">
-    <h2 id="h-hard"><span class="itile sm" aria-hidden="true"><svg><use href="#i-book"/></svg></span>不容易估價的項目</h2>
-    <p class="hint">這些項目系統只給區間或加預備金，並在估價單上標示「需現勘」。勾選第 4 步的條件會自動套用對應規則。</p>
-    <div class="hard" id="hard"></div>
+    <details class="fold hard-fold">
+      <summary><h2 id="h-hard"><span class="itile sm" aria-hidden="true"><svg><use href="#i-book"/></svg></span>不容易估價的項目<span class="fold-n" id="hard-n"></span><span class="fold-arrow" aria-hidden="true">▸</span></h2></summary>
+      <p class="hint">這些項目系統只給區間或加預備金，並在估價單上標示「需現勘」。勾選第 4 步的條件會自動套用對應規則。</p>
+      <div class="hard" id="hard"></div>
+    </details>
   </section>
 
   <div class="plans-wrap" id="sec-plans">
@@ -1026,9 +1033,14 @@ header.top .brand{background:var(--hdr-veil);border-radius:14px;padding:4px 6px}
       <div class="planc" data-plan-card="basic"><h3>基本方案</h3><div class="price">NT$500<small> / 月（含稅）</small></div>
         <ul><li>估價單不限張數</li><li>選工種、套範本、語音報價小精靈</li><li>圖面分析、燈具選項</li><li>匯出 Excel／PDF／圖片（系統預設格式）</li><li>難估項目自動提醒</li><li>單價行情定期更新</li></ul></div>
       <div class="planc hl" data-plan-card="pro"><h3>進階方案 <span class="chip acc">推薦</span></h3><div class="price">NT$700<small> / 月（含稅）</small></div>
-        <ul><li>基本方案全部功能，再加：</li><li>微調單價與係數（利潤倍數、牆面倍數、燈具單價、手動改價）</li><li>估價小幫手</li><li>更換公司 LOGO／公司章</li><li>上傳並套用顧客估價單格式</li><li>不適用免費試用</li></ul></div>
+        <ul><li>基本方案全部功能，再加：</li><li>微調單價與係數（利潤倍數、牆面倍數、燈具單價、手動改價）</li><li>更換公司 LOGO／公司章</li><li>上傳並套用顧客估價單格式</li><li>不適用免費試用</li></ul></div>
     </div>
   </div>
+
+  <footer class="site-footer" id="sec-contact" aria-labelledby="h-contact">
+    <h2 class="contact-h" id="h-contact"><span class="itile sm" aria-hidden="true"><svg><use href="#i-helper"/></svg></span>客服聯繫</h2>
+    <p class="contact-line">客服聯絡方式：（待補）</p>
+  </footer>
 </div>
 
 <div class="modal" id="plan-modal" role="dialog" aria-modal="true" aria-labelledby="h-plan" hidden>
@@ -1059,14 +1071,14 @@ header.top .brand{background:var(--hdr-veil);border-radius:14px;padding:4px 6px}
     <div class="modal-head"><span class="itile sm" aria-hidden="true"><svg><use href="#i-gear"/></svg></span><b id="h-set">師傅設定</b><button type="button" class="vw-x" id="set-close" aria-label="關閉設定"><svg class="bi" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="set-group">
       <div class="fld"><label>方案（測試用切換，不會付款）</label><div class="seg" id="plan-seg"><button data-plan="basic">基本方案 NT$500/月</button><button data-plan="pro">進階方案 NT$700/月</button></div></div>
-      <p class="hint">基本方案不能使用：微調單價與係數、估價小幫手、更換公司章、顧客估價單格式。</p>
+      <p class="hint">基本方案不能使用：微調單價與係數、更換公司章、顧客估價單格式。</p>
     </div>
     
     <div class="set-group" id="ai-key-group">
       <div class="fld"><label for="ai-key">AI 金鑰（選填）</label>
         <input id="ai-key" type="password" autocomplete="off" spellcheck="false" placeholder="貼上後只存在這台裝置的瀏覽器">
       </div>
-      <p class="hint">圖面分析、報價小精靈、估價小幫手、顧客格式學習需要 AI 金鑰才會運作。金鑰只存在本機 localStorage，不會上傳到估價通伺服器，也不會寫進網頁檔。</p>
+      <p class="hint">圖面分析、報價小精靈、顧客格式學習需要 AI 金鑰才會運作。金鑰只存在本機 localStorage，不會上傳到估價通伺服器，也不會寫進網頁檔。</p>
       <button type="button" class="btn ghost" id="ai-key-clear">清除 AI 金鑰</button>
     </div>
 <div class="set-group">
@@ -3428,7 +3440,7 @@ function render(){
     meta:{qno:$("#qno").textContent, cust:$("#cust").value.trim(), date:$("#m-date").textContent, exp:$("#m-exp").textContent,
       region:$("#region").value, floor, lift, area, age, bath:bathText(), remote:!!state.remote, wall:WALL_LABEL[state.wall], scope:state.scope, title:SCOPE_TITLE[state.scope]}};
   if (noLines) $("#copybox").hidden = true;
-  $("#risk").innerHTML = `<b>現勘提醒</b><ul>${flags.map(f=>`<li>${f}</li>`).join("")}</ul>`;
+  $("#risk").innerHTML = `<details class="fold"${riskOpen ? " open" : ""}><summary><b>現勘提醒</b><span class="fold-n">（${flags.length} 項）</span><span class="fold-arrow" aria-hidden="true">▸</span></summary><ul>${flags.map(f=>`<li>${f}</li>`).join("")}</ul></details>`;
 
   state._text = [`【${SCOPE_TITLE[state.scope]}】${$("#qno").textContent}`, `客戶：${$("#m-cust").textContent}　案場：${$("#m-site").textContent}`, `估價日期：${$("#m-date").textContent}　有效期限：${$("#m-exp").textContent}`, "",
     ...Object.keys(TRADES).flatMap(k=>vis.filter(l=>ITEMS[l.code].trade===k && !(l.needQty && !(l.qty>0)))).map(l=>{const it=ITEMS[l.code]; return `${TRADES[it.trade]}｜${it.item}　${fq(billQty(it.unit, l.qty))} ${it.unit}`;}), "",
@@ -3612,12 +3624,32 @@ for (const h of DB.hard_to_estimate){
   if (h.item==="拆除後隱蔽工程") h.system_approach = "屋齡 30 年以上時提示「建議加列」，由客戶勾選「加列隱蔽工程預備金（10%）」，不自動加入";
   if (h.item==="牆面平整度/批土次數") h.system_approach = "客戶依「怎麼判斷？」說明選擇牆面狀況（良好／普通／差），油漆牆面與天花工項乘牆面倍數；「差」另加全面批土";
 }
+$("#hard-n").textContent = `（${DB.hard_to_estimate.length} 項）`;
 $("#hard").innerHTML = DB.hard_to_estimate.map(h=>`<details class="h"><summary><span class="chip warn">${h.trade}</span>${h.item}</summary>
   <dl><dt>為什麼難估</dt><dd>${h.why}</dd><dt>價格變數</dt><dd>${h.variables}</dd><dt>系統做法</dt><dd>${h.system_approach}</dd><dt>計價方式</dt><dd>${h.pricing}</dd><dt>風險預備</dt><dd>${h.contingency}</dd></dl></details>`).join("");
 
-// ----- 估價小幫手（只給師傅看；結果不進入客戶估價單、複製文字或任何匯出檔）
+
+// ----- 待確認、缺項、圖面差異等提示區：預設摺疊，只顯示標題與數量
+const foldOpen = new Set();
+function foldConfirms(root){
+  (root || document).querySelectorAll("div.ai-confirm:not([data-folded])").forEach(div=>{
+    const b = div.querySelector(":scope > b"); if (!b) return;
+    const title = b.textContent.replace(/（\d+）/, "").trim(), n = div.querySelectorAll("li").length;
+    const det = document.createElement("details"); det.className = "ai-confirm fold"; det.dataset.folded = "1";
+    if (foldOpen.has(title)) det.open = true;
+    const sum = document.createElement("summary");
+    sum.innerHTML = `<b>${escH(title)}</b><span class="fold-n">（${n} 項）</span><span class="fold-arrow" aria-hidden="true">▸</span>`;
+    b.remove(); det.appendChild(sum); while (div.firstChild) det.appendChild(div.firstChild);
+    det.addEventListener("toggle", ()=>{ if (det.open) foldOpen.add(title); else foldOpen.delete(title); });
+    div.replaceWith(det);
+  });
+}
+new MutationObserver(()=>foldConfirms()).observe(document.body, {childList:true, subtree:true});
+document.addEventListener("toggle", e=>{ if (e.target.closest && e.target.closest("#risk")) riskOpen = e.target.open; }, true);
+// ----- 估價小幫手（已取消；保留程式不執行）
 let aiInfo = null;
 let planResetHook = null;
+let riskOpen = false;   // 現勘提醒展開狀態
 let summaryHook = null;   // 顧客格式模組提供：總表資料（沒有總表時為 null）
 let sheetFmtHook = null;   // 顧客格式模組提供：Excel 用欄位／總表／明細（系統格式時為 null）   // 圖面分析模組提供：改用範本時重設已套用狀態   // 圖面分析模組會提供：需現勘、單價庫缺項、差異、待確認
 const HP_AUTO_KEY = "shifu-estimate-helper-auto-v1";
@@ -3764,6 +3796,7 @@ async function runHelper(auto){
 }
 // 產生或匯出估價單時自動跑一次（同一份估價單不重複跑）
 function helperAuto(){
+  return;   // 估價小幫手已取消
   if (!isPro()) return;
   if (!$("#hp-auto").checked || hp.running) return;
   setTimeout(()=>{
@@ -4048,7 +4081,7 @@ function vwOpen(){
   Object.assign(vw, {idx:0, fields:{}, items:{}, unclear:[], log:[], busy:false});
   $("#vw-reply").hidden = true; $("#vw-reply").textContent = "";
   $("#vw").hidden = false; document.body.classList.add("vw-on");
-  micErrHide(); showMicPerm(); vwRenderQ(true, tx("hi"));
+  micErrHide(); showMicPerm(); vwMicOpenHint(); vwRenderQ(true, tx("hi"));
   { const box = $("#vw-reply"); box.hidden = false; box.innerHTML = `<b>小精靈：</b>${escH(tx("hi"))}`; }
   setTimeout(()=>$("#vw-mic").focus(), 50);
 }
@@ -4068,8 +4101,28 @@ function vwMicUI(st){
   const b=$("#vw-mic"); b.classList.toggle("on", st==="listen"); b.classList.toggle("proc", st==="proc"); b.setAttribute("aria-pressed", String(st==="listen"));
   $("#vw-mic-t").textContent = MIC_TXT[st]();
 }
-// ----- 麥克風授權：在點擊事件內先用 getUserMedia 觸發瀏覽器詢問，取得後立刻關掉，再開語音辨識
+// ----- 麥克風授權與環境（語音辨識不要跟 getUserMedia 搶麥克風）
 const inFrame = (()=>{ try { return window.self !== window.top; } catch (e) { return true; } })();
+function micEnv(){
+  const ua = navigator.userAgent || "";
+  const inApp = /Line\/|FBAN|FBAV|FB_IAB|Instagram|SamsungBrowser/i.test(ua);
+  const android = /Android/i.test(ua);
+  const ios = /iPhone|iPad|iPod/i.test(ua);
+  const kind = /Line\//i.test(ua) ? "LINE" : /FBAN|FBAV|FB_IAB/i.test(ua) ? "Facebook" : /Instagram/i.test(ua) ? "Instagram" : /SamsungBrowser/i.test(ua) ? "Samsung Internet" : /CriOS/i.test(ua) ? "Chrome iOS" : /FxiOS|Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : (/Safari/i.test(ua) && !/Chrome|Chromium|CriOS|Android/i.test(ua)) ? "Safari" : /Chrome|CriOS|Chromium/i.test(ua) ? "Chrome" : "其他瀏覽器";
+  const label = [kind, android ? "Android" : ios ? "iOS" : "", inApp ? "內建瀏覽器" : "", inFrame ? "iframe" : ""].filter(Boolean).join(" ");
+  return {ua, inApp, android, ios, kind, label};
+}
+function micChromeIntent(){
+  const path = `${location.host}${location.pathname}${location.search}${location.hash}`;
+  return `intent://${path}#Intent;scheme=https;package=com.android.chrome;end`;
+}
+function micOpenBtns(){
+  const env = micEnv();
+  return `<div class="mic-actions">${env.android ? `<a class="btn acc" data-mic-act="chrome" href="${escH(micChromeIntent())}">用 Chrome 開啟</a>` : ""}<button type="button" class="btn ghost" data-mic-act="copy">複製網址</button></div>`;
+}
+function micTech(detail){
+  return [detail, micEnv().label, (navigator.userAgent || "").slice(0, 180)].filter(Boolean).join(" ｜ ");
+}
 function micPolicyAllowed(){
   try { const pp = document.permissionsPolicy || document.featurePolicy; if (pp && typeof pp.allowsFeature==="function") return pp.allowsFeature("microphone"); } catch (e) {}
   return null; // 無法得知
@@ -4091,21 +4144,31 @@ function micErrShow(kind, detail){
   const steps = `<ol><li>點網址列左邊的<b>鎖頭</b>（或「網站設定」圖示）</li><li>找到<b>麥克風</b></li><li>改成<b>允許</b></li><li><b>重新整理</b>這個頁面，再按一次麥克風</li></ol>`;
   const frameTip = `<p class="mic-tip"><b>請用瀏覽器直接開啟這個網頁（不要嵌在其他網站裡）再試。</b>目前估價通開在內嵌頁面裡，瀏覽器可能不讓它使用麥克風。</p>`;
   const typing = `<p class="mic-type">也可以直接在下面的框框<b>打字回答</b>，一樣能估價。</p>`;
+  const suggest = `<p>請用 <b>Chrome（Android）</b> 或 <b>Safari（iPhone）</b> 開啟本網址。電腦請用 Chrome 或 Edge。Firefox 沒有語音辨識。</p>`;
+  const noserviceBody = `<p>這個瀏覽器沒有提供語音辨識，請用 Chrome（Android）或 Safari（iPhone）開啟本網址。</p>${suggest}${micOpenBtns()}`;
+  const env = micEnv();
+  const inAppName = env.inApp ? env.kind : "";
   const M = {
-    blocked: `<h4>麥克風被擋住了</h4>${micPolicyAllowed()===false ? frameTip : steps + (inFrame ? frameTip : "")}`,
+    blocked: `<h4>麥克風被擋住了</h4><p>請允許這個網站使用麥克風：</p>${micPolicyAllowed()===false ? frameTip : steps + (inFrame ? frameTip : "")}`,
     frame: `<h4>麥克風被擋住了</h4>${frameTip}`,
     nomic: `<h4>找不到麥克風</h4><p>這台裝置沒有偵測到麥克風。請接上耳機麥克風，或檢查系統設定裡的麥克風是否開啟。</p>`,
     busy: `<h4>麥克風正被其他程式使用</h4><p>請關掉正在用麥克風的程式（例如視訊通話）再試一次。</p>`,
     nospeech: `<h4>沒有聽到聲音</h4><p>請靠近手機一點、大聲一點，再按一次麥克風。</p>`,
-    network: `<h4>語音辨識需要網路</h4><p>現在連不上語音服務，請確認網路後再試。</p>`,
+    network: `<h4>語音辨識需要網路</h4><p>Chrome 的語音辨識需要連上網路（送到語音服務）。請確認網路後再試，或直接打字回答。</p>`,
     insecure: `<h4>這個開啟方式不能用麥克風</h4><p>瀏覽器只允許在安全連線（https）下使用麥克風。</p>${inFrame ? frameTip : ""}`,
-    nosr: `<h4>這個瀏覽器不支援語音辨識</h4><p>建議改用 Chrome 或 Safari。</p>`,
-    other: `<h4>麥克風無法啟動</h4><p>請再試一次。</p>`
+    nosr: `<h4>這個瀏覽器不支援語音辨識</h4>${suggest}${micOpenBtns()}`,
+    noservice: `<h4>這個瀏覽器沒有提供語音辨識</h4>${noserviceBody}`,
+    inapp: `<h4>請換瀏覽器開啟</h4><p>目前是在${inAppName ? `「${escH(inAppName)}」的` : ""}內建瀏覽器裡，通常沒有語音辨識。</p>${noserviceBody}`,
+    other: `<h4>麥克風無法啟動</h4><p>請再試一次。若一直失敗，請改用 Chrome（Android）或 Safari（iPhone），或直接打字。</p>`
   };
-  box.innerHTML = (M[kind] || M.other) + (detail ? `<p class="mic-detail">技術訊息：${escH(detail)}</p>` : "") + typing;
+  box.innerHTML = (M[kind] || M.other) + (detail ? `<p class="mic-detail">技術訊息：${escH(micTech(detail))}</p>` : "") + typing;
   box.hidden = false; box.dataset.kind = kind;
 }
 const micErrHide = () => { const b=$("#mic-err"); b.hidden = true; b.innerHTML = ""; delete b.dataset.kind; };
+function vwMicOpenHint(){
+  if (!SR){ micErrShow("nosr"); vwStatus("這台裝置的瀏覽器不支援語音辨識，請直接在下面打字回答。", true); return; }
+  if (micEnv().inApp){ micErrShow("inapp"); vwStatus("這個內建瀏覽器通常不能語音辨識，請用 Chrome 或 Safari 開啟，或直接打字。", true); }
+}
 function gumKind(e){
   const n = e && e.name;
   if (micPolicyAllowed()===false) return "frame";   // 內嵌頁面的權限政策擋住時，瀏覽器回傳的錯誤名稱不一定是 NotAllowedError
@@ -4115,17 +4178,40 @@ function gumKind(e){
   if (n==="NotReadableError" || n==="TrackStartError") return "busy";
   return "other";
 }
-// 在點擊事件內呼叫（不可先 await 其他東西）
+// 測試麥克風專用。辨識路徑不要呼叫 getUserMedia（Android Chrome 上會跟 SpeechRecognition 搶麥克風，出現 service-not-allowed）
+let micGumStream = null, micGumSeq = 0, micRecWanted = false;
+function releaseMicStream(){
+  micRecWanted = true;
+  const s = micGumStream; micGumStream = null;
+  if (s){ try { s.getTracks().forEach(t=>{ try { t.stop(); } catch (e) {} }); } catch (e) {} }
+  try { if (vw._micCtx){ vw._micCtx.close && vw._micCtx.close(); vw._micCtx = null; } } catch (e) {}
+}
 function requestMic(){
   if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.reject(Object.assign(new Error("mediaDevices unavailable"), {name:"InsecureContext"}));
-  return navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{ stream.getTracks().forEach(t=>t.stop()); return true; });
+  const seq = ++micGumSeq; micRecWanted = false;
+  return navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    if (seq !== micGumSeq || micRecWanted){ try { stream.getTracks().forEach(t=>t.stop()); } catch (e) {} return true; }
+    micGumStream = stream;
+    try { stream.getTracks().forEach(t=>t.stop()); } catch (e) {}
+    micGumStream = null;
+    return true;
+  });
 }
 const micLog = (...a) => { try { console.info("[估價通 麥克風]", ...a); } catch (e) {} };
 $("#mic-test").addEventListener("click", ()=>{
-  const p = requestMic(); // 先在點擊事件內發出請求
+  const p = requestMic(); // 只做授權測試；測完立刻關軌道，不要留給語音辨識
   $("#mic-perm").textContent = "麥克風：檢查中…";
   p.then(async ()=>{ micErrHide(); await showMicPerm("・測試成功，可以開始說"); micLog("getUserMedia ok"); },
     async e=>{ const k = e.name==="InsecureContext" ? "insecure" : gumKind(e); micLog("getUserMedia error", e.name, e.message, "policy:", micPolicyAllowed(), "iframe:", inFrame); micErrShow(k, `${e.name||"Error"}${e.message ? "：" + e.message : ""}`); await showMicPerm("・測試失敗"); });
+});
+$("#mic-err").addEventListener("click", e=>{
+  const b = e.target.closest("[data-mic-act]"); if (!b) return;
+  if (b.dataset.micAct==="copy"){
+    const url = location.href, label = "複製網址";
+    const done = ok => { b.textContent = ok ? "已複製網址" : "複製失敗，請手動複製網址列"; setTimeout(()=>{ b.textContent = label; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(()=>done(true), ()=>done(false));
+    else { try { const t=document.createElement("textarea"); t.value=url; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); done(true); } catch (err) { done(false); } }
+  }
 });
 // ----- 按住說話、放開停止（短按或設定成點擊模式時：點一下開始、再點一下停止）
 const micLogLines = [];
@@ -4140,19 +4226,17 @@ vw.micState = "idle"; vw.tapMode = false; vw.downAt = 0; vw.pid = null;
 function micBegin(src){
   if (vw.micState!=="idle"){ micDbg(`${src}：已在${vw.micState==="listen"?"聽":"辨識"}，不重複開始`); return false; }
   if (!SR){ micErrShow("nosr"); micDbg(`${src}：瀏覽器沒有語音辨識`); vwStatus("這台裝置的瀏覽器不支援語音辨識，請直接在下面打字回答。", true); return false; }
+  if (vw.rec){   // 不可在同一拍 abort()+start()，請使用者再按一次
+    const old = vw.rec; vw.rec = null;
+    try { old.onstart = old.onaudiostart = old.onresult = old.onerror = old.onend = null; old.abort(); } catch (e) {}
+    micDbg(`${src}：上一筆辨識尚未結束，請再按一次`); vwMicUI("idle");
+    vwStatus("上一筆語音辨識還沒結束，請再按一次麥克風。", true); return false;
+  }
   micErrHide();
-  // 兩個都在使用者事件內同步呼叫：getUserMedia 觸發授權詢問、recognition.start() 開始聽
-  let gp; try { gp = requestMic(); } catch (e) { gp = Promise.reject(e); }
-  micDbg(`${src}：呼叫 getUserMedia`);
-  gp.then(()=>{ micDbg("getUserMedia 成功，已關閉測試音訊"); showMicPerm(); },
-    e=>{ const k = e.name==="InsecureContext" ? "insecure" : gumKind(e);
-      micDbg(`getUserMedia 錯誤：${e.name||"Error"}${e.message ? " " + e.message : ""}`);
-      micErrShow(k, `${e.name||"Error"}${e.message ? "：" + e.message : ""}`); showMicPerm();
-      if (vw.rec){ try { vw.rec.abort(); } catch (er) {} }
-      vwMicUI("idle");
-      vwStatus(k==="nomic" ? "找不到麥克風，請直接在下面打字回答。" : "麥克風無法使用，請照下面的說明處理，或直接打字回答。", true); });
-  const ok = startRec();
-  if (ok){ vwMicUI("listen"); try { navigator.vibrate && navigator.vibrate(40); } catch (e) {} }
+  releaseMicStream();   // 若「測試麥克風」還留著音訊軌道，先關掉再開始辨識
+  micDbg(`${src}：同步開始語音辨識（不呼叫 getUserMedia）`);
+  const ok = startRec();   // 必須在使用者點擊／按住手勢裡同步呼叫，不可先 await
+  if (ok){ vwMicUI("listen"); try { navigator.vibrate && navigator.vibrate(40); } catch (e) {} showMicPerm(); }
   return ok;
 }
 function micEnd(src){
@@ -4213,7 +4297,7 @@ function startRec(){
   let rec;
   try { rec = new SR(); } catch (e) { micDbg(`建立語音辨識失敗：${e.name||e}`); micErrShow("nosr", e && e.message); return false; }
   vw.rec = rec;
-  rec.lang = "zh-TW"; rec.interimResults = true; rec.continuous = true;
+  rec.lang = "zh-TW"; rec.interimResults = true; rec.continuous = true;   // 不設定 processLocally／phrases 等新屬性
   vw.base = $("#vw-text").value ? $("#vw-text").value.trim() + " " : "";
   let finals = "";
   rec.onstart = () => micDbg("語音辨識 onstart");
@@ -4225,7 +4309,8 @@ function startRec(){
   };
   rec.onerror = ev => {
     const c = ev.error; micDbg(`語音辨識 onerror：${c}${ev.message ? " " + ev.message : ""}`);
-    if (c==="not-allowed" || c==="service-not-allowed"){ micErrShow(micPolicyAllowed()===false ? "frame" : "blocked", `SpeechRecognition：${c}`); vwStatus("麥克風被擋住了，請照下面的說明處理，或直接打字回答。", true); showMicPerm(); }
+    if (c==="not-allowed"){ micErrShow(micPolicyAllowed()===false ? "frame" : "blocked", `SpeechRecognition：${c}`); vwStatus("麥克風被擋住了，請照下面的說明允許麥克風，或直接打字回答。", true); showMicPerm(); }
+    else if (c==="service-not-allowed"){ micErrShow(micPolicyAllowed()===false ? "frame" : "noservice", `SpeechRecognition：${c}`); vwStatus("這個瀏覽器沒有提供語音辨識，請用 Chrome 或 Safari 開啟，或直接打字。", true); showMicPerm(); }
     else if (c==="no-speech"){ micErrShow("nospeech"); vwStatus("沒有聽到聲音，請再按住麥克風說一次，或直接打字。", true); }
     else if (c==="audio-capture"){ micErrShow("nomic", "SpeechRecognition：audio-capture"); vwStatus("找不到麥克風，請直接在下面打字回答。", true); }
     else if (c==="network"){ micErrShow("network"); vwStatus("語音辨識需要網路，現在連不上，請直接打字回答。", true); }
