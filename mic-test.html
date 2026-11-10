@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>語音辨識診斷</title>
+<style>
+  :root { --bg:#f4f1ea; --card:#fff; --text:#1c1917; --muted:#57534e; --line:#e7e5e4; --acc:#b45309; --ok:#047857; --bad:#b91c1c; --btn:#1c1917; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Helvetica Neue", sans-serif; font-size:17px; line-height:1.45; }
+  main { max-width: 640px; margin:0 auto; padding:16px 16px 48px; }
+  h1 { font-size:1.45rem; margin:8px 0 4px; }
+  h2 { font-size:1.05rem; margin:20px 0 8px; }
+  .sub, .note, .feat { color:var(--muted); font-size:.92rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin:10px 0; }
+  .feat p { margin:4px 0; word-break:break-all; }
+  .feat b { color:var(--text); }
+  .ok { color:var(--ok); } .bad { color:var(--bad); }
+  .btns { display:flex; flex-direction:column; gap:10px; }
+  button { appearance:none; -webkit-appearance:none; width:100%; min-height:52px; padding:12px 14px; border:0; border-radius:12px; background:var(--btn); color:#fff; font:inherit; font-weight:650; text-align:left; cursor:pointer; }
+  button:active { opacity:.85; }
+  button.secondary { background:#fff; color:var(--text); border:1px solid var(--line); }
+  button.stop { background:var(--bad); }
+  button .k { display:inline-block; min-width:1.6em; color:#fbbf24; }
+  button small { display:block; font-weight:500; font-size:.82rem; opacity:.85; margin-top:2px; }
+  button.secondary small { opacity:.75; color:var(--muted); }
+  button.secondary .k { color:var(--acc); }
+  #log { white-space:pre-wrap; word-break:break-word; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:.82rem; line-height:1.4; max-height:50vh; overflow:auto; background:#1c1917; color:#f5f5f4; border-radius:12px; padding:12px; min-height:180px; }
+  #log .err { color:#fda4af; } #log .ok { color:#6ee7b7; } #log .meta { color:#a8a29e; }
+  audio { width:100%; margin-top:8px; }
+  a { color:var(--acc); }
+  ol { padding-left:1.3em; margin:8px 0; }
+  li { margin:4px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>語音辨識診斷</h1>
+  <p class="sub">給 iPhone Chrome／Safari 比對用。每個按鈕是一種開始方式，事件會寫在下面的紀錄裡。音訊不會上傳到任何伺服器。</p>
+
+  <div class="card feat" id="feat">載入中…</div>
+
+  <h2>測試按鈕</h2>
+  <div class="btns">
+    <button type="button" data-t="A"><span class="k">A</span> 舊版 v48 流程<small>getUserMedia 不等候，立刻 start；continuous=true、interimResults=true、zh-TW（與 repo-upload-v48-backup 相同）</small></button>
+    <button type="button" data-t="B"><span class="k">B</span> 只呼叫 start()<small>webkitSpeechRecognition；continuous=false、interimResults=false、zh-TW</small></button>
+    <button type="button" data-t="C"><span class="k">C</span> 同 B，但不設 lang<small>webkitSpeechRecognition；continuous=false、interimResults=false、不設 lang</small></button>
+    <button type="button" data-t="D"><span class="k">D</span> lang 設為 cmn-Hant-TW<small>webkitSpeechRecognition；continuous=false、interimResults=false</small></button>
+    <button type="button" data-t="E"><span class="k">E</span> 先等 getUserMedia，關軌道再 start<small>await 之後才 start，已離開點擊手勢</small></button>
+    <button type="button" data-t="F"><span class="k">F</span> getUserMedia 保持開啟再 start<small>音訊軌道不關，再開始辨識</small></button>
+    <button type="button" data-t="G"><span class="k">G</span> 未加前綴的 SpeechRecognition<small>若這個建構函式不存在會直接記在紀錄裡</small></button>
+    <button type="button" data-t="H"><span class="k">H</span> MediaRecorder 錄 5 秒並播放<small>確認麥克風本身有沒有聲音（不上傳）</small></button>
+    <button type="button" class="stop" id="btn-stop">停止目前測試</button>
+    <button type="button" class="secondary" id="btn-copy">複製結果</button>
+    <button type="button" class="secondary" id="btn-clear">清除紀錄</button>
+  </div>
+  <div id="player-wrap" hidden class="card"><b>錄到的聲音（僅在這支手機播放）</b><audio id="player" controls playsinline></audio></div>
+
+  <h2>紀錄</h2>
+  <pre id="log"></pre>
+
+  <h2>已知情況（查過的資料）</h2>
+  <div class="card note">
+    <p>Chrome iOS（CriOS，例如 157）是用 Apple 的 WKWebView，不是 Android 那套 Google 語音服務。頁面上通常看得到 <code>webkitSpeechRecognition</code>，但真正辨識要靠 iOS 的 Speech 框架。</p>
+    <p>WebKit 錯誤 <a href="https://bugs.webkit.org/show_bug.cgi?id=239816">239816</a>（2022，Google 工程師回報）：Safari 可以用 Web Speech API，其他內嵌 WKWebView 的 App 若 Info.plist 沒有 <code>NSSpeechRecognitionUsageDescription</code>，<code>start()</code> 會得到 <b>service-not-allowed</b>。這和麥克風「已允許」是兩件事；<b>not-allowed</b> 才是麥克風權限被擋。</p>
+    <p>Can I Use：Safari on iOS 14.5–26.6 對語音辨識是部分支援；沒有單獨的「Chrome iOS」列，因為 CriOS 跟 WebKit 走同一條路。Chrome 157 在桌面／Android 是部分支援，不能代表 iPhone Chrome 一定能用。</p>
+    <p>若 Chrome 已加上語音辨識說明字串，還要在系統設定打開「語音辨識」。請在這支 iPhone 檢查：</p>
+    <ol>
+      <li>設定 → Chrome → 打開「麥克風」<b>以及</b>「語音辨識」（兩個都要開）</li>
+      <li>設定 → 隱私權與安全性 → 語音辨識 → Chrome 要開啟</li>
+      <li>設定 → 一般 → 鍵盤 → 聽寫：可先關掉再開一次</li>
+    </ol>
+    <p>來源：<a href="https://support.google.com/chrome/answer/2693767?co=GENIE.Platform%3DiOS">Google Chrome 說明（iPhone 麥克風）</a>；Chrome 社群 2026-08 回覆亦寫需同時開啟 Microphone 與 Speech Recognition。</p>
+    <p>若以上都開了、這頁 A～G 仍然全部 service-not-allowed，而 Safari 同一個頁面可以辨識，就比較像是目前這版 Chrome App 仍未開放網頁語音辨識給 WKWebView，網頁端改 start 順序或語言也修不了。可用的後備：把游標放進輸入框，用<b>鍵盤的麥克風聽寫</b>（不走 Web Speech API），或用 Safari 開啟。</p>
+  </div>
+</main>
+<script>
+(function(){
+  const logEl = document.getElementById("log");
+  const featEl = document.getElementById("feat");
+  const player = document.getElementById("player");
+  const playerWrap = document.getElementById("player-wrap");
+  let rec = null, liveStream = null, mediaRec = null, recTimer = null, objectUrl = null;
+  const lines = [];
+
+  const pad = n => String(n).padStart(2,"0");
+  function ts(){
+    const d = new Date();
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${String(d.getMilliseconds()).padStart(3,"0")}`;
+  }
+  function add(msg, cls){
+    const line = `${ts()}  ${msg}`;
+    lines.push(line);
+    const s = document.createElement("span");
+    if (cls) s.className = cls;
+    s.textContent = line + "\n";
+    logEl.appendChild(s);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  const info = m => add(m, "meta");
+  const ok = m => add(m, "ok");
+  const err = m => add(m, "err");
+
+  function stopAll(reason){
+    if (recTimer){ clearTimeout(recTimer); recTimer = null; }
+    if (rec){
+      try { rec.onstart = rec.onaudiostart = rec.onresult = rec.onerror = rec.onend = rec.onspeechend = null; } catch(e){}
+      try { rec.abort(); } catch(e){}
+      rec = null;
+    }
+    if (mediaRec && mediaRec.state !== "inactive"){
+      try { mediaRec.stop(); } catch(e){}
+    }
+    mediaRec = null;
+    if (liveStream){
+      try { liveStream.getTracks().forEach(t => t.stop()); } catch(e){}
+      liveStream = null;
+      info("已關閉 getUserMedia 音訊軌道" + (reason ? "（"+reason+"）" : ""));
+    }
+  }
+
+  function requestMicV48(){
+    // Exact copy of repo-upload-v48-backup requestMic
+    if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+      return Promise.reject(Object.assign(new Error("mediaDevices unavailable"), {name:"InsecureContext"}));
+    return navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
+      stream.getTracks().forEach(t => t.stop());
+      return true;
+    });
+  }
+
+  function wireRec(r, tag){
+    r.onstart = () => ok(`[${tag}] onstart`);
+    r.onaudiostart = () => ok(`[${tag}] onaudiostart`);
+    r.onspeechstart = () => ok(`[${tag}] onspeechstart`);
+    r.onspeechend = () => info(`[${tag}] onspeechend`);
+    r.onsoundstart = () => info(`[${tag}] onsoundstart`);
+    r.onsoundend = () => info(`[${tag}] onsoundend`);
+    r.onnomatch = () => info(`[${tag}] onnomatch`);
+    r.onresult = ev => {
+      const parts = [];
+      for (let i = 0; i < ev.results.length; i++){
+        const res = ev.results[i];
+        const t = res[0] && res[0].transcript;
+        parts.push(`${res.isFinal?"最終":"暫定"}「${t||""}」`);
+      }
+      ok(`[${tag}] onresult ${parts.join("；") || "（無文字）"}`);
+    };
+    r.onerror = ev => {
+      err(`[${tag}] onerror ${ev.error||"?"}${ev.message ? " — "+ev.message : ""}`);
+    };
+    r.onend = () => {
+      info(`[${tag}] onend`);
+      rec = null;
+    };
+  }
+
+  function startWith(Ctor, tag, opts){
+    if (!Ctor){ err(`[${tag}] 沒有這個建構函式`); return false; }
+    let r;
+    try { r = new Ctor(); }
+    catch(e){ err(`[${tag}] new 失敗：${e.name||e} ${e.message||""}`); return false; }
+    rec = r;
+    if (opts.lang !== undefined && opts.lang !== null) r.lang = opts.lang;
+    if (opts.continuous != null) r.continuous = opts.continuous;
+    if (opts.interimResults != null) r.interimResults = opts.interimResults;
+    info(`[${tag}] 設定 lang=${r.lang||"（未設）"} continuous=${r.continuous} interimResults=${r.interimResults} ctor=${Ctor.name||"(anonymous)"}`);
+    wireRec(r, tag);
+    try {
+      r.start();
+      ok(`[${tag}] start() 已呼叫`);
+      return true;
+    } catch(e){
+      err(`[${tag}] start() 丟出例外：${e.name||e} ${e.message||""}`);
+      rec = null;
+      return false;
+    }
+  }
+
+  const webkitSR = window.webkitSpeechRecognition || null;
+  const plainSR = window.SpeechRecognition || null;
+  const anySR = plainSR || webkitSR;
+
+  async function run(tag){
+    add(`—— 開始測試 ${tag} ——`);
+    stopAll("換測試");
+    if (tag==="A"){
+      // Exact v48-backup voice start: GUM not awaited, then start; continuous=true, zh-TW
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+      if (!SR){ err("[A] 沒有 SpeechRecognition / webkitSpeechRecognition"); return; }
+      let gp;
+      try { gp = requestMicV48(); info("[A] getUserMedia() 已呼叫（未等候）"); }
+      catch(e){ gp = Promise.reject(e); err(`[A] getUserMedia 同步失敗：${e.name||e}`); }
+      gp.then(()=> ok("[A] getUserMedia 成功，已關閉測試音訊"),
+        e => err(`[A] getUserMedia 錯誤：${e.name||"Error"}${e.message?"："+e.message:""}`));
+      const recLocal = (()=>{ try { return new SR(); } catch(e){ err(`[A] 建立失敗：${e.name||e}`); return null; } })();
+      if (!recLocal) return;
+      rec = recLocal;
+      rec.lang = "zh-TW"; rec.interimResults = true; rec.continuous = true;
+      info("[A] 設定 lang=zh-TW continuous=true interimResults=true（v48-backup 原文）");
+      wireRec(rec, "A");
+      try { rec.start(); ok("[A] start() 已呼叫（與 getUserMedia 同一手勢、未 await）"); }
+      catch(e){ err(`[A] start() 丟出例外：${e.name||e} ${e.message||""}`); rec=null; }
+      return;
+    }
+    if (tag==="B"){
+      startWith(webkitSR, "B", {lang:"zh-TW", continuous:false, interimResults:false});
+      return;
+    }
+    if (tag==="C"){
+      startWith(webkitSR, "C", {lang:null, continuous:false, interimResults:false});
+      return;
+    }
+    if (tag==="D"){
+      startWith(webkitSR, "D", {lang:"cmn-Hant-TW", continuous:false, interimResults:false});
+      return;
+    }
+    if (tag==="E"){
+      info("[E] 開始 await getUserMedia…");
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ err("[E] 沒有 getUserMedia"); return; }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        stream.getTracks().forEach(t => t.stop());
+        ok("[E] getUserMedia 成功，軌道已關閉");
+      } catch(e){ err(`[E] getUserMedia 失敗：${e.name||e} ${e.message||""}`); return; }
+      info("[E] 現在呼叫 start()（已離開使用者手勢）");
+      startWith(anySR, "E", {lang:"zh-TW", continuous:true, interimResults:true});
+      return;
+    }
+    if (tag==="F"){
+      info("[F] await getUserMedia，軌道保持開啟…");
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ err("[F] 沒有 getUserMedia"); return; }
+      try {
+        liveStream = await navigator.mediaDevices.getUserMedia({audio:true});
+        const tracks = liveStream.getAudioTracks().map(t => `${t.label||"未命名"} readyState=${t.readyState} muted=${t.muted}`).join(", ");
+        ok("[F] getUserMedia 成功，軌道仍開啟：" + (tracks || "（無軌道）"));
+      } catch(e){ err(`[F] getUserMedia 失敗：${e.name||e} ${e.message||""}`); return; }
+      info("[F] 軌道仍開著，現在 start()");
+      startWith(anySR, "F", {lang:"zh-TW", continuous:true, interimResults:true});
+      return;
+    }
+    if (tag==="G"){
+      if (!plainSR){ err("[G] window.SpeechRecognition（未加前綴）不存在"); return; }
+      startWith(plainSR, "G", {lang:"zh-TW", continuous:false, interimResults:false});
+      return;
+    }
+    if (tag==="H"){
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ err("[H] 沒有 getUserMedia"); return; }
+      if (typeof MediaRecorder === "undefined"){ err("[H] 沒有 MediaRecorder"); return; }
+      try {
+        liveStream = await navigator.mediaDevices.getUserMedia({audio:true});
+        ok("[H] getUserMedia 成功，開始錄 5 秒（不上傳）");
+      } catch(e){ err(`[H] getUserMedia 失敗：${e.name||e} ${e.message||""}`); return; }
+      const chunks = [];
+      let mime = "";
+      for (const t of ["audio/mp4","audio/webm;codecs=opus","audio/webm","audio/aac"]){
+        if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)){ mime = t; break; }
+      }
+      try { mediaRec = mime ? new MediaRecorder(liveStream, {mimeType:mime}) : new MediaRecorder(liveStream); }
+      catch(e){ err(`[H] 建立 MediaRecorder 失敗：${e.name||e}`); stopAll("MediaRecorder 失敗"); return; }
+      info(`[H] MediaRecorder mime=${mediaRec.mimeType||mime||"預設"}`);
+      mediaRec.ondataavailable = ev => { if (ev.data && ev.data.size) chunks.push(ev.data); };
+      mediaRec.onerror = ev => err(`[H] MediaRecorder 錯誤：${(ev.error && ev.error.name) || ev.type}`);
+      mediaRec.onstop = () => {
+        ok(`[H] 錄音結束，片段 ${chunks.length} 個`);
+        if (liveStream){ try { liveStream.getTracks().forEach(t=>t.stop()); } catch(e){} liveStream=null; }
+        if (!chunks.length){ err("[H] 沒有錄到資料"); return; }
+        const blob = new Blob(chunks, {type: mediaRec && mediaRec.mimeType || mime || "audio/mp4"});
+        info(`[H] Blob ${blob.size} bytes，只在本機播放`);
+        if (objectUrl) try { URL.revokeObjectURL(objectUrl); } catch(e){}
+        objectUrl = URL.createObjectURL(blob);
+        player.src = objectUrl;
+        playerWrap.hidden = false;
+        player.play().then(()=> ok("[H] 開始播放"), e => info("[H] 請按播放鍵聽（自動播放可能被擋）"));
+        mediaRec = null;
+      };
+      try { mediaRec.start(); ok("[H] MediaRecorder.start()"); }
+      catch(e){ err(`[H] MediaRecorder.start() 失敗：${e.name||e} ${e.message||""}`); stopAll("start 失敗"); return; }
+      recTimer = setTimeout(()=>{
+        recTimer = null;
+        if (mediaRec && mediaRec.state!=="inactive"){ try { mediaRec.stop(); } catch(e){} }
+      }, 5000);
+    }
+  }
+
+  async function detect(){
+    const ua = navigator.userAgent || "";
+    let perm = "permissions API 不可用";
+    if (navigator.permissions && navigator.permissions.query){
+      try { perm = (await navigator.permissions.query({name:"microphone"})).state; }
+      catch(e){ perm = "query(microphone) 失敗：" + (e.message||e.name||e); }
+    }
+    let speechPerm = "無此 API";
+    if (navigator.permissions && navigator.permissions.query){
+      for (const name of ["speech-recognition","speechRecognition"]){
+        try { speechPerm = name + "：" + (await navigator.permissions.query({name})).state; break; }
+        catch(e){ speechPerm = name + " 不可查（" + (e.name||"") + ")"; }
+      }
+    }
+    const rows = [
+      ["User-Agent", ua],
+      ["isSecureContext", String(!!window.isSecureContext)],
+      ["location.protocol", location.protocol],
+      ["window.SpeechRecognition", typeof window.SpeechRecognition],
+      ["window.webkitSpeechRecognition", typeof window.webkitSpeechRecognition],
+      ["mediaDevices.getUserMedia", !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)],
+      ["MediaRecorder", typeof MediaRecorder],
+      ["permissions.microphone", perm],
+      ["permissions.speech-recognition", speechPerm]
+    ];
+    featEl.innerHTML = rows.map(([k,v]) => {
+      const bad = (k.includes("SpeechRecognition") && v==="undefined") || (k==="isSecureContext" && v==="false");
+      return `<p><b>${k}：</b><span class="${bad?"bad":""}">${escapeHtml(v)}</span></p>`;
+    }).join("");
+    const header = rows.map(([k,v]) => `${k}: ${v}`).join("\n");
+    lines.push("===== 功能偵測 =====", header, "===== 事件紀錄 =====");
+    logEl.textContent = "";
+    info("功能偵測已寫入。請依序按 A～H（建議在 iPhone Chrome 與 Safari 各做一輪），再按「複製結果」。");
+  }
+  function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+
+  document.querySelectorAll("button[data-t]").forEach(b => {
+    b.addEventListener("click", ev => { ev.preventDefault(); run(b.getAttribute("data-t")); });
+  });
+  document.getElementById("btn-stop").addEventListener("click", () => { info("使用者按了停止"); stopAll("使用者停止"); });
+  document.getElementById("btn-clear").addEventListener("click", () => { lines.length=0; logEl.textContent=""; detect(); });
+  document.getElementById("btn-copy").addEventListener("click", async () => {
+    const text = lines.join("\n");
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(text);
+      else { const t=document.createElement("textarea"); t.value=text; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+      ok("已複製全部紀錄，可以貼到訊息給我。");
+    } catch(e){ err("複製失敗："+(e.message||e)+"，請長按紀錄手動複製。"); }
+  });
+  detect();
+})();
+</script>
+</body>
+</html>

@@ -4111,8 +4111,8 @@ function micErrShow(kind, detail){
     network: `<h4>語音辨識需要網路</h4><p>Chrome 的語音辨識需要連上網路（送到語音服務）。請確認網路後再試，或直接打字回答。</p>`,
     insecure: `<h4>這個開啟方式不能用麥克風</h4><p>瀏覽器只允許在安全連線（https）下使用麥克風。</p>${inFrame ? frameTip : ""}`,
     nosr: `<h4>這個瀏覽器不支援語音辨識</h4><p>請用 <b>Chrome（Android）</b> 或 <b>Safari（iPhone）</b> 開啟本網址。電腦請用 Chrome 或 Edge。Firefox 沒有語音辨識。</p>${micOpenBtns()}`,
-    nosvc: `<h4>這個瀏覽器沒有提供語音辨識</h4><p>這個瀏覽器沒有提供語音辨識，請用 Chrome（Android）或 Safari（iPhone）開啟本網址。</p><p>請用 <b>Chrome（Android）</b> 或 <b>Safari（iPhone）</b> 開啟本網址。電腦請用 Chrome 或 Edge。Firefox 沒有語音辨識。</p>${micOpenBtns()}`,
-    inapp: `<h4>請換瀏覽器開啟</h4><p>目前是在${micEnv().inApp ? `「${escH(micEnv().kind)}」的` : ""}內建瀏覽器裡，通常沒有語音辨識。</p><p>這個瀏覽器沒有提供語音辨識，請用 Chrome（Android）或 Safari（iPhone）開啟本網址。</p>${micOpenBtns()}`,
+    nosvc: `<h4>語音辨識沒有成功</h4><p>麥克風權限可能已允許，但這個瀏覽器目前沒有提供網頁語音辨識服務。請再按一次麥克風，或把游標放進回答框，用鍵盤的麥克風來說。</p><p class="mic-tip">參考：iPhone 上也可改用 Safari 再開一次。Android 請用 Chrome。電腦請用 Chrome 或 Edge。</p>${micOpenBtns()}`,
+    inapp: `<h4>請換瀏覽器開啟</h4><p>目前是在${micEnv().inApp ? `「${escH(micEnv().kind)}」的` : ""}內建瀏覽器裡，通常沒有語音辨識。請用 Chrome（Android）或 Safari（iPhone）開啟本網址，或把游標放進回答框用鍵盤的麥克風來說。</p>${micOpenBtns()}`,
     other: `<h4>麥克風無法啟動</h4><p>請再試一次。若一直失敗，請改用 Chrome（Android）或 Safari（iPhone），或直接打字。</p>`
   };
   const kindMap = {noservice:"nosvc"}; kind = kindMap[kind] || kind;
