@@ -1103,7 +1103,7 @@ details.fold[open] .fold-arrow{transform:rotate(90deg)}
   <div class="modal-box" id="sec-plan">
     <div class="modal-head"><span class="itile sm" aria-hidden="true"><svg><use href="#i-plan"/></svg></span><b id="h-plan">傳平面圖自動估價</b><button type="button" class="vw-x" id="plan-close" aria-label="關閉"><svg class="bi" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <p class="hint">可一次多選或分次追加 JPG／PNG／PDF，最多 10 張（PDF 每頁算一張）。上傳後會自動判斷每張圖是「平面圖」「水電圖」或「3D 透視」，標在縮圖上，判斷錯了點標籤就能修正。平面圖用來算櫃體尺數與其他木作、油漆數量；水電圖用來算水電項目；3D 透視只判斷高櫃／矮櫃與款式，不推長度。張數多時會分批分析再合併。結果要你勾選確認後才會加入估價單。</p>
-        <label class="drop" id="drop"><input type="file" id="planfile" accept="image/jpeg,image/png,application/pdf,.pdf,.jpg,.jpeg,.png" multiple hidden><span><b>點這裡選擇圖檔（可多選）</b>，或把檔案拖進來</span><small>類型由估價通自動判斷（無法判斷時先依檔名標示），可點縮圖上的標籤修正。3D 透視圖只用來判斷材質與款式，尺寸數量以平面圖、水電圖為準。每張圖送出前會縮到約 120 萬像素；小字看不清時，請把局部裁切放大後另外上傳。</small></label>
+        <label class="drop" id="drop"><input type="file" id="planfile" accept="image/jpeg,image/png,application/pdf,.pdf,.jpg,.jpeg,.png" multiple hidden><span><b>點這裡選擇圖檔（可多選）</b>，或把檔案拖進來</span><small>類型由估價通自動判斷（無法判斷時先依檔名標示），可點縮圖上的標籤修正。3D 透視圖只用來判斷材質與款式，尺寸數量以平面圖、水電圖為準。每張圖送出前會長邊約縮到 1568 像素；小字看不清時，請把局部裁切放大後另外上傳。</small></label>
         <div class="thumbs" id="thumbs"></div>
         <div class="row" style="align-items:center">
           <button class="btn acc" id="ai-go" disabled>開始分析</button>
@@ -4092,7 +4092,7 @@ let DB = {
   },
   "research_note": "泥作防水、拆除清運為2026-11-10研究參考價區間，來源見各項 source；處理費依縣市官方資料帶入，無資料者不套係數（×1.0）並註明無公開資料。既有木作／水電／油漆單價未改。"
 };
-try { const r = await fetch("price_db.json?v=56", {cache:"no-store"}); if (r.ok) DB = await r.json(); } catch (e) {}
+try { const r = await fetch("price_db.json?v=57", {cache:"no-store"}); if (r.ok) DB = await r.json(); } catch (e) {}
 // ----- 燈具（水電）：安裝工與燈型材料。安裝工 E-008／E-009 依燈具價目固定單價
 const LAMPS = [
   ["E-101","崁燈 7cm","盞",150,"E-009"],["E-102","崁燈 9cm","盞",150,"E-009"],["E-103","崁燈 12cm","盞",160,"E-009"],["E-104","崁燈 15cm","盞",160,"E-009"],
@@ -5352,7 +5352,7 @@ let terms = DEFAULT_TERMS;
 try { localStorage.removeItem(TERMS_KEY); } catch (e) {}
 (async () => {
   try {
-    const r = await fetch("taigi_terms.json?v=56", {cache:"no-store"});
+    const r = await fetch("taigi_terms.json?v=57", {cache:"no-store"});
     if (!r.ok) return;
     const t = await r.json();
     if (validTerms(t)){ terms = t; TERM_RE = null; TERM_MAP = null; }
@@ -6342,8 +6342,11 @@ try {
   const MAX_UPS = 10;
   const shortKind = k => /3D|透視/i.test(String(k)) ? "3D" : /水電/.test(String(k)) ? "水電" : /現況/.test(String(k)) ? "現況" : "施工";
   const BATCH_MAX = 4;   // 每次送給分析服務的張數上限（再受執行環境單次上限限制）
-  // 正式 Worker MAX_INPUT_BYTES 目前是 512 KiB；超過會 413 input_too_large（不會扣每日次數）。
-  const SEND_BUDGET = 450 * 1024;
+  // 正式 Worker MAX_INPUT_BYTES 目前是 4 MiB（4194304）；超過會 413 input_too_large（不會扣每日次數）。
+  // 分批預算預留約 0.5 MiB 給提示文字與 JSON。單張圖長邊約 1568 px、小於 5 MB（估價通視覺模型常用上限）。
+  const SEND_BUDGET = Math.floor(3.5 * 1024 * 1024);
+  const AI_MAX_EDGE = 1568;
+  const AI_MAX_IMAGE_BYTES = 5 * 1024 * 1024;
   function payloadBytes(prompt, blobs){
     let n = 256 + (new TextEncoder().encode(String(prompt||""))).length;
     for (const b of (blobs||[])) n += 80 + Math.ceil((b && b.size || 0) * 4 / 3);
@@ -6368,16 +6371,23 @@ try {
     return blob || null;
   }
   async function compressForSend(blob, maxBytes){
-    const cap = Math.max(24*1024, maxBytes || Math.floor(SEND_BUDGET * 0.85));
-    if (blob && blob.size <= cap && /^image\/jpeg$/i.test(blob.type||"")) return blob;
+    const cap = Math.min(AI_MAX_IMAGE_BYTES, Math.max(24*1024, maxBytes || Math.floor(SEND_BUDGET * 0.85)));
     let img;
-    try { img = await loadImageFromBlob(blob); } catch (e) { return blob; }
+    try { img = await loadImageFromBlob(blob); } catch (e) {
+      if (blob && blob.size <= cap) return blob;
+      return blob;
+    }
+    const sw = img.naturalWidth || img.width || 1, sh = img.naturalHeight || img.height || 1;
+    const alreadyOk = blob && blob.size <= cap && /^image\/jpeg$/i.test(blob.type||"") && Math.max(sw,sh) <= AI_MAX_EDGE;
+    if (alreadyOk) return blob;
     let best = blob;
-    for (const edge of [2000, 1600, 1280, 1024, 896, 768]){
-      for (const q of [0.82, 0.74, 0.66, 0.58, 0.5]){
+    const startEdge = Math.min(AI_MAX_EDGE, Math.max(sw, sh));
+    const edges = [...new Set([startEdge, AI_MAX_EDGE, 1400, 1280].filter(e=>e>0 && e<=AI_MAX_EDGE))];
+    for (const edge of edges){
+      for (const q of [0.92, 0.88, 0.84, 0.78, 0.7]){
         const out = await encodeJpeg(img, edge, q);
         if (out && out.size < (best.size||Infinity)) best = out;
-        if (out && out.size <= cap) return out;
+        if (out && out.size <= cap && (edge<=AI_MAX_EDGE)) return out;
       }
     }
     return best;
@@ -6442,11 +6452,11 @@ try {
     const n = Math.min(doc.numPages, limit ?? PDF_PAGES), out = [];
     for (let i=1; i<=n; i++){
       const pg = await doc.getPage(i), v0 = pg.getViewport({scale:1});
-      const v = pg.getViewport({scale: Math.min(4, 2000/Math.max(v0.width, v0.height))});
+      const v = pg.getViewport({scale: Math.min(4, 1568/Math.max(v0.width, v0.height))});
       const c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);
       const ctx = c.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,c.width,c.height);
       await pg.render({canvasContext:ctx, viewport:v}).promise;
-      const blob = await new Promise(r=>c.toBlob(r, "image/jpeg", 0.82));
+      const blob = await new Promise(r=>c.toBlob(r, "image/jpeg", 0.88));
       if (blob) out.push({name:`${file.name}（第 ${i} 頁）`, blob});
     }
     return {pages:out, total:doc.numPages};
@@ -7074,7 +7084,7 @@ ${catalog}
       if (stillBig){ msg(`「${stillBig.name}」即使壓縮後仍超過雲端單次上限，請改用較小的 JPG 或一次少傳幾張。`, true); return; }
       ai.only3d = all.every(u=>shortKind(u.kind)==="3D");
       ai.kinds = Object.fromEntries(all.map(u=>[String(u.no), u.kind]));
-      // 分批：平面圖／水電圖分組，每批再補上 3D 透視圖；同時確保每一批（含壓縮後的圖）不超過雲端 512 KiB 上限
+      // 分批：平面圖／水電圖分組，每批再補上 3D 透視圖；同時確保每一批（含壓縮後的圖）不超過雲端 4 MB 上限
       const d3 = all.filter(u=>shortKind(u.kind)==="3D"), flat = all.filter(u=>shortKind(u.kind)!=="3D");
       const promptOf = (bt, note)=>buildPrompt(bt, note||"");
       const fit = (list) => packByBudget(list, bt=>promptOf(bt, "x"), SEND_BUDGET);
@@ -7827,7 +7837,7 @@ ${catalog}
     $("#fmt-pdf").addEventListener("click", ()=>doExport("pdf"));
     $("#fmt-png").addEventListener("click", ()=>doExport("png"));
 /* shifu styled Excel + blank-template fill (injected into format IIFE) */
-    const XLSX_JS_SRCS = ["./exceljs.min.js?v=56", "https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js", "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"];
+    const XLSX_JS_SRCS = ["./exceljs.min.js?v=57", "https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js", "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"];
     function loadExcelJS(){
       if (window.ExcelJS) return Promise.resolve(window.ExcelJS);
       const trySrc = (i) => new Promise((res, rej)=>{
