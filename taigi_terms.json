@@ -1,0 +1,2396 @@
+{
+  "version": "2026-11-10-v50-merged",
+  "note": "合併 #terms-default、taigi-db.json、taigi-terms-additions.json、taigi-units.json、site-terms.json、使用者工地閩南語術語，以及國語 ASR 近音寫法。頁面載入此檔，#terms-default 為後備。auto=false 的數字／單位／句型只供參考，由程式用規則轉換尺寸分。",
+  "sources": [
+    "embedded:#terms-default",
+    "taigi-db/taigi-db.json",
+    "taigi-terms-additions.json",
+    "taigi-units.json",
+    "site-terms.json",
+    "user-list:工地閩南語術語",
+    "asr-variants:generated"
+  ],
+  "summary": {
+    "terms": 113,
+    "auto_false": 17,
+    "matchable": 96,
+    "spoken": 248,
+    "asr_variants": 258,
+    "match_keys": 506,
+    "with_code": 23
+  },
+  "terms": [
+    {
+      "spoken": [
+        "田就",
+        "天井（てんじょう）",
+        "添崩",
+        "天篷",
+        "田棚"
+      ],
+      "asr_variants": [
+        "天就",
+        "添就",
+        "田舊",
+        "添井（てんじょう）",
+        "田井（てんじょう）",
+        "天崩",
+        "田崩",
+        "添篷",
+        "添棚",
+        "田篷",
+        "天棚"
+      ],
+      "standard": "天花板（類型未定）",
+      "code": null,
+      "note": "[木作] 日語借詞；平釘W-101／造型W-102／流明W-103 請師傅講明；src:S1,S2；[木作] 台語 thian-pông；類型請師傅講明；src:M1180,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "tailo": "thian-pông",
+      "taigi_hanzi": "天篷"
+    },
+    {
+      "spoken": [
+        "平釘天花",
+        "平頂天花"
+      ],
+      "asr_variants": [],
+      "standard": "平釘天花板(矽酸鈣板)",
+      "code": "W-101",
+      "note": "[木作] src:S14",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "平釘天花"
+    },
+    {
+      "spoken": [
+        "間接照明",
+        "層板燈",
+        "反射照明"
+      ],
+      "asr_variants": [],
+      "standard": "間接照明燈溝",
+      "code": "W-104",
+      "note": "[木作] 若指燈具材料另看 E-113／E-022；src:S14,S19",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "間接照明"
+    },
+    {
+      "spoken": [
+        "卡電扣阿",
+        "卡店扣啊",
+        "卡電摳阿"
+      ],
+      "asr_variants": [
+        "卡電扣鴨",
+        "卡電扣啊",
+        "卡電扣呀",
+        "卡店扣鴨",
+        "卡店扣阿",
+        "卡店扣呀",
+        "卡電摳鴨",
+        "卡電摳啊",
+        "卡電摳呀"
+      ],
+      "standard": "窗簾盒",
+      "code": "W-105",
+      "note": "[木作] カーテン＋台語「盒仔」；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "卡電扣阿"
+    },
+    {
+      "spoken": [
+        "卡電",
+        "窗仔簾"
+      ],
+      "asr_variants": [],
+      "standard": "窗簾",
+      "code": null,
+      "note": "[木作] 單價庫只有窗簾盒，窗簾本身缺項；src:S1,S3,M13755",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "窗仔簾"
+    },
+    {
+      "spoken": [
+        "哈媽ㄎ一",
+        "哈巴Ki",
+        "哈馬雞",
+        "哈巴機",
+        "哈瑪機"
+      ],
+      "asr_variants": [
+        "哈罵ㄎ一",
+        "哈嘛ㄎ一",
+        "哈馬ㄎ一",
+        "哈芭Ki",
+        "哈帕Ki",
+        "哈罵雞",
+        "哈媽雞",
+        "哈嘛雞",
+        "哈瑪雞",
+        "哈馬機",
+        "哈馬基",
+        "哈芭機",
+        "哈帕機",
+        "哈巴雞",
+        "哈巴基",
+        "哈巴幾",
+        "哈媽機",
+        "哈瑪基",
+        "哈瑪幾"
+      ],
+      "standard": "踢腳板",
+      "code": "W-703",
+      "note": "[木作] 日語 幅木 はばき；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "哈巴機"
+    },
+    {
+      "spoken": [
+        "燙俗"
+      ],
+      "asr_variants": [],
+      "standard": "衣櫃",
+      "code": "W-305",
+      "note": "[木作] 待師傅確認：僅一個來源；木作W-305或系統W-401；src:S1",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "燙俗"
+    },
+    {
+      "spoken": [
+        "櫥仔",
+        "讀阿"
+      ],
+      "asr_variants": [
+        "讀鴨",
+        "讀啊",
+        "讀呀"
+      ],
+      "standard": "櫃子（類型未定）",
+      "code": null,
+      "note": "[木作] 請問高櫃／矮櫃／吊櫃／衣櫃／鞋櫃、木作或系統；src:M12778,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "櫥仔"
+    },
+    {
+      "spoken": [
+        "屜仔",
+        "脫啊"
+      ],
+      "asr_variants": [
+        "脫鴨",
+        "脫阿",
+        "脫呀"
+      ],
+      "standard": "抽屜",
+      "code": "W-802",
+      "note": "[木作] 一屜一組（floorplan-guide.md）；src:M7188,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "屜仔"
+    },
+    {
+      "spoken": [
+        "拗溜",
+        "熬溜",
+        "凹六",
+        "後鈕"
+      ],
+      "asr_variants": [],
+      "standard": "鉸鏈",
+      "code": "W-801",
+      "note": "[木作] W-801 為緩衝鉸鏈，是否緩衝待師傅確認；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "拗溜"
+    },
+    {
+      "spoken": [
+        "列盧",
+        "內魯"
+      ],
+      "asr_variants": [
+        "類魯",
+        "累魯",
+        "內嚕",
+        "內滷"
+      ],
+      "standard": "抽屜滑軌／軌道",
+      "code": "W-802",
+      "note": "[木作] 「軌道」也可能指軌道燈 E-109，請確認；src:S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "列盧"
+    },
+    {
+      "spoken": [
+        "美麗亞",
+        "美麗牙",
+        "妹麗啊"
+      ],
+      "asr_variants": [
+        "妹麗鴨",
+        "妹麗阿",
+        "妹麗呀"
+      ],
+      "standard": "夾板",
+      "code": null,
+      "note": "[木作] 待師傅確認：S1 說2分夾板、S2 說常指4mm；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "美麗亞"
+    },
+    {
+      "spoken": [
+        "角仔",
+        "喀阿",
+        "角才"
+      ],
+      "asr_variants": [
+        "喀鴨",
+        "喀啊",
+        "喀呀"
+      ],
+      "standard": "角材",
+      "code": null,
+      "note": "[木作] 材料，無單獨工項；src:S1",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "角仔"
+    },
+    {
+      "spoken": [
+        "雷扣拉",
+        "雷扣喇"
+      ],
+      "asr_variants": [
+        "布扣拉",
+        "布扣喇",
+        "雷扣那",
+        "雷扣南"
+      ],
+      "standard": "美耐板",
+      "code": null,
+      "note": "[木作] 待師傅確認：S2 註發音源由待查證；src:S1,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "雷扣拉"
+    },
+    {
+      "spoken": [
+        "木匠",
+        "做木的",
+        "木師"
+      ],
+      "asr_variants": [],
+      "standard": "木工師傅",
+      "code": "W-901",
+      "note": "[木作] 只有講「幾工」時才對 W-901；src:M893,M27334",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "常用句",
+      "taigi_hanzi": "木匠"
+    },
+    {
+      "spoken": [
+        "隔間"
+      ],
+      "asr_variants": [],
+      "standard": "隔間",
+      "code": null,
+      "note": "[木作] 木作輕隔間才對 W-201；磚牆缺項；src:M10328",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "隔間"
+    },
+    {
+      "spoken": [
+        "地板"
+      ],
+      "asr_variants": [],
+      "standard": "地板（類型未定）",
+      "code": null,
+      "note": "[木作] 請問超耐磨／海島型／實木／只算工；src:M23370",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "地板"
+    },
+    {
+      "spoken": [
+        "水電"
+      ],
+      "asr_variants": [],
+      "standard": "水電工程",
+      "code": null,
+      "note": "[水電] 工種名稱；src:M1122",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "水電"
+    },
+    {
+      "spoken": [
+        "電火"
+      ],
+      "asr_variants": [],
+      "standard": "電燈（類型未定）",
+      "code": null,
+      "note": "[水電] 吸頂等一般燈 E-008、崁燈 E-009，請確認；src:M10297",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "電火"
+    },
+    {
+      "spoken": [
+        "電火球仔",
+        "電火泡仔"
+      ],
+      "asr_variants": [],
+      "standard": "燈泡",
+      "code": null,
+      "note": "[水電] 單價庫無燈泡工項；src:M10301",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "電火球仔"
+    },
+    {
+      "spoken": [
+        "電火線",
+        "電線"
+      ],
+      "asr_variants": [],
+      "standard": "電線",
+      "code": null,
+      "note": "[水電] 全室重拉才對 E-013（需現勘）；src:M13789,M10338",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "電火線"
+    },
+    {
+      "spoken": [
+        "插座"
+      ],
+      "asr_variants": [],
+      "standard": "插座",
+      "code": null,
+      "note": "[水電] 新增 E-002（口）或換面板 E-001（組），請確認；src:M24867",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "插座"
+    },
+    {
+      "spoken": [
+        "開關"
+      ],
+      "asr_variants": [],
+      "standard": "開關面板",
+      "code": "E-001",
+      "note": "[水電] 換面板才對 E-001；src:M9212",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "開關"
+    },
+    {
+      "spoken": [
+        "陪斯豆掛"
+      ],
+      "asr_variants": [],
+      "standard": "面板／塑膠蓋板",
+      "code": "E-001",
+      "note": "[水電] 日語 プラスチックカバー；src:S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "陪斯豆掛"
+    },
+    {
+      "spoken": [
+        "不累尬",
+        "布累嘎",
+        "不雷卡",
+        "不累Ga"
+      ],
+      "asr_variants": [
+        "不類尬",
+        "不內尬",
+        "雷累嘎",
+        "布類嘎",
+        "布內嘎",
+        "不布卡",
+        "不類Ga",
+        "不內Ga"
+      ],
+      "standard": "無熔絲開關（breaker）",
+      "code": null,
+      "note": "[水電] 待師傅確認：S1 指也可能是混凝土破碎鎚；src:S1,S2,S3,S11",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "不累尬"
+    },
+    {
+      "spoken": [
+        "漏電斷路器",
+        "ELCB"
+      ],
+      "asr_variants": [],
+      "standard": "漏電斷路器",
+      "code": "E-007",
+      "note": "[水電] src:S11",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "漏電斷路器"
+    },
+    {
+      "spoken": [
+        "總開關箱",
+        "配電箱"
+      ],
+      "asr_variants": [],
+      "standard": "配電箱",
+      "code": "E-006",
+      "note": "[水電] 換配電箱才對 E-006；src:S11",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "總開關箱"
+    },
+    {
+      "spoken": [
+        "摸哭斯",
+        "某哭死",
+        "模哭斯"
+      ],
+      "asr_variants": [],
+      "standard": "出線盒／接線盒",
+      "code": null,
+      "note": "[水電] 日語 ボックス；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "摸哭斯"
+    },
+    {
+      "spoken": [
+        "阿斯",
+        "阿死"
+      ],
+      "asr_variants": [
+        "鴨斯",
+        "啊斯",
+        "呀斯",
+        "鴨死",
+        "啊死",
+        "呀死",
+        "阿四",
+        "阿司"
+      ],
+      "standard": "接地",
+      "code": null,
+      "note": "[水電] 日語 アース；src:S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "阿死"
+    },
+    {
+      "spoken": [
+        "鐵布西路",
+        "鐵步西路"
+      ],
+      "asr_variants": [
+        "鐵雷西路",
+        "鐵布喜路",
+        "鐵步喜路"
+      ],
+      "standard": "止洩帶",
+      "code": null,
+      "note": "[水電] 材料；src:S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "鐵布西路"
+    },
+    {
+      "spoken": [
+        "電火布",
+        "點灰婆",
+        "點輝跛"
+      ],
+      "asr_variants": [
+        "電火雷"
+      ],
+      "standard": "絕緣膠帶",
+      "code": null,
+      "note": "[水電] 材料；src:M10298,S1,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "電火布"
+    },
+    {
+      "spoken": [
+        "水道頭",
+        "水捘仔"
+      ],
+      "asr_variants": [],
+      "standard": "水龍頭",
+      "code": "P-007",
+      "note": "[水電] 更換才對 P-007；src:M1119",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "水道頭"
+    },
+    {
+      "spoken": [
+        "馬桶"
+      ],
+      "asr_variants": [],
+      "standard": "馬桶",
+      "code": "P-005",
+      "note": "[水電] 移位另加 P-004（需現勘）；src:M25725",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "馬桶"
+    },
+    {
+      "spoken": [
+        "打壓",
+        "打壓測試"
+      ],
+      "asr_variants": [],
+      "standard": "試水壓",
+      "code": "P-010",
+      "note": "[水電] src:S12",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "打壓"
+    },
+    {
+      "spoken": [
+        "厚速共"
+      ],
+      "asr_variants": [
+        "厚速拱",
+        "厚速貢"
+      ],
+      "standard": "軟管／塑膠水管",
+      "code": null,
+      "note": "[水電] 英 hose；src:S1",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "厚速共"
+    },
+    {
+      "spoken": [
+        "三分管",
+        "四分管",
+        "六分管"
+      ],
+      "asr_variants": [],
+      "standard": "管徑 3/8″、1/2″、3/4″",
+      "code": null,
+      "note": "[水電] 規格，非工項；src:S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "單位",
+      "taigi_hanzi": "三分管"
+    },
+    {
+      "spoken": [
+        "崁燈",
+        "嵌燈"
+      ],
+      "asr_variants": [],
+      "standard": "嵌燈",
+      "code": "E-009",
+      "note": "[水電] 含燈具材料另加 E-101～E-104；src:S13,S19",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "崁燈"
+    },
+    {
+      "spoken": [
+        "吸頂燈"
+      ],
+      "asr_variants": [],
+      "standard": "吸頂燈",
+      "code": "E-008",
+      "note": "[水電] 含燈具材料另看 E-105～E-107；src:S19",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "吸頂燈"
+    },
+    {
+      "spoken": [
+        "軌道燈"
+      ],
+      "asr_variants": [],
+      "standard": "軌道燈",
+      "code": "E-020",
+      "note": "[水電] 燈頭 E-108、軌道條 E-109；src:S20；index.html terms-default；[水電] 燈頭 E-108、軌道條 E-109；src:S20",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "軌道燈"
+    },
+    {
+      "spoken": [
+        "磁吸軌道燈",
+        "磁吸"
+      ],
+      "asr_variants": [],
+      "standard": "磁吸軌道燈",
+      "code": "E-021",
+      "note": "[水電] 材料 E-110～E-112；src:S21；index.html terms-default；[水電] 材料 E-110～E-112；src:S21",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "磁吸軌道燈"
+    },
+    {
+      "spoken": [
+        "油漆"
+      ],
+      "asr_variants": [],
+      "standard": "油漆工程",
+      "code": null,
+      "note": "[油漆] 台語 iû-tshat；src:M25627",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "tailo": "iû-tshat",
+      "taigi_hanzi": "油漆"
+    },
+    {
+      "spoken": [
+        "一底二度",
+        "一底二刷"
+      ],
+      "asr_variants": [],
+      "standard": "乳膠漆一底二度",
+      "code": "A-101",
+      "note": "[油漆] 待師傅確認：「底」指批土或底漆，來源說法不一（S17）；src:S15,S16,S17",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "一底二度"
+    },
+    {
+      "spoken": [
+        "二底三度"
+      ],
+      "asr_variants": [],
+      "standard": "乳膠漆二底三度",
+      "code": "A-102",
+      "note": "[油漆] src:S17",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "二底三度"
+    },
+    {
+      "spoken": [
+        "批土",
+        "補土",
+        "填縫土"
+      ],
+      "asr_variants": [
+        "填縫塗",
+        "填縫兔",
+        "填縫吐"
+      ],
+      "standard": "批土",
+      "code": null,
+      "note": "[油漆] 待師傅確認：S15 把補土、批土分開講，S18 說批土也稱補土；全面批土才對 A-104；src:S18,S15",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "批土"
+    },
+    {
+      "spoken": [
+        "拉卡"
+      ],
+      "asr_variants": [],
+      "standard": "硝化棉噴漆（lacquer）",
+      "code": null,
+      "note": "[油漆] 櫃體噴漆 A-301／門片 A-302 請確認；src:S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "拉卡"
+    },
+    {
+      "spoken": [
+        "優利旦",
+        "尤利旦",
+        "優力"
+      ],
+      "asr_variants": [
+        "優哩旦",
+        "優里旦",
+        "尤哩旦",
+        "尤里旦"
+      ],
+      "standard": "PU 漆",
+      "code": null,
+      "note": "[油漆] 待師傅確認：S1 寫透明漆、S2 寫 PU 塗料；src:S1,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "優利旦"
+    },
+    {
+      "spoken": [
+        "欸婆西",
+        "ㄟ波西"
+      ],
+      "asr_variants": [
+        "欸婆喜",
+        "ㄟ波喜"
+      ],
+      "standard": "環氧樹脂（Epoxy）",
+      "code": null,
+      "note": "[油漆] 單價庫無；src:S1,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "欸婆西"
+    },
+    {
+      "spoken": [
+        "矽利康",
+        "矽利控"
+      ],
+      "asr_variants": [
+        "矽哩康",
+        "矽里康",
+        "矽哩控",
+        "矽里控",
+        "矽利孔"
+      ],
+      "standard": "矽利康填縫",
+      "code": null,
+      "note": "[油漆] 材料；src:S1,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "矽利康"
+    },
+    {
+      "spoken": [
+        "美利抓",
+        "美利爪"
+      ],
+      "asr_variants": [
+        "美哩抓",
+        "美里抓",
+        "美哩爪",
+        "美里爪"
+      ],
+      "standard": "勾縫／留縫",
+      "code": null,
+      "note": "[油漆] 待師傅確認：S2 註發音源由待查證；src:S1,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "美利抓"
+    },
+    {
+      "spoken": [
+        "拆",
+        "拆除"
+      ],
+      "asr_variants": [],
+      "standard": "拆除",
+      "code": null,
+      "note": "[拆除] 台語 thiah；拆什麼請確認；src:M3949",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "tailo": "thiah",
+      "taigi_hanzi": "拆"
+    },
+    {
+      "spoken": [
+        "見底",
+        "打到見底",
+        "拆到見底"
+      ],
+      "asr_variants": [],
+      "standard": "打除至紅磚／結構層",
+      "code": null,
+      "note": "[拆除] 單價庫無牆面打除工項；壁癌需現勘；src:S7,S8,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "見底"
+    },
+    {
+      "spoken": [
+        "打毛",
+        "抓貓"
+      ],
+      "asr_variants": [],
+      "standard": "打毛",
+      "code": null,
+      "note": "[拆除] 單價庫缺項；src:S7,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "打毛"
+    },
+    {
+      "spoken": [
+        "去皮"
+      ],
+      "asr_variants": [],
+      "standard": "去除磁磚表層",
+      "code": null,
+      "note": "[拆除] 單價庫缺項；src:S7,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "去皮"
+    },
+    {
+      "spoken": [
+        "天花全拆",
+        "拆天花板"
+      ],
+      "asr_variants": [],
+      "standard": "天花板拆除",
+      "code": "W-004",
+      "note": "[拆除] src:S8",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "天花全拆"
+    },
+    {
+      "spoken": [
+        "拆櫃體",
+        "拆櫃"
+      ],
+      "asr_variants": [],
+      "standard": "櫃體拆除",
+      "code": null,
+      "note": "[拆除] 高櫃 W-002／矮櫃 W-003 請確認；src:S8",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "拆櫃體"
+    },
+    {
+      "spoken": [
+        "阿桃啊",
+        "鴨桃阿",
+        "阿桃阿"
+      ],
+      "asr_variants": [
+        "鴨桃啊",
+        "啊桃啊",
+        "呀桃啊",
+        "阿陶啊",
+        "阿桃鴨",
+        "阿桃呀",
+        "啊桃阿",
+        "呀桃阿",
+        "鴨陶阿",
+        "鴨桃鴨",
+        "鴨桃呀",
+        "阿陶阿"
+      ],
+      "standard": "電動破碎機／打鑿機",
+      "code": null,
+      "note": "[拆除] 工具；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "阿桃阿"
+    },
+    {
+      "spoken": [
+        "媽路啊",
+        "巴魯",
+        "罵噜阿"
+      ],
+      "asr_variants": [
+        "罵路啊",
+        "嘛路啊",
+        "馬路啊",
+        "媽路鴨",
+        "媽路阿",
+        "媽路呀",
+        "芭魯",
+        "帕魯",
+        "巴嚕",
+        "巴滷",
+        "媽噜阿",
+        "嘛噜阿",
+        "馬噜阿",
+        "罵噜鴨",
+        "罵噜啊",
+        "罵噜呀"
+      ],
+      "standard": "拔釘器／鐵撬",
+      "code": null,
+      "note": "[拆除] 工具，日語 バール；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "媽路啊"
+    },
+    {
+      "spoken": [
+        "土水",
+        "塗水",
+        "塗水師"
+      ],
+      "asr_variants": [
+        "兔水",
+        "吐水",
+        "土水師",
+        "兔水師",
+        "吐水師"
+      ],
+      "standard": "泥作（泥水工）",
+      "code": null,
+      "note": "[泥作] 單價庫無泥作工項；src:M9362,M9363,S9,S10",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "常用句",
+      "taigi_hanzi": "塗水"
+    },
+    {
+      "spoken": [
+        "怕ㄉㄟˋ",
+        "帕底",
+        "粗底",
+        "打底"
+      ],
+      "asr_variants": [
+        "巴底"
+      ],
+      "standard": "打底",
+      "code": null,
+      "note": "[泥作] 單價庫缺項；src:S10,S1,S9",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "帕底"
+    },
+    {
+      "spoken": [
+        "喜阿ㄎㄟˋ",
+        "西阿給",
+        "喜鴨給",
+        "婚羹"
+      ],
+      "asr_variants": [
+        "西阿ㄎㄟˋ",
+        "喜鴨ㄎㄟˋ",
+        "喜啊ㄎㄟˋ",
+        "喜呀ㄎㄟˋ",
+        "喜阿給",
+        "西鴨給",
+        "西啊給",
+        "西呀給",
+        "喜啊給",
+        "喜呀給"
+      ],
+      "standard": "粉光",
+      "code": null,
+      "note": "[泥作] 日語 仕上げ；配管溝復原含在 P-012；src:S10,S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "videos",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "喜鴨給"
+    },
+    {
+      "spoken": [
+        "太魯",
+        "泰魯",
+        "太嚕"
+      ],
+      "asr_variants": [
+        "台魯",
+        "臺魯",
+        "太滷",
+        "泰嚕",
+        "泰滷",
+        "台嚕",
+        "臺嚕"
+      ],
+      "standard": "磁磚",
+      "code": null,
+      "note": "[泥作] 單價庫缺項（floorplan-guide.md）；src:S1,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "videos",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "太魯"
+    },
+    {
+      "spoken": [
+        "膨拱",
+        "碰共",
+        "膨管",
+        "捧共",
+        "彭共"
+      ],
+      "asr_variants": [
+        "捧拱",
+        "碰拱",
+        "彭拱",
+        "膨共",
+        "膨貢",
+        "碰貢",
+        "捧管",
+        "碰管",
+        "彭管",
+        "捧貢",
+        "彭貢"
+      ],
+      "standard": "空鼓",
+      "code": null,
+      "note": "[泥作] 需現勘；src:S1,S2,S3,S8",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "videos",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "膨拱"
+    },
+    {
+      "spoken": [
+        "控古力",
+        "孔鼓勵",
+        "控固力"
+      ],
+      "asr_variants": [
+        "孔古力",
+        "控鼓勵",
+        "恐鼓勵",
+        "孔固力"
+      ],
+      "standard": "混凝土／水泥",
+      "code": null,
+      "note": "[泥作] 待師傅確認：S1 寫水泥、S2/S3 寫混凝土；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "孔鼓勵"
+    },
+    {
+      "spoken": [
+        "紅毛塗",
+        "ㄤ摸托",
+        "昂摸頭",
+        "紅毛土"
+      ],
+      "asr_variants": [
+        "洪毛塗",
+        "宏毛塗",
+        "紅毛兔",
+        "紅毛吐",
+        "昂摸托",
+        "ㄤ摸頭",
+        "盎摸頭",
+        "昂摩頭",
+        "洪毛土",
+        "宏毛土"
+      ],
+      "standard": "水泥",
+      "code": null,
+      "note": "[泥作] 台語 âng-mn̂g-thôo；src:M5384,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "tailo": "âng-mn̂g-thôo",
+      "taigi_hanzi": "紅毛塗"
+    },
+    {
+      "spoken": [
+        "南媽控",
+        "喇嘛控",
+        "那罵控"
+      ],
+      "asr_variants": [
+        "那媽控",
+        "喇媽控",
+        "南罵控",
+        "南嘛控",
+        "南馬控",
+        "南媽孔",
+        "那嘛控",
+        "喇罵控",
+        "喇馬控",
+        "喇嘛孔",
+        "那馬控",
+        "那罵孔",
+        "那嗎控"
+      ],
+      "standard": "預拌混凝土",
+      "code": null,
+      "note": "[泥作] 日語 生コン；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "那罵控"
+    },
+    {
+      "spoken": [
+        "叩敗",
+        "口敗"
+      ],
+      "asr_variants": [],
+      "standard": "坡度",
+      "code": null,
+      "note": "[泥作] 日語 勾配；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "叩敗"
+    },
+    {
+      "spoken": [
+        "夏水",
+        "夏最",
+        "下罪"
+      ],
+      "asr_variants": [
+        "霞水",
+        "霞最"
+      ],
+      "standard": "洩水坡度",
+      "code": null,
+      "note": "[泥作] 台語 洩水；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms",
+        "asr-variants"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "夏水"
+    },
+    {
+      "spoken": [
+        "麻吉"
+      ],
+      "asr_variants": [],
+      "standard": "標準餅（灰誌）",
+      "code": null,
+      "note": "[泥作] src:S1",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "麻吉"
+    },
+    {
+      "spoken": [
+        "磚仔"
+      ],
+      "asr_variants": [],
+      "standard": "磚",
+      "code": null,
+      "note": "[泥作] 砌磚缺項；src:M11815",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "磚仔"
+    },
+    {
+      "spoken": [
+        "零夠車",
+        "內溝啊掐",
+        "類勾阿掐"
+      ],
+      "asr_variants": [
+        "零溝車",
+        "零勾車",
+        "類溝啊掐",
+        "累溝啊掐",
+        "內勾啊掐",
+        "內夠啊掐",
+        "內溝鴨掐",
+        "內溝阿掐",
+        "內溝呀掐",
+        "內溝啊恰",
+        "累勾阿掐",
+        "內勾阿掐",
+        "類溝阿掐",
+        "類夠阿掐",
+        "類勾鴨掐",
+        "類勾啊掐",
+        "類勾呀掐",
+        "類勾阿恰"
+      ],
+      "standard": "單輪手推車",
+      "code": null,
+      "note": "[泥作] 工具，日語 ねこ車；src:S1,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "site-terms",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "零夠車"
+    },
+    {
+      "spoken": [
+        "騷day",
+        "燒底"
+      ],
+      "asr_variants": [],
+      "standard": "軟底（鋪磚工法）",
+      "code": null,
+      "note": "[泥作] 缺項；src:S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "騷day"
+    },
+    {
+      "spoken": [
+        "嘿北",
+        "嘿被",
+        "嘿麥"
+      ],
+      "asr_variants": [],
+      "standard": "平方公尺",
+      "code": null,
+      "note": "[單位] 日語 平米；1坪=3.3058㎡（README.md）；src:S1,S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units",
+        "site-terms"
+      ],
+      "category": "單位",
+      "taigi_hanzi": "嘿北"
+    },
+    {
+      "spoken": [
+        "仙",
+        "縣",
+        "CM",
+        "cm"
+      ],
+      "asr_variants": [],
+      "standard": "公分",
+      "code": null,
+      "note": "[單位] src:S1,S2",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos",
+        "units",
+        "site-terms"
+      ],
+      "category": "單位",
+      "taigi_hanzi": "仙"
+    },
+    {
+      "spoken": [
+        "硬擠"
+      ],
+      "asr_variants": [],
+      "standard": "英吋",
+      "code": null,
+      "note": "[單位] src:S2,S3",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units",
+        "site-terms"
+      ],
+      "category": "單位",
+      "taigi_hanzi": "硬擠"
+    },
+    {
+      "spoken": [
+        "昏",
+        "分",
+        "台分",
+        "hun"
+      ],
+      "asr_variants": [],
+      "standard": "台分",
+      "code": null,
+      "note": "[單位] 1分≈0.303公分（S5）；src:S1",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "site-terms"
+      ],
+      "category": "單位",
+      "tailo": "hun",
+      "taigi_hanzi": "分"
+    },
+    {
+      "spoken": [
+        "分",
+        "台分",
+        "hun",
+        "昏"
+      ],
+      "asr_variants": [],
+      "standard": "台分",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "units"
+      ],
+      "auto": false
+    },
+    {
+      "spoken": [
+        "哈利",
+        "娘"
+      ],
+      "asr_variants": [
+        "哈哩",
+        "哈里",
+        "哈力"
+      ],
+      "standard": "梁",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "videos",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "哈利"
+    },
+    {
+      "spoken": [
+        "帕拉呸斗"
+      ],
+      "asr_variants": [
+        "巴拉呸斗",
+        "帕拉胚斗",
+        "帕拉佩斗",
+        "帕啦呸斗"
+      ],
+      "standard": "女兒牆",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "帕拉呸斗"
+    },
+    {
+      "spoken": [
+        "阿搜比"
+      ],
+      "asr_variants": [
+        "鴨搜比",
+        "啊搜比",
+        "呀搜比",
+        "阿收比",
+        "阿嗖比"
+      ],
+      "standard": "伸縮縫／間隙",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "阿搜比"
+    },
+    {
+      "spoken": [
+        "車輪餅",
+        "甜甜圈"
+      ],
+      "asr_variants": [],
+      "standard": "鋼筋間隔器",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "車輪餅"
+    },
+    {
+      "spoken": [
+        "封板"
+      ],
+      "asr_variants": [],
+      "standard": "封板（釘矽酸鈣板／石膏板）",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "封板"
+    },
+    {
+      "spoken": [
+        "拉整",
+        "拉陣"
+      ],
+      "asr_variants": [
+        "拉振"
+      ],
+      "standard": "電鑽／喜得釘",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "拉整"
+    },
+    {
+      "spoken": [
+        "浮濫打",
+        "ㄙㄟ打"
+      ],
+      "asr_variants": [
+        "福濫打",
+        "浮爛打"
+      ],
+      "standard": "手持砂輪機／切割機",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "浮濫打"
+    },
+    {
+      "spoken": [
+        "卡哩卡哩"
+      ],
+      "asr_variants": [
+        "卡里卡哩",
+        "卡利卡哩",
+        "卡哩卡里",
+        "卡哩卡利"
+      ],
+      "standard": "棘輪扳手",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "卡哩卡哩"
+    },
+    {
+      "spoken": [
+        "樓賴爸"
+      ],
+      "asr_variants": [
+        "漏賴爸",
+        "樓來爸",
+        "樓賴把"
+      ],
+      "standard": "螺絲起子",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "樓賴爸"
+    },
+    {
+      "spoken": [
+        "片幾"
+      ],
+      "asr_variants": [
+        "偏幾",
+        "片機"
+      ],
+      "standard": "老虎鉗／鉗子",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "工具",
+      "taigi_hanzi": "片幾"
+    },
+    {
+      "spoken": [
+        "哇夏"
+      ],
+      "asr_variants": [
+        "娃夏",
+        "瓦夏",
+        "哇霞"
+      ],
+      "standard": "螺絲墊圈",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "哇夏"
+    },
+    {
+      "spoken": [
+        "空不累撒",
+        "空布雷薩"
+      ],
+      "asr_variants": [
+        "空不類撒",
+        "空不內撒",
+        "空不累薩",
+        "空不雷撒",
+        "空雷雷薩",
+        "空布布薩",
+        "空布雷撒"
+      ],
+      "standard": "空氣壓縮機",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "videos",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "機具",
+      "taigi_hanzi": "空不累撒"
+    },
+    {
+      "spoken": [
+        "夏罷"
+      ],
+      "asr_variants": [
+        "霞罷"
+      ],
+      "standard": "小型鏟土機／山貓",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "車輛",
+      "taigi_hanzi": "夏罷"
+    },
+    {
+      "spoken": [
+        "慶阿掐"
+      ],
+      "asr_variants": [
+        "親阿掐",
+        "慶鴨掐",
+        "慶啊掐",
+        "慶呀掐",
+        "慶阿恰"
+      ],
+      "standard": "小型吊卡車",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "車輛",
+      "taigi_hanzi": "慶阿掐"
+    },
+    {
+      "spoken": [
+        "滴溝阿"
+      ],
+      "asr_variants": [
+        "低溝阿",
+        "滴勾阿",
+        "滴夠阿",
+        "滴溝鴨",
+        "滴溝啊",
+        "滴溝呀"
+      ],
+      "standard": "堆高機",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "additions",
+        "user-list",
+        "asr-variants"
+      ],
+      "category": "車輛",
+      "taigi_hanzi": "滴溝阿"
+    },
+    {
+      "spoken": [
+        "斯囉布"
+      ],
+      "asr_variants": [
+        "斯囉雷"
+      ],
+      "standard": "樓板",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "斯囉布"
+    },
+    {
+      "spoken": [
+        "調啊",
+        "調"
+      ],
+      "asr_variants": [
+        "調鴨",
+        "調阿",
+        "調呀"
+      ],
+      "standard": "柱",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos",
+        "asr-variants"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "調啊"
+    },
+    {
+      "spoken": [
+        "疊磚"
+      ],
+      "asr_variants": [],
+      "standard": "砌磚",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "疊磚"
+    },
+    {
+      "spoken": [
+        "木心板"
+      ],
+      "asr_variants": [],
+      "standard": "木心板",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos"
+      ],
+      "category": "材料",
+      "taigi_hanzi": "木心板"
+    },
+    {
+      "spoken": [
+        "糕盯"
+      ],
+      "asr_variants": [],
+      "standard": "勾丁（磁磚貼法）",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos"
+      ],
+      "category": "工法",
+      "taigi_hanzi": "糕盯"
+    },
+    {
+      "spoken": [
+        "吼盯"
+      ],
+      "asr_variants": [],
+      "standard": "門檻／止水門檻",
+      "code": null,
+      "note": "[台語補充] src:使用者提供",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "videos"
+      ],
+      "category": "結構",
+      "taigi_hanzi": "吼盯"
+    },
+    {
+      "spoken": [
+        "尺",
+        "台尺",
+        "tshioh",
+        "tshiorh"
+      ],
+      "asr_variants": [],
+      "standard": "台尺",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "單位",
+      "tailo": "tshioh",
+      "taigi_hanzi": "尺"
+    },
+    {
+      "spoken": [
+        "寸",
+        "台寸",
+        "tshùn"
+      ],
+      "asr_variants": [],
+      "standard": "台寸",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "單位",
+      "tailo": "tshùn",
+      "taigi_hanzi": "寸"
+    },
+    {
+      "spoken": [
+        "才",
+        "一才",
+        "兩才"
+      ],
+      "asr_variants": [],
+      "standard": "面積才",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "單位",
+      "taigi_hanzi": "才"
+    },
+    {
+      "spoken": [
+        "坪"
+      ],
+      "asr_variants": [],
+      "standard": "坪",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "單位",
+      "taigi_hanzi": "坪"
+    },
+    {
+      "spoken": [
+        "一",
+        "tsi̍t",
+        "it"
+      ],
+      "asr_variants": [],
+      "standard": "1",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "tsi̍t",
+      "taigi_hanzi": "一"
+    },
+    {
+      "spoken": [
+        "兩",
+        "nn̄g",
+        "二",
+        "jī"
+      ],
+      "asr_variants": [],
+      "standard": "2",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "nn̄g",
+      "taigi_hanzi": "兩"
+    },
+    {
+      "spoken": [
+        "三",
+        "sann"
+      ],
+      "asr_variants": [],
+      "standard": "3",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "sann",
+      "taigi_hanzi": "三"
+    },
+    {
+      "spoken": [
+        "四",
+        "sì"
+      ],
+      "asr_variants": [],
+      "standard": "4",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "sì",
+      "taigi_hanzi": "四"
+    },
+    {
+      "spoken": [
+        "五",
+        "gōo"
+      ],
+      "asr_variants": [],
+      "standard": "5",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "gōo",
+      "taigi_hanzi": "五"
+    },
+    {
+      "spoken": [
+        "六",
+        "la̍k"
+      ],
+      "asr_variants": [],
+      "standard": "6",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "la̍k",
+      "taigi_hanzi": "六"
+    },
+    {
+      "spoken": [
+        "七",
+        "tshit"
+      ],
+      "asr_variants": [],
+      "standard": "7",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "tshit",
+      "taigi_hanzi": "七"
+    },
+    {
+      "spoken": [
+        "八",
+        "peh",
+        "peeh"
+      ],
+      "asr_variants": [],
+      "standard": "8",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "peh",
+      "taigi_hanzi": "八"
+    },
+    {
+      "spoken": [
+        "九",
+        "káu"
+      ],
+      "asr_variants": [],
+      "standard": "9",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "káu",
+      "taigi_hanzi": "九"
+    },
+    {
+      "spoken": [
+        "十",
+        "tsa̍p"
+      ],
+      "asr_variants": [],
+      "standard": "10",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "數字",
+      "tailo": "tsa̍p",
+      "taigi_hanzi": "十"
+    },
+    {
+      "spoken": [
+        "幾尺幾寸",
+        "X尺Y",
+        "三尺六"
+      ],
+      "asr_variants": [],
+      "standard": "X 尺 Y 寸",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "常用句",
+      "taigi_hanzi": "幾尺幾寸"
+    },
+    {
+      "spoken": [
+        "幾尺半",
+        "三尺半",
+        "四尺半",
+        "五尺半",
+        "兩尺半"
+      ],
+      "asr_variants": [],
+      "standard": "X 尺 + 5 寸",
+      "code": null,
+      "note": "[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文",
+      "source": [
+        "embedded",
+        "taigi-db",
+        "units"
+      ],
+      "auto": false,
+      "category": "常用句",
+      "taigi_hanzi": "幾尺半"
+    }
+  ]
+}

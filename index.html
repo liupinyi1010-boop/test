@@ -805,6 +805,8 @@ body.modal-on{overflow:hidden}
 
 .vw-terms{margin:-4px 0 0;font-size:14px;color:var(--muted);line-height:1.4!important}
 .vw-terms b{color:var(--bad)}
+.vw-terms-h{display:block;font-weight:600;color:var(--text);margin-bottom:2px}
+.vw-dict-hint{margin:4px 0 0;font-size:13px;color:var(--muted);line-height:1.4!important}
 
 /* 標題區背景圖：明亮版／深色版（高對比同深色），圖片已淡化模糊，不另加濾鏡 */
 :root{--hdr-img:url("data:image/webp;base64,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");--hdr-veil:rgba(255,255,255,.55)}
@@ -1153,6 +1155,7 @@ details.fold[open] .fold-arrow{transform:rotate(90deg)}
       <div class="mic-err" id="mic-err" role="alert" hidden></div>
       <label for="vw-text" class="vw-lbl">聽到的內容（可以直接修改，或用打字回答）</label>
       <textarea id="vw-text" rows="3" placeholder="例如：台北市大安區，大概二十八坪"></textarea>
+      <p class="vw-dict-hint" id="vw-dict-hint">也可以把游標放進回答框，用鍵盤的麥克風來說（打字或鍵盤語音一樣會轉成國語）。</p>
       <p class="vw-terms" id="vw-terms" hidden></p>
       <div class="vw-actions"><button type="button" class="btn" id="vw-send">確認內容</button><button type="button" class="btn ghost" id="vw-redo">重講</button><button type="button" class="btn ghost" id="vw-skip">跳過</button></div>
     </div>
@@ -1162,122 +1165,7 @@ details.fold[open] .fold-arrow{transform:rotate(90deg)}
   </div>
 </div>
 <script type="application/json" id="terms-default">
-{"version":"2026-11-10","terms":[
-{"spoken":["田就","天井（てんじょう）","添崩"],"standard":"天花板（類型未定）","code":null,"note":"[木作] 日語借詞；平釘W-101／造型W-102／流明W-103 請師傅講明；src:S1,S2"},
-{"spoken":["天篷","田棚"],"standard":"天花板（類型未定）","code":null,"note":"[木作] 台語 thian-pông；類型請師傅講明；src:M1180,S2"},
-{"spoken":["平釘天花","平頂天花"],"standard":"平釘天花板(矽酸鈣板)","code":"W-101","note":"[木作] src:S14"},
-{"spoken":["間接照明","層板燈","反射照明"],"standard":"間接照明燈溝","code":"W-104","note":"[木作] 若指燈具材料另看 E-113／E-022；src:S14,S19"},
-{"spoken":["卡電扣阿","卡店扣啊","卡電摳阿"],"standard":"窗簾盒","code":"W-105","note":"[木作] カーテン＋台語「盒仔」；src:S1,S2,S3"},
-{"spoken":["卡電","窗仔簾"],"standard":"窗簾","code":null,"note":"[木作] 單價庫只有窗簾盒，窗簾本身缺項；src:S1,S3,M13755"},
-{"spoken":["哈媽ㄎ一","哈巴Ki","哈馬雞","哈巴機","哈瑪機"],"standard":"踢腳板","code":"W-703","note":"[木作] 日語 幅木 はばき；src:S1,S2,S3"},
-{"spoken":["燙俗"],"standard":"衣櫃","code":"W-305","note":"[木作] 待師傅確認：僅一個來源；木作W-305或系統W-401；src:S1"},
-{"spoken":["櫥仔","讀阿"],"standard":"櫃子（類型未定）","code":null,"note":"[木作] 請問高櫃／矮櫃／吊櫃／衣櫃／鞋櫃、木作或系統；src:M12778,S2"},
-{"spoken":["屜仔","脫啊"],"standard":"抽屜","code":"W-802","note":"[木作] 一屜一組（floorplan-guide.md）；src:M7188,S2"},
-{"spoken":["拗溜","熬溜","凹六","後鈕"],"standard":"鉸鏈","code":"W-801","note":"[木作] W-801 為緩衝鉸鏈，是否緩衝待師傅確認；src:S1,S2,S3"},
-{"spoken":["列盧","內魯"],"standard":"抽屜滑軌／軌道","code":"W-802","note":"[木作] 「軌道」也可能指軌道燈 E-109，請確認；src:S2"},
-{"spoken":["美麗亞","美麗牙","妹麗啊"],"standard":"夾板","code":null,"note":"[木作] 待師傅確認：S1 說2分夾板、S2 說常指4mm；src:S1,S2,S3"},
-{"spoken":["角仔","喀阿","角才"],"standard":"角材","code":null,"note":"[木作] 材料，無單獨工項；src:S1"},
-{"spoken":["雷扣拉","雷扣喇"],"standard":"美耐板","code":null,"note":"[木作] 待師傅確認：S2 註發音源由待查證；src:S1,S2"},
-{"spoken":["木匠","做木的","木師"],"standard":"木工師傅","code":"W-901","note":"[木作] 只有講「幾工」時才對 W-901；src:M893,M27334"},
-{"spoken":["隔間"],"standard":"隔間","code":null,"note":"[木作] 木作輕隔間才對 W-201；磚牆缺項；src:M10328"},
-{"spoken":["地板"],"standard":"地板（類型未定）","code":null,"note":"[木作] 請問超耐磨／海島型／實木／只算工；src:M23370"},
-{"spoken":["水電"],"standard":"水電工程","code":null,"note":"[水電] 工種名稱；src:M1122"},
-{"spoken":["電火"],"standard":"電燈（類型未定）","code":null,"note":"[水電] 吸頂等一般燈 E-008、崁燈 E-009，請確認；src:M10297"},
-{"spoken":["電火球仔","電火泡仔"],"standard":"燈泡","code":null,"note":"[水電] 單價庫無燈泡工項；src:M10301"},
-{"spoken":["電火線","電線"],"standard":"電線","code":null,"note":"[水電] 全室重拉才對 E-013（需現勘）；src:M13789,M10338"},
-{"spoken":["插座"],"standard":"插座","code":null,"note":"[水電] 新增 E-002（口）或換面板 E-001（組），請確認；src:M24867"},
-{"spoken":["開關"],"standard":"開關面板","code":"E-001","note":"[水電] 換面板才對 E-001；src:M9212"},
-{"spoken":["陪斯豆掛"],"standard":"面板／塑膠蓋板","code":"E-001","note":"[水電] 日語 プラスチックカバー；src:S2"},
-{"spoken":["不累尬","布累嘎","不雷卡","不累Ga"],"standard":"無熔絲開關（breaker）","code":null,"note":"[水電] 待師傅確認：S1 指也可能是混凝土破碎鎚；src:S1,S2,S3,S11"},
-{"spoken":["漏電斷路器","ELCB"],"standard":"漏電斷路器","code":"E-007","note":"[水電] src:S11"},
-{"spoken":["總開關箱","配電箱"],"standard":"配電箱","code":"E-006","note":"[水電] 換配電箱才對 E-006；src:S11"},
-{"spoken":["摸哭斯","某哭死","模哭斯"],"standard":"出線盒／接線盒","code":null,"note":"[水電] 日語 ボックス；src:S1,S2,S3"},
-{"spoken":["阿斯","阿死"],"standard":"接地","code":null,"note":"[水電] 日語 アース；src:S2,S3"},
-{"spoken":["鐵布西路","鐵步西路"],"standard":"止洩帶","code":null,"note":"[水電] 材料；src:S2,S3"},
-{"spoken":["電火布","點灰婆","點輝跛"],"standard":"絕緣膠帶","code":null,"note":"[水電] 材料；src:M10298,S1,S3"},
-{"spoken":["水道頭","水捘仔"],"standard":"水龍頭","code":"P-007","note":"[水電] 更換才對 P-007；src:M1119"},
-{"spoken":["馬桶"],"standard":"馬桶","code":"P-005","note":"[水電] 移位另加 P-004（需現勘）；src:M25725"},
-{"spoken":["打壓","打壓測試"],"standard":"試水壓","code":"P-010","note":"[水電] src:S12"},
-{"spoken":["厚速共"],"standard":"軟管／塑膠水管","code":null,"note":"[水電] 英 hose；src:S1"},
-{"spoken":["三分管","四分管","六分管"],"standard":"管徑 3/8″、1/2″、3/4″","code":null,"note":"[水電] 規格，非工項；src:S2"},
-{"spoken":["崁燈","嵌燈"],"standard":"嵌燈","code":"E-009","note":"[水電] 含燈具材料另加 E-101～E-104；src:S13,S19"},
-{"spoken":["吸頂燈"],"standard":"吸頂燈","code":"E-008","note":"[水電] 含燈具材料另看 E-105～E-107；src:S19"},
-{"spoken":["軌道燈"],"standard":"軌道燈","code":"E-020","note":"[水電] 燈頭 E-108、軌道條 E-109；src:S20"},
-{"spoken":["磁吸軌道燈","磁吸"],"standard":"磁吸軌道燈","code":"E-021","note":"[水電] 材料 E-110～E-112；src:S21"},
-{"spoken":["油漆"],"standard":"油漆工程","code":null,"note":"[油漆] 台語 iû-tshat；src:M25627"},
-{"spoken":["一底二度","一底二刷"],"standard":"乳膠漆一底二度","code":"A-101","note":"[油漆] 待師傅確認：「底」指批土或底漆，來源說法不一（S17）；src:S15,S16,S17"},
-{"spoken":["二底三度"],"standard":"乳膠漆二底三度","code":"A-102","note":"[油漆] src:S17"},
-{"spoken":["批土","補土","填縫土"],"standard":"批土","code":null,"note":"[油漆] 待師傅確認：S15 把補土、批土分開講，S18 說批土也稱補土；全面批土才對 A-104；src:S18,S15"},
-{"spoken":["拉卡"],"standard":"硝化棉噴漆（lacquer）","code":null,"note":"[油漆] 櫃體噴漆 A-301／門片 A-302 請確認；src:S2"},
-{"spoken":["優利旦","尤利旦","優力"],"standard":"PU 漆","code":null,"note":"[油漆] 待師傅確認：S1 寫透明漆、S2 寫 PU 塗料；src:S1,S2"},
-{"spoken":["欸婆西","ㄟ波西"],"standard":"環氧樹脂（Epoxy）","code":null,"note":"[油漆] 單價庫無；src:S1,S3"},
-{"spoken":["矽利康","矽利控"],"standard":"矽利康填縫","code":null,"note":"[油漆] 材料；src:S1,S2"},
-{"spoken":["美利抓","美利爪"],"standard":"勾縫／留縫","code":null,"note":"[油漆] 待師傅確認：S2 註發音源由待查證；src:S1,S2"},
-{"spoken":["拆","拆除"],"standard":"拆除","code":null,"note":"[拆除] 台語 thiah；拆什麼請確認；src:M3949"},
-{"spoken":["見底","打到見底","拆到見底"],"standard":"打除至紅磚／結構層","code":null,"note":"[拆除] 單價庫無牆面打除工項；壁癌需現勘；src:S7,S8,S2"},
-{"spoken":["打毛","抓貓"],"standard":"打毛","code":null,"note":"[拆除] 單價庫缺項；src:S7,S2"},
-{"spoken":["去皮"],"standard":"去除磁磚表層","code":null,"note":"[拆除] 單價庫缺項；src:S7,S2"},
-{"spoken":["天花全拆","拆天花板"],"standard":"天花板拆除","code":"W-004","note":"[拆除] src:S8"},
-{"spoken":["拆櫃體","拆櫃"],"standard":"櫃體拆除","code":null,"note":"[拆除] 高櫃 W-002／矮櫃 W-003 請確認；src:S8"},
-{"spoken":["阿桃啊","鴨桃阿","阿桃阿"],"standard":"電動破碎機／打鑿機","code":null,"note":"[拆除] 工具；src:S1,S2,S3"},
-{"spoken":["媽路啊","巴魯","罵噜阿"],"standard":"拔釘器／鐵撬","code":null,"note":"[拆除] 工具，日語 バール；src:S1,S2,S3"},
-{"spoken":["土水","塗水","塗水師"],"standard":"泥作（泥水工）","code":null,"note":"[泥作] 單價庫無泥作工項；src:M9362,M9363,S9,S10"},
-{"spoken":["怕ㄉㄟˋ","帕底","粗底","打底"],"standard":"打底","code":null,"note":"[泥作] 單價庫缺項；src:S10,S1,S9"},
-{"spoken":["喜阿ㄎㄟˋ","西阿給","喜鴨給","婚羹"],"standard":"粉光","code":null,"note":"[泥作] 日語 仕上げ；配管溝復原含在 P-012；src:S10,S1,S2,S3"},
-{"spoken":["太魯","泰魯","太嚕"],"standard":"磁磚","code":null,"note":"[泥作] 單價庫缺項（floorplan-guide.md）；src:S1,S3"},
-{"spoken":["膨拱","碰共","膨管","捧共","彭共"],"standard":"空鼓","code":null,"note":"[泥作] 需現勘；src:S1,S2,S3,S8"},
-{"spoken":["控古力","孔鼓勵","控固力"],"standard":"混凝土／水泥","code":null,"note":"[泥作] 待師傅確認：S1 寫水泥、S2/S3 寫混凝土；src:S1,S2,S3"},
-{"spoken":["紅毛塗","ㄤ摸托","昂摸頭","紅毛土"],"standard":"水泥","code":null,"note":"[泥作] 台語 âng-mn̂g-thôo；src:M5384,S2,S3"},
-{"spoken":["南媽控","喇嘛控","那罵控"],"standard":"預拌混凝土","code":null,"note":"[泥作] 日語 生コン；src:S1,S2,S3"},
-{"spoken":["叩敗","口敗"],"standard":"坡度","code":null,"note":"[泥作] 日語 勾配；src:S1,S2,S3"},
-{"spoken":["夏水","夏最","下罪"],"standard":"洩水坡度","code":null,"note":"[泥作] 台語 洩水；src:S1,S2,S3"},
-{"spoken":["麻吉"],"standard":"標準餅（灰誌）","code":null,"note":"[泥作] src:S1"},
-{"spoken":["磚仔"],"standard":"磚","code":null,"note":"[泥作] 砌磚缺項；src:M11815"},
-{"spoken":["零夠車","內溝啊掐","類勾阿掐"],"standard":"單輪手推車","code":null,"note":"[泥作] 工具，日語 ねこ車；src:S1,S2"},
-{"spoken":["騷day","燒底"],"standard":"軟底（鋪磚工法）","code":null,"note":"[泥作] 缺項；src:S2"},
-{"spoken":["嘿北","嘿被","嘿麥"],"standard":"平方公尺","code":null,"note":"[單位] 日語 平米；1坪=3.3058㎡（README.md）；src:S1,S2,S3"},
-{"spoken":["仙","縣","CM","cm"],"standard":"公分","code":null,"note":"[單位] src:S1,S2"},
-{"spoken":["硬擠"],"standard":"英吋","code":null,"note":"[單位] src:S2,S3"},
-{"spoken":["昏"],"standard":"台分","code":null,"note":"[單位] 1分≈0.303公分（S5）；src:S1"},
-{"spoken":["分","台分","hun"],"standard":"台分","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["哈利","娘"],"standard":"梁","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["帕拉呸斗"],"standard":"女兒牆","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["阿搜比"],"standard":"伸縮縫／間隙","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["車輪餅","甜甜圈"],"standard":"鋼筋間隔器","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["封板"],"standard":"封板（釘矽酸鈣板／石膏板）","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["拉整","拉陣"],"standard":"電鑽／喜得釘","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["浮濫打","ㄙㄟ打"],"standard":"手持砂輪機／切割機","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["卡哩卡哩"],"standard":"棘輪扳手","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["樓賴爸"],"standard":"螺絲起子","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["片幾"],"standard":"老虎鉗／鉗子","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["哇夏"],"standard":"螺絲墊圈","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["空不累撒","空布雷薩"],"standard":"空氣壓縮機","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["夏罷"],"standard":"小型鏟土機／山貓","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["慶阿掐"],"standard":"小型吊卡車","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["滴溝阿"],"standard":"堆高機","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["斯囉布"],"standard":"樓板","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["調啊","調"],"standard":"柱","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["疊磚"],"standard":"砌磚","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["木心板"],"standard":"木心板","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["糕盯"],"standard":"勾丁（磁磚貼法）","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["吼盯"],"standard":"門檻／止水門檻","code":null,"note":"[台語補充] src:使用者提供"},
-{"spoken":["尺","台尺","tshioh","tshiorh"],"standard":"台尺","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["寸","台寸","tshùn"],"standard":"台寸","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["才","一才","兩才"],"standard":"面積才","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["坪"],"standard":"坪","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["一","tsi̍t","it"],"standard":"1","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["兩","nn̄g","二","jī"],"standard":"2","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["三","sann"],"standard":"3","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["四","sì"],"standard":"4","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["五","gōo"],"standard":"5","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["六","la̍k"],"standard":"6","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["七","tshit"],"standard":"7","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["八","peh","peeh"],"standard":"8","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["九","káu"],"standard":"9","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["十","tsa̍p"],"standard":"10","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["幾尺幾寸","X尺Y","三尺六"],"standard":"X 尺 Y 寸","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false},
-{"spoken":["幾尺半","三尺半","四尺半","五尺半","兩尺半"],"standard":"X 尺 + 5 寸","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","auto":false}
-]}
+{"version":"2026-11-10-v50-merged","note":"合併 #terms-default、taigi-db.json、taigi-terms-additions.json、taigi-units.json、site-terms.json、使用者工地閩南語術語，以及國語 ASR 近音寫法。頁面載入此檔，#terms-default 為後備。auto=false 的數字／單位／句型只供參考，由程式用規則轉換尺寸分。","sources":["embedded:#terms-default","taigi-db/taigi-db.json","taigi-terms-additions.json","taigi-units.json","site-terms.json","user-list:工地閩南語術語","asr-variants:generated"],"summary":{"terms":113,"auto_false":17,"matchable":96,"spoken":248,"asr_variants":258,"match_keys":506,"with_code":23},"terms":[{"spoken":["田就","天井（てんじょう）","添崩","天篷","田棚"],"asr_variants":["天就","添就","田舊","添井（てんじょう）","田井（てんじょう）","天崩","田崩","添篷","添棚","田篷","天棚"],"standard":"天花板（類型未定）","code":null,"note":"[木作] 日語借詞；平釘W-101／造型W-102／流明W-103 請師傅講明；src:S1,S2；[木作] 台語 thian-pông；類型請師傅講明；src:M1180,S2","source":["embedded","taigi-db","videos","site-terms","asr-variants"],"category":"結構","tailo":"thian-pông","taigi_hanzi":"天篷"},{"spoken":["平釘天花","平頂天花"],"asr_variants":[],"standard":"平釘天花板(矽酸鈣板)","code":"W-101","note":"[木作] src:S14","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"平釘天花"},{"spoken":["間接照明","層板燈","反射照明"],"asr_variants":[],"standard":"間接照明燈溝","code":"W-104","note":"[木作] 若指燈具材料另看 E-113／E-022；src:S14,S19","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"間接照明"},{"spoken":["卡電扣阿","卡店扣啊","卡電摳阿"],"asr_variants":["卡電扣鴨","卡電扣啊","卡電扣呀","卡店扣鴨","卡店扣阿","卡店扣呀","卡電摳鴨","卡電摳啊","卡電摳呀"],"standard":"窗簾盒","code":"W-105","note":"[木作] カーテン＋台語「盒仔」；src:S1,S2,S3","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"工法","taigi_hanzi":"卡電扣阿"},{"spoken":["卡電","窗仔簾"],"asr_variants":[],"standard":"窗簾","code":null,"note":"[木作] 單價庫只有窗簾盒，窗簾本身缺項；src:S1,S3,M13755","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"窗仔簾"},{"spoken":["哈媽ㄎ一","哈巴Ki","哈馬雞","哈巴機","哈瑪機"],"asr_variants":["哈罵ㄎ一","哈嘛ㄎ一","哈馬ㄎ一","哈芭Ki","哈帕Ki","哈罵雞","哈媽雞","哈嘛雞","哈瑪雞","哈馬機","哈馬基","哈芭機","哈帕機","哈巴雞","哈巴基","哈巴幾","哈媽機","哈瑪基","哈瑪幾"],"standard":"踢腳板","code":"W-703","note":"[木作] 日語 幅木 はばき；src:S1,S2,S3","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"工法","taigi_hanzi":"哈巴機"},{"spoken":["燙俗"],"asr_variants":[],"standard":"衣櫃","code":"W-305","note":"[木作] 待師傅確認：僅一個來源；木作W-305或系統W-401；src:S1","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"燙俗"},{"spoken":["櫥仔","讀阿"],"asr_variants":["讀鴨","讀啊","讀呀"],"standard":"櫃子（類型未定）","code":null,"note":"[木作] 請問高櫃／矮櫃／吊櫃／衣櫃／鞋櫃、木作或系統；src:M12778,S2","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"結構","taigi_hanzi":"櫥仔"},{"spoken":["屜仔","脫啊"],"asr_variants":["脫鴨","脫阿","脫呀"],"standard":"抽屜","code":"W-802","note":"[木作] 一屜一組（floorplan-guide.md）；src:M7188,S2","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"結構","taigi_hanzi":"屜仔"},{"spoken":["拗溜","熬溜","凹六","後鈕"],"asr_variants":[],"standard":"鉸鏈","code":"W-801","note":"[木作] W-801 為緩衝鉸鏈，是否緩衝待師傅確認；src:S1,S2,S3","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"拗溜"},{"spoken":["列盧","內魯"],"asr_variants":["類魯","累魯","內嚕","內滷"],"standard":"抽屜滑軌／軌道","code":"W-802","note":"[木作] 「軌道」也可能指軌道燈 E-109，請確認；src:S2","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"列盧"},{"spoken":["美麗亞","美麗牙","妹麗啊"],"asr_variants":["妹麗鴨","妹麗阿","妹麗呀"],"standard":"夾板","code":null,"note":"[木作] 待師傅確認：S1 說2分夾板、S2 說常指4mm；src:S1,S2,S3","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"美麗亞"},{"spoken":["角仔","喀阿","角才"],"asr_variants":["喀鴨","喀啊","喀呀"],"standard":"角材","code":null,"note":"[木作] 材料，無單獨工項；src:S1","source":["embedded","taigi-db","videos","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"角仔"},{"spoken":["雷扣拉","雷扣喇"],"asr_variants":["布扣拉","布扣喇","雷扣那","雷扣南"],"standard":"美耐板","code":null,"note":"[木作] 待師傅確認：S2 註發音源由待查證；src:S1,S2","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"雷扣拉"},{"spoken":["木匠","做木的","木師"],"asr_variants":[],"standard":"木工師傅","code":"W-901","note":"[木作] 只有講「幾工」時才對 W-901；src:M893,M27334","source":["embedded","taigi-db","site-terms"],"category":"常用句","taigi_hanzi":"木匠"},{"spoken":["隔間"],"asr_variants":[],"standard":"隔間","code":null,"note":"[木作] 木作輕隔間才對 W-201；磚牆缺項；src:M10328","source":["embedded","taigi-db","site-terms"],"category":"結構","taigi_hanzi":"隔間"},{"spoken":["地板"],"asr_variants":[],"standard":"地板（類型未定）","code":null,"note":"[木作] 請問超耐磨／海島型／實木／只算工；src:M23370","source":["embedded","taigi-db","site-terms"],"category":"結構","taigi_hanzi":"地板"},{"spoken":["水電"],"asr_variants":[],"standard":"水電工程","code":null,"note":"[水電] 工種名稱；src:M1122","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"水電"},{"spoken":["電火"],"asr_variants":[],"standard":"電燈（類型未定）","code":null,"note":"[水電] 吸頂等一般燈 E-008、崁燈 E-009，請確認；src:M10297","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"電火"},{"spoken":["電火球仔","電火泡仔"],"asr_variants":[],"standard":"燈泡","code":null,"note":"[水電] 單價庫無燈泡工項；src:M10301","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"電火球仔"},{"spoken":["電火線","電線"],"asr_variants":[],"standard":"電線","code":null,"note":"[水電] 全室重拉才對 E-013（需現勘）；src:M13789,M10338","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"電火線"},{"spoken":["插座"],"asr_variants":[],"standard":"插座","code":null,"note":"[水電] 新增 E-002（口）或換面板 E-001（組），請確認；src:M24867","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"插座"},{"spoken":["開關"],"asr_variants":[],"standard":"開關面板","code":"E-001","note":"[水電] 換面板才對 E-001；src:M9212","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"開關"},{"spoken":["陪斯豆掛"],"asr_variants":[],"standard":"面板／塑膠蓋板","code":"E-001","note":"[水電] 日語 プラスチックカバー；src:S2","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"陪斯豆掛"},{"spoken":["不累尬","布累嘎","不雷卡","不累Ga"],"asr_variants":["不類尬","不內尬","雷累嘎","布類嘎","布內嘎","不布卡","不類Ga","不內Ga"],"standard":"無熔絲開關（breaker）","code":null,"note":"[水電] 待師傅確認：S1 指也可能是混凝土破碎鎚；src:S1,S2,S3,S11","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"不累尬"},{"spoken":["漏電斷路器","ELCB"],"asr_variants":[],"standard":"漏電斷路器","code":"E-007","note":"[水電] src:S11","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"漏電斷路器"},{"spoken":["總開關箱","配電箱"],"asr_variants":[],"standard":"配電箱","code":"E-006","note":"[水電] 換配電箱才對 E-006；src:S11","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"總開關箱"},{"spoken":["摸哭斯","某哭死","模哭斯"],"asr_variants":[],"standard":"出線盒／接線盒","code":null,"note":"[水電] 日語 ボックス；src:S1,S2,S3","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"摸哭斯"},{"spoken":["阿斯","阿死"],"asr_variants":["鴨斯","啊斯","呀斯","鴨死","啊死","呀死","阿四","阿司"],"standard":"接地","code":null,"note":"[水電] 日語 アース；src:S2,S3","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"工法","taigi_hanzi":"阿死"},{"spoken":["鐵布西路","鐵步西路"],"asr_variants":["鐵雷西路","鐵布喜路","鐵步喜路"],"standard":"止洩帶","code":null,"note":"[水電] 材料；src:S2,S3","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"鐵布西路"},{"spoken":["電火布","點灰婆","點輝跛"],"asr_variants":["電火雷"],"standard":"絕緣膠帶","code":null,"note":"[水電] 材料；src:M10298,S1,S3","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"電火布"},{"spoken":["水道頭","水捘仔"],"asr_variants":[],"standard":"水龍頭","code":"P-007","note":"[水電] 更換才對 P-007；src:M1119","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"水道頭"},{"spoken":["馬桶"],"asr_variants":[],"standard":"馬桶","code":"P-005","note":"[水電] 移位另加 P-004（需現勘）；src:M25725","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"馬桶"},{"spoken":["打壓","打壓測試"],"asr_variants":[],"standard":"試水壓","code":"P-010","note":"[水電] src:S12","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"打壓"},{"spoken":["厚速共"],"asr_variants":["厚速拱","厚速貢"],"standard":"軟管／塑膠水管","code":null,"note":"[水電] 英 hose；src:S1","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"厚速共"},{"spoken":["三分管","四分管","六分管"],"asr_variants":[],"standard":"管徑 3/8″、1/2″、3/4″","code":null,"note":"[水電] 規格，非工項；src:S2","source":["embedded","taigi-db","site-terms"],"category":"單位","taigi_hanzi":"三分管"},{"spoken":["崁燈","嵌燈"],"asr_variants":[],"standard":"嵌燈","code":"E-009","note":"[水電] 含燈具材料另加 E-101～E-104；src:S13,S19","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"崁燈"},{"spoken":["吸頂燈"],"asr_variants":[],"standard":"吸頂燈","code":"E-008","note":"[水電] 含燈具材料另看 E-105～E-107；src:S19","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"吸頂燈"},{"spoken":["軌道燈"],"asr_variants":[],"standard":"軌道燈","code":"E-020","note":"[水電] 燈頭 E-108、軌道條 E-109；src:S20；index.html terms-default；[水電] 燈頭 E-108、軌道條 E-109；src:S20","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"軌道燈"},{"spoken":["磁吸軌道燈","磁吸"],"asr_variants":[],"standard":"磁吸軌道燈","code":"E-021","note":"[水電] 材料 E-110～E-112；src:S21；index.html terms-default；[水電] 材料 E-110～E-112；src:S21","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"磁吸軌道燈"},{"spoken":["油漆"],"asr_variants":[],"standard":"油漆工程","code":null,"note":"[油漆] 台語 iû-tshat；src:M25627","source":["embedded","taigi-db","site-terms"],"category":"工法","tailo":"iû-tshat","taigi_hanzi":"油漆"},{"spoken":["一底二度","一底二刷"],"asr_variants":[],"standard":"乳膠漆一底二度","code":"A-101","note":"[油漆] 待師傅確認：「底」指批土或底漆，來源說法不一（S17）；src:S15,S16,S17","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"一底二度"},{"spoken":["二底三度"],"asr_variants":[],"standard":"乳膠漆二底三度","code":"A-102","note":"[油漆] src:S17","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"二底三度"},{"spoken":["批土","補土","填縫土"],"asr_variants":["填縫塗","填縫兔","填縫吐"],"standard":"批土","code":null,"note":"[油漆] 待師傅確認：S15 把補土、批土分開講，S18 說批土也稱補土；全面批土才對 A-104；src:S18,S15","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"工法","taigi_hanzi":"批土"},{"spoken":["拉卡"],"asr_variants":[],"standard":"硝化棉噴漆（lacquer）","code":null,"note":"[油漆] 櫃體噴漆 A-301／門片 A-302 請確認；src:S2","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"拉卡"},{"spoken":["優利旦","尤利旦","優力"],"asr_variants":["優哩旦","優里旦","尤哩旦","尤里旦"],"standard":"PU 漆","code":null,"note":"[油漆] 待師傅確認：S1 寫透明漆、S2 寫 PU 塗料；src:S1,S2","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"優利旦"},{"spoken":["欸婆西","ㄟ波西"],"asr_variants":["欸婆喜","ㄟ波喜"],"standard":"環氧樹脂（Epoxy）","code":null,"note":"[油漆] 單價庫無；src:S1,S3","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"欸婆西"},{"spoken":["矽利康","矽利控"],"asr_variants":["矽哩康","矽里康","矽哩控","矽里控","矽利孔"],"standard":"矽利康填縫","code":null,"note":"[油漆] 材料；src:S1,S2","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"材料","taigi_hanzi":"矽利康"},{"spoken":["美利抓","美利爪"],"asr_variants":["美哩抓","美里抓","美哩爪","美里爪"],"standard":"勾縫／留縫","code":null,"note":"[油漆] 待師傅確認：S2 註發音源由待查證；src:S1,S2","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"工法","taigi_hanzi":"美利抓"},{"spoken":["拆","拆除"],"asr_variants":[],"standard":"拆除","code":null,"note":"[拆除] 台語 thiah；拆什麼請確認；src:M3949","source":["embedded","taigi-db","site-terms"],"category":"工法","tailo":"thiah","taigi_hanzi":"拆"},{"spoken":["見底","打到見底","拆到見底"],"asr_variants":[],"standard":"打除至紅磚／結構層","code":null,"note":"[拆除] 單價庫無牆面打除工項；壁癌需現勘；src:S7,S8,S2","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"見底"},{"spoken":["打毛","抓貓"],"asr_variants":[],"standard":"打毛","code":null,"note":"[拆除] 單價庫缺項；src:S7,S2","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"打毛"},{"spoken":["去皮"],"asr_variants":[],"standard":"去除磁磚表層","code":null,"note":"[拆除] 單價庫缺項；src:S7,S2","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"去皮"},{"spoken":["天花全拆","拆天花板"],"asr_variants":[],"standard":"天花板拆除","code":"W-004","note":"[拆除] src:S8","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"天花全拆"},{"spoken":["拆櫃體","拆櫃"],"asr_variants":[],"standard":"櫃體拆除","code":null,"note":"[拆除] 高櫃 W-002／矮櫃 W-003 請確認；src:S8","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"拆櫃體"},{"spoken":["阿桃啊","鴨桃阿","阿桃阿"],"asr_variants":["鴨桃啊","啊桃啊","呀桃啊","阿陶啊","阿桃鴨","阿桃呀","啊桃阿","呀桃阿","鴨陶阿","鴨桃鴨","鴨桃呀","阿陶阿"],"standard":"電動破碎機／打鑿機","code":null,"note":"[拆除] 工具；src:S1,S2,S3","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"工具","taigi_hanzi":"阿桃阿"},{"spoken":["媽路啊","巴魯","罵噜阿"],"asr_variants":["罵路啊","嘛路啊","馬路啊","媽路鴨","媽路阿","媽路呀","芭魯","帕魯","巴嚕","巴滷","媽噜阿","嘛噜阿","馬噜阿","罵噜鴨","罵噜啊","罵噜呀"],"standard":"拔釘器／鐵撬","code":null,"note":"[拆除] 工具，日語 バール；src:S1,S2,S3","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"工具","taigi_hanzi":"媽路啊"},{"spoken":["土水","塗水","塗水師"],"asr_variants":["兔水","吐水","土水師","兔水師","吐水師"],"standard":"泥作（泥水工）","code":null,"note":"[泥作] 單價庫無泥作工項；src:M9362,M9363,S9,S10","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"常用句","taigi_hanzi":"塗水"},{"spoken":["怕ㄉㄟˋ","帕底","粗底","打底"],"asr_variants":["巴底"],"standard":"打底","code":null,"note":"[泥作] 單價庫缺項；src:S10,S1,S9","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"工法","taigi_hanzi":"帕底"},{"spoken":["喜阿ㄎㄟˋ","西阿給","喜鴨給","婚羹"],"asr_variants":["西阿ㄎㄟˋ","喜鴨ㄎㄟˋ","喜啊ㄎㄟˋ","喜呀ㄎㄟˋ","喜阿給","西鴨給","西啊給","西呀給","喜啊給","喜呀給"],"standard":"粉光","code":null,"note":"[泥作] 日語 仕上げ；配管溝復原含在 P-012；src:S10,S1,S2,S3","source":["embedded","taigi-db","additions","videos","site-terms","user-list","asr-variants"],"category":"工法","taigi_hanzi":"喜鴨給"},{"spoken":["太魯","泰魯","太嚕"],"asr_variants":["台魯","臺魯","太滷","泰嚕","泰滷","台嚕","臺嚕"],"standard":"磁磚","code":null,"note":"[泥作] 單價庫缺項（floorplan-guide.md）；src:S1,S3","source":["embedded","taigi-db","additions","videos","site-terms","user-list","asr-variants"],"category":"材料","taigi_hanzi":"太魯"},{"spoken":["膨拱","碰共","膨管","捧共","彭共"],"asr_variants":["捧拱","碰拱","彭拱","膨共","膨貢","碰貢","捧管","碰管","彭管","捧貢","彭貢"],"standard":"空鼓","code":null,"note":"[泥作] 需現勘；src:S1,S2,S3,S8","source":["embedded","taigi-db","additions","videos","site-terms","user-list","asr-variants"],"category":"工法","taigi_hanzi":"膨拱"},{"spoken":["控古力","孔鼓勵","控固力"],"asr_variants":["孔古力","控鼓勵","恐鼓勵","孔固力"],"standard":"混凝土／水泥","code":null,"note":"[泥作] 待師傅確認：S1 寫水泥、S2/S3 寫混凝土；src:S1,S2,S3","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"材料","taigi_hanzi":"孔鼓勵"},{"spoken":["紅毛塗","ㄤ摸托","昂摸頭","紅毛土"],"asr_variants":["洪毛塗","宏毛塗","紅毛兔","紅毛吐","昂摸托","ㄤ摸頭","盎摸頭","昂摩頭","洪毛土","宏毛土"],"standard":"水泥","code":null,"note":"[泥作] 台語 âng-mn̂g-thôo；src:M5384,S2,S3","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"材料","tailo":"âng-mn̂g-thôo","taigi_hanzi":"紅毛塗"},{"spoken":["南媽控","喇嘛控","那罵控"],"asr_variants":["那媽控","喇媽控","南罵控","南嘛控","南馬控","南媽孔","那嘛控","喇罵控","喇馬控","喇嘛孔","那馬控","那罵孔","那嗎控"],"standard":"預拌混凝土","code":null,"note":"[泥作] 日語 生コン；src:S1,S2,S3","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"材料","taigi_hanzi":"那罵控"},{"spoken":["叩敗","口敗"],"asr_variants":[],"standard":"坡度","code":null,"note":"[泥作] 日語 勾配；src:S1,S2,S3","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"叩敗"},{"spoken":["夏水","夏最","下罪"],"asr_variants":["霞水","霞最"],"standard":"洩水坡度","code":null,"note":"[泥作] 台語 洩水；src:S1,S2,S3","source":["embedded","taigi-db","site-terms","asr-variants"],"category":"工法","taigi_hanzi":"夏水"},{"spoken":["麻吉"],"asr_variants":[],"standard":"標準餅（灰誌）","code":null,"note":"[泥作] src:S1","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"麻吉"},{"spoken":["磚仔"],"asr_variants":[],"standard":"磚","code":null,"note":"[泥作] 砌磚缺項；src:M11815","source":["embedded","taigi-db","site-terms"],"category":"材料","taigi_hanzi":"磚仔"},{"spoken":["零夠車","內溝啊掐","類勾阿掐"],"asr_variants":["零溝車","零勾車","類溝啊掐","累溝啊掐","內勾啊掐","內夠啊掐","內溝鴨掐","內溝阿掐","內溝呀掐","內溝啊恰","累勾阿掐","內勾阿掐","類溝阿掐","類夠阿掐","類勾鴨掐","類勾啊掐","類勾呀掐","類勾阿恰"],"standard":"單輪手推車","code":null,"note":"[泥作] 工具，日語 ねこ車；src:S1,S2","source":["embedded","taigi-db","additions","site-terms","user-list","asr-variants"],"category":"工具","taigi_hanzi":"零夠車"},{"spoken":["騷day","燒底"],"asr_variants":[],"standard":"軟底（鋪磚工法）","code":null,"note":"[泥作] 缺項；src:S2","source":["embedded","taigi-db","site-terms"],"category":"工法","taigi_hanzi":"騷day"},{"spoken":["嘿北","嘿被","嘿麥"],"asr_variants":[],"standard":"平方公尺","code":null,"note":"[單位] 日語 平米；1坪=3.3058㎡（README.md）；src:S1,S2,S3","source":["embedded","taigi-db","units","site-terms"],"category":"單位","taigi_hanzi":"嘿北"},{"spoken":["仙","縣","CM","cm"],"asr_variants":[],"standard":"公分","code":null,"note":"[單位] src:S1,S2","source":["embedded","taigi-db","videos","units","site-terms"],"category":"單位","taigi_hanzi":"仙"},{"spoken":["硬擠"],"asr_variants":[],"standard":"英吋","code":null,"note":"[單位] src:S2,S3","source":["embedded","taigi-db","units","site-terms"],"category":"單位","taigi_hanzi":"硬擠"},{"spoken":["昏","分","台分","hun"],"asr_variants":[],"standard":"台分","code":null,"note":"[單位] 1分≈0.303公分（S5）；src:S1","source":["embedded","taigi-db","site-terms"],"category":"單位","tailo":"hun","taigi_hanzi":"分"},{"spoken":["分","台分","hun","昏"],"asr_variants":[],"standard":"台分","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","units"],"auto":false},{"spoken":["哈利","娘"],"asr_variants":["哈哩","哈里","哈力"],"standard":"梁","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","videos","user-list","asr-variants"],"category":"結構","taigi_hanzi":"哈利"},{"spoken":["帕拉呸斗"],"asr_variants":["巴拉呸斗","帕拉胚斗","帕拉佩斗","帕啦呸斗"],"standard":"女兒牆","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"結構","taigi_hanzi":"帕拉呸斗"},{"spoken":["阿搜比"],"asr_variants":["鴨搜比","啊搜比","呀搜比","阿收比","阿嗖比"],"standard":"伸縮縫／間隙","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"結構","taigi_hanzi":"阿搜比"},{"spoken":["車輪餅","甜甜圈"],"asr_variants":[],"standard":"鋼筋間隔器","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list"],"category":"材料","taigi_hanzi":"車輪餅"},{"spoken":["封板"],"asr_variants":[],"standard":"封板（釘矽酸鈣板／石膏板）","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list"],"category":"工法","taigi_hanzi":"封板"},{"spoken":["拉整","拉陣"],"asr_variants":["拉振"],"standard":"電鑽／喜得釘","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"工具","taigi_hanzi":"拉整"},{"spoken":["浮濫打","ㄙㄟ打"],"asr_variants":["福濫打","浮爛打"],"standard":"手持砂輪機／切割機","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"工具","taigi_hanzi":"浮濫打"},{"spoken":["卡哩卡哩"],"asr_variants":["卡里卡哩","卡利卡哩","卡哩卡里","卡哩卡利"],"standard":"棘輪扳手","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"工具","taigi_hanzi":"卡哩卡哩"},{"spoken":["樓賴爸"],"asr_variants":["漏賴爸","樓來爸","樓賴把"],"standard":"螺絲起子","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"工具","taigi_hanzi":"樓賴爸"},{"spoken":["片幾"],"asr_variants":["偏幾","片機"],"standard":"老虎鉗／鉗子","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"工具","taigi_hanzi":"片幾"},{"spoken":["哇夏"],"asr_variants":["娃夏","瓦夏","哇霞"],"standard":"螺絲墊圈","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"材料","taigi_hanzi":"哇夏"},{"spoken":["空不累撒","空布雷薩"],"asr_variants":["空不類撒","空不內撒","空不累薩","空不雷撒","空雷雷薩","空布布薩","空布雷撒"],"standard":"空氣壓縮機","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","videos","user-list","asr-variants"],"category":"機具","taigi_hanzi":"空不累撒"},{"spoken":["夏罷"],"asr_variants":["霞罷"],"standard":"小型鏟土機／山貓","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"車輛","taigi_hanzi":"夏罷"},{"spoken":["慶阿掐"],"asr_variants":["親阿掐","慶鴨掐","慶啊掐","慶呀掐","慶阿恰"],"standard":"小型吊卡車","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"車輛","taigi_hanzi":"慶阿掐"},{"spoken":["滴溝阿"],"asr_variants":["低溝阿","滴勾阿","滴夠阿","滴溝鴨","滴溝啊","滴溝呀"],"standard":"堆高機","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","additions","user-list","asr-variants"],"category":"車輛","taigi_hanzi":"滴溝阿"},{"spoken":["斯囉布"],"asr_variants":["斯囉雷"],"standard":"樓板","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","videos","asr-variants"],"category":"結構","taigi_hanzi":"斯囉布"},{"spoken":["調啊","調"],"asr_variants":["調鴨","調阿","調呀"],"standard":"柱","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","videos","asr-variants"],"category":"結構","taigi_hanzi":"調啊"},{"spoken":["疊磚"],"asr_variants":[],"standard":"砌磚","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","videos"],"category":"工法","taigi_hanzi":"疊磚"},{"spoken":["木心板"],"asr_variants":[],"standard":"木心板","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","videos"],"category":"材料","taigi_hanzi":"木心板"},{"spoken":["糕盯"],"asr_variants":[],"standard":"勾丁（磁磚貼法）","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","videos"],"category":"工法","taigi_hanzi":"糕盯"},{"spoken":["吼盯"],"asr_variants":[],"standard":"門檻／止水門檻","code":null,"note":"[台語補充] src:使用者提供","source":["embedded","taigi-db","videos"],"category":"結構","taigi_hanzi":"吼盯"},{"spoken":["尺","台尺","tshioh","tshiorh"],"asr_variants":[],"standard":"台尺","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"單位","tailo":"tshioh","taigi_hanzi":"尺"},{"spoken":["寸","台寸","tshùn"],"asr_variants":[],"standard":"台寸","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"單位","tailo":"tshùn","taigi_hanzi":"寸"},{"spoken":["才","一才","兩才"],"asr_variants":[],"standard":"面積才","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"單位","taigi_hanzi":"才"},{"spoken":["坪"],"asr_variants":[],"standard":"坪","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"單位","taigi_hanzi":"坪"},{"spoken":["一","tsi̍t","it"],"asr_variants":[],"standard":"1","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"tsi̍t","taigi_hanzi":"一"},{"spoken":["兩","nn̄g","二","jī"],"asr_variants":[],"standard":"2","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"nn̄g","taigi_hanzi":"兩"},{"spoken":["三","sann"],"asr_variants":[],"standard":"3","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"sann","taigi_hanzi":"三"},{"spoken":["四","sì"],"asr_variants":[],"standard":"4","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"sì","taigi_hanzi":"四"},{"spoken":["五","gōo"],"asr_variants":[],"standard":"5","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"gōo","taigi_hanzi":"五"},{"spoken":["六","la̍k"],"asr_variants":[],"standard":"6","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"la̍k","taigi_hanzi":"六"},{"spoken":["七","tshit"],"asr_variants":[],"standard":"7","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"tshit","taigi_hanzi":"七"},{"spoken":["八","peh","peeh"],"asr_variants":[],"standard":"8","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"peh","taigi_hanzi":"八"},{"spoken":["九","káu"],"asr_variants":[],"standard":"9","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"káu","taigi_hanzi":"九"},{"spoken":["十","tsa̍p"],"asr_variants":[],"standard":"10","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"數字","tailo":"tsa̍p","taigi_hanzi":"十"},{"spoken":["幾尺幾寸","X尺Y","三尺六"],"asr_variants":[],"standard":"X 尺 Y 寸","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"常用句","taigi_hanzi":"幾尺幾寸"},{"spoken":["幾尺半","三尺半","四尺半","五尺半","兩尺半"],"asr_variants":[],"standard":"X 尺 + 5 寸","code":null,"note":"[台語補充] src:使用者提供；只給小精靈參考，不自動改寫原文","source":["embedded","taigi-db","units"],"auto":false,"category":"常用句","taigi_hanzi":"幾尺半"}]}
 </script>
 <script type="text/plain" id="helper-knowledge">
 ## 第 1 部分：角色與語氣（系統提示）
@@ -4009,10 +3897,18 @@ applyPlan();
 // ----- 報價小精靈（語音）：一題一題問，估價通 解析成欄位與工項，師傅確認後才套用
 const TERMS_KEY = "shifu-terms-v1", VOICE_KEY = "shifu-voice-v1";
 const DEFAULT_TERMS = JSON.parse(document.getElementById("terms-default").textContent);
-const _unusedValidTerms = t => !!(t && typeof t==="object" && typeof t.version==="string" && Array.isArray(t.terms) && t.terms.length && t.terms.every(x=>x && Array.isArray(x.spoken) && x.spoken.every(w=>typeof w==="string") && typeof x.standard==="string" && (x.code==null || typeof x.code==="string")));
-// 工地術語對照表只放在程式內部，當作小精靈解析的背景資料（畫面上不顯示、不能匯入）。清掉舊版匯入的紀錄。
-const terms = DEFAULT_TERMS;
+const validTerms = t => !!(t && typeof t==="object" && typeof t.version==="string" && Array.isArray(t.terms) && t.terms.length && t.terms.every(x=>x && Array.isArray(x.spoken) && x.spoken.every(w=>typeof w==="string") && typeof x.standard==="string" && (x.code==null || typeof x.code==="string") && (!x.asr_variants || (Array.isArray(x.asr_variants) && x.asr_variants.every(w=>typeof w==="string")))));
+// 工地術語對照表：優先載入 taigi_terms.json（之後加詞不必改程式），失敗則用頁面內嵌後備。
+let terms = DEFAULT_TERMS;
 try { localStorage.removeItem(TERMS_KEY); } catch (e) {}
+(async () => {
+  try {
+    const r = await fetch("taigi_terms.json", {cache:"no-store"});
+    if (!r.ok) return;
+    const t = await r.json();
+    if (validTerms(t)){ terms = t; TERM_RE = null; TERM_MAP = null; }
+  } catch (e) {}
+})();
 
 const voiceCfg = {speak:true, rate:0.9, lang:"zh", micMode:"hold"};
 try { const v = JSON.parse(localStorage.getItem(VOICE_KEY)||"null"); if (v){ if (typeof v.speak==="boolean") voiceCfg.speak = v.speak; if (+v.rate>=0.6 && +v.rate<=1.3) voiceCfg.rate = +v.rate; if (v.lang==="nan" || v.lang==="zh") voiceCfg.lang = v.lang; if (v.micMode==="tap" || v.micMode==="hold") voiceCfg.micMode = v.micMode; } } catch (e) {}
@@ -4029,11 +3925,12 @@ const tx = k => TX.zh[k];
 
 // ----- 工地術語（國語／台語）→ 標準工項名稱；台語長度（尺、寸、分）→ 台尺
 let TERM_RE = null, TERM_MAP = null;
+function termWords(t){ return [...(t.spoken||[]), ...(t.asr_variants||[])]; }
 function termTable(){
   if (TERM_RE) return;
   TERM_MAP = new Map();
   for (const t of terms.terms){ if (t.auto===false) continue;   // 數字、單位、句型：只給小精靈參考，不改寫原文
-    for (const w of t.spoken){ const k = String(w||"").trim(); if (k.length < 2 || (/^[a-z]{1,3}$/i.test(k) && !/^cm$/i.test(k))) continue; if (!TERM_MAP.has(k)) TERM_MAP.set(k, t); } }
+    for (const w of termWords(t)){ const k = String(w||"").trim(); if (k.length < 2 || (/^[a-z]{1,3}$/i.test(k) && !/^cm$/i.test(k))) continue; if (!TERM_MAP.has(k)) TERM_MAP.set(k, t); } }
   const keys = [...TERM_MAP.keys()].sort((a,b)=>b.length - a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
   TERM_RE = keys.length ? new RegExp(keys.join("|"), "g") : null;
 }
@@ -4045,39 +3942,63 @@ function cnNum(x){
   for (const ch of x){ if (ch in CN_D) cur = CN_D[ch]; else if (ch==="十"){ total += (cur || 1) * 10; cur = 0; } else if (ch==="百"){ total += (cur || 1) * 100; cur = 0; } }
   return total + cur;
 }
+function normSrc(text){
+  let s = String(text||"").normalize("NFKC").replace(/臺/g, "台");
+  s = s.replace(/[，,。．、；;：:！!？?「」『』“”‘’（）()【】\[\]…—–]/g, " ");
+  return s.replace(/[ \t\u3000]+/g, " ").trim();
+}
 const NUM = "([0-9]+(?:\\.[0-9]+)?|[零〇一二兩三四五六七八九十百]+)", DIG = "([0-9]|[一二兩三四五六七八九])";
 const NOT_AFTER = "(?![0-9零〇一二兩三四五六七八九十百個組盞樘處只座口坪米公顆條])";
 const RE_CHI = new RegExp(`${NUM}台?尺${DIG}寸?(?:${DIG}分)?${NOT_AFTER}`, "g");   // 三尺二、三尺二寸五分
 const RE_CUN = new RegExp(`${NUM}寸(?:${DIG}分)?`, "g");
-const RE_HALF = new RegExp(`${NUM}台?尺半`, "g");                                     // 三尺半 = 3 尺 5 寸                           // 八寸、八寸五分
+const RE_HALF = new RegExp(`${NUM}台?尺半`, "g");                                     // 三尺半 = 3 尺 5 寸
 const fmtChi = v => String(Math.round(v*100)/100);
 function normalizeAnswer(text){
   termTable();
   const hits = [];
-  let out = String(text||"");
+  let out = normSrc(text);
   if (TERM_RE) out = out.replace(TERM_RE, m=>{
     const t = TERM_MAP.get(m); if (!t) return m;
-    const unsure = termUnsure(t), std = String(t.standard||"");
-    if (std===m) return m;   // 本來就是標準說法
-    if (std.startsWith(m)){ if (unsure) hits.push({from:m, to:std, unsure:true}); return m; }   // 例如「地板」→ 類型未定，只提醒確認
-    hits.push({from:m, to:std, unsure}); return std;
+    const unsure = termUnsure(t), std = String(t.standard||""), code = t.code || null;
+    if (std===m) return m;   // 本來就是標準說法（例如「打底」），不改寫
+    if (std.startsWith(m)){ if (unsure) hits.push({from:m, to:std, unsure:true, code}); return m; }   // 例如「地板」→ 類型未定，只提醒確認
+    hits.push({from:m, to:std, unsure, code}); return std;
   });
   out = out.replace(RE_HALF, (m, a)=>{ const r = `${fmtChi(cnNum(a) + 0.5)} 尺`; hits.push({from:m, to:r}); return r; });
   out = out.replace(RE_CHI, (m, a, b, c)=>{ const v = cnNum(a) + cnNum(b)/10 + (c ? cnNum(c)/100 : 0); const r = `${fmtChi(v)} 尺`; hits.push({from:m, to:r}); return r; });
   out = out.replace(RE_CUN, (m, a, c)=>{ const v = cnNum(a)/10 + (c ? cnNum(c)/100 : 0); const r = `${fmtChi(v)} 尺`; hits.push({from:m, to:r}); return r; });
   return {text:out, hits};
 }
+function hitLabel(h){ return `${h.from} → ${h.to}${h.code ? `（${h.code}）` : ""}`; }
+function vwRenderTermHits(hits){
+  const el = $("#vw-terms"); if (!el) return;
+  const H = hits || vw.termHits || [];
+  const ok = [...new Set(H.filter(h=>!h.unsure).map(hitLabel))], un = [...new Set(H.filter(h=>h.unsure).map(hitLabel))];
+  el.hidden = !ok.length && !un.length;
+  const head = (ok.length || un.length) ? `<span class="vw-terms-h">聽到 → 國語</span>` : "";
+  el.innerHTML = head + (ok.length ? `聽到：${ok.map(escH).join("；")}` : "") + (un.length ? `${ok.length ? "<br>" : ""}<b>請師傅確認：</b>${un.map(escH).join("；")}` : "");
+}
+function vwPreviewTerms(){
+  const ta = $("#vw-text"); if (!ta) return;
+  const r = normalizeAnswer(ta.value);
+  vwRenderTermHits((vw.termHits || []).concat(r.hits));
+}
 function vwApplyTerms(){
   const ta = $("#vw-text"), r = normalizeAnswer(ta.value);
   if (r.text !== ta.value) ta.value = r.text;
   if (r.hits.length){ vw.termHits = (vw.termHits || []).concat(r.hits); }
-  const H = vw.termHits || [], el = $("#vw-terms");
-  const ok = [...new Set(H.filter(h=>!h.unsure).map(h=>`${h.from} → ${h.to}`))], un = [...new Set(H.filter(h=>h.unsure).map(h=>`${h.from} → ${h.to}`))];
-  el.hidden = !ok.length && !un.length;
-  el.innerHTML = (ok.length ? `聽到：${ok.map(escH).join("；")}` : "") + (un.length ? `${ok.length ? "<br>" : ""}<b>請師傅確認：</b>${un.map(escH).join("；")}` : "");
+  vwRenderTermHits(vw.termHits || r.hits);
   return r.text;
 }
+window.__normalizeAnswer = normalizeAnswer;
+window.__getTerms = () => terms;
 $("#vw-text").addEventListener("change", vwApplyTerms);
+$("#vw-text").addEventListener("blur", vwApplyTerms);
+let vwTermTimer = null;
+$("#vw-text").addEventListener("input", ()=>{
+  clearTimeout(vwTermTimer);
+  vwTermTimer = setTimeout(()=>{ if (document.activeElement === $("#vw-text")) vwPreviewTerms(); else vwApplyTerms(); }, 400);
+});
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 const REGION_KEYS = Object.keys(DB.adjustments.region);
@@ -4125,7 +4046,7 @@ function vwClose(){
 $("#vw-open").addEventListener("click", vwOpen);
 $("#vw-close").addEventListener("click", vwClose);
 document.addEventListener("keydown", e=>{ if (e.key==="Escape" && !$("#vw").hidden) vwClose(); });
-function vwStopRec(){ if (vw.rec){ try { vw.rec.stop(); } catch (e) {} } }
+function vwStopRec(){ vw._stopRec = true; if (vw.rec){ try { vw.rec.stop(); } catch (e) {} } }
 const MIC_TXT = {idle:()=>voiceCfg.micMode==="tap" ? "點一下開始說" : "按住說話", listen:()=>vw.tapMode ? "正在聽…再點一下停止" : "正在聽…", proc:()=>"辨識中…"};
 function vwMicUI(st){
   if (st===true) st = "listen"; if (st===false || !st) st = "idle";
@@ -4140,9 +4061,14 @@ function micEnv(){
   const inApp = /Line\/|FBAN|FBAV|FB_IAB|Instagram|SamsungBrowser/i.test(ua);
   const android = /Android/i.test(ua);
   const ios = /iPhone|iPad|iPod/i.test(ua);
-  const kind = /Line\//i.test(ua) ? "LINE" : /FBAN|FBAV|FB_IAB/i.test(ua) ? "Facebook" : /Instagram/i.test(ua) ? "Instagram" : /SamsungBrowser/i.test(ua) ? "Samsung Internet" : /CriOS/i.test(ua) ? "Chrome iOS" : /FxiOS|Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : (/Safari/i.test(ua) && !/Chrome|Chromium|CriOS|Android/i.test(ua)) ? "Safari" : /Chrome|CriOS|Chromium/i.test(ua) ? "Chrome" : "其他瀏覽器";
+  const crios = /CriOS/i.test(ua);
+  const fxios = /FxiOS/i.test(ua);
+  const edgios = /EdgiOS/i.test(ua);
+  const safari = ios && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|Chrome|Chromium/i.test(ua);
+  const kind = /Line\//i.test(ua) ? "LINE" : /FBAN|FBAV|FB_IAB/i.test(ua) ? "Facebook" : /Instagram/i.test(ua) ? "Instagram" : /SamsungBrowser/i.test(ua) ? "Samsung Internet" : crios ? "Chrome iOS" : fxios ? "Firefox iOS" : edgios ? "Edge iOS" : /FxiOS|Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : safari ? "Safari" : /Chrome|Chromium/i.test(ua) ? "Chrome" : "其他瀏覽器";
   const label = [kind, android ? "Android" : ios ? "iOS" : "", inApp ? "內建瀏覽器" : "", inFrame ? "iframe" : ""].filter(Boolean).join(" ");
-  return {ua, inApp, android, ios, kind, label};
+  const path = ios ? "ios-gum+sr" : android ? "android-sr" : "desktop-sr";
+  return {ua, inApp, android, ios, crios, fxios, edgios, safari, kind, label, path};
 }
 function micChromeIntent(){
   const path = `${location.host}${location.pathname}${location.search}${location.hash}`;
@@ -4175,7 +4101,7 @@ function micErrShow(kind, detail){
   const box = $("#mic-err");
   const steps = `<ol><li>點網址列左邊的<b>鎖頭</b>（或「網站設定」圖示）</li><li>找到<b>麥克風</b></li><li>改成<b>允許</b></li><li><b>重新整理</b>這個頁面，再按一次麥克風</li></ol>`;
   const frameTip = `<p class="mic-tip"><b>請用瀏覽器直接開啟這個網頁（不要嵌在其他網站裡）再試。</b>目前估價通開在內嵌頁面裡，瀏覽器可能不讓它使用麥克風。</p>`;
-  const typing = `<p class="mic-type">也可以直接在下面的框框<b>打字回答</b>，一樣能估價。</p>`;
+  const typing = `<p class="mic-type">也可以直接在下面的框框<b>打字</b>，或把游標放進回答框後用<b>鍵盤的麥克風</b>來說，一樣會轉成國語並能估價。</p>`;
   const M = {
     blocked: `<h4>麥克風被擋住了</h4>${micPolicyAllowed()===false ? frameTip : steps + (inFrame ? frameTip : "")}`,
     frame: `<h4>麥克風被擋住了</h4>${frameTip}`,
@@ -4192,11 +4118,16 @@ function micErrShow(kind, detail){
   const kindMap = {noservice:"nosvc"}; kind = kindMap[kind] || kind;
   box.innerHTML = (M[kind] || M.other) + (detail ? `<p class="mic-detail">技術訊息：${escH(micTech(detail))}</p>` : "") + typing;
   box.hidden = false; box.dataset.kind = kind;
+  vwFocusDictation();
+}
+function vwFocusDictation(){
+  const ta = $("#vw-text");
+  if (ta && !$("#vw").hidden && !$("#vw-ask").hidden){ try { ta.focus({preventScroll:true}); } catch (e) { try { ta.focus(); } catch (er) {} } }
 }
 const micErrHide = () => { const b=$("#mic-err"); b.hidden = true; b.innerHTML = ""; delete b.dataset.kind; };
 function vwMicOpenHint(){
-  if (!SR){ micErrShow("nosr"); vwStatus("這台裝置的瀏覽器不支援語音辨識，請直接在下面打字回答。", true); return; }
-  if (micEnv().inApp){ micErrShow("inapp"); vwStatus("這個內建瀏覽器通常不能語音辨識，請用 Chrome 或 Safari 開啟，或直接打字。", true); }
+  if (!SR){ micErrShow("nosr"); vwStatus("這台裝置的瀏覽器不支援語音辨識，請直接打字，或把游標放進回答框用鍵盤的麥克風來說。", true); return; }
+  if (micEnv().inApp){ micErrShow("inapp"); vwStatus("這個內建瀏覽器通常不能語音辨識，請用 Chrome 或 Safari 開啟，或把游標放進回答框用鍵盤的麥克風來說。", true); }
 }
 function gumKind(e){
   const n = e && e.name;
@@ -4263,9 +4194,29 @@ function micBegin(src){
   }
   micErrHide();
   releaseMicStream();   // 若「測試麥克風」還留著音訊軌道，先關掉再開始辨識
-  // 在點擊事件內同步直接呼叫 recognition.start()（聆聽流程不先呼叫 getUserMedia）；每次用新的辨識實例
-  micDbg(`${src}：同步開始語音辨識（不呼叫 getUserMedia）`);
+  const env = micEnv();
+  vw._stopRec = false;
+  window.__micLast = {path: env.path, usedGum: !!env.ios, continuous: !env.android, lang: "zh-TW"};
+  // iOS（Safari + CriOS）：恢復 v48 修補前的同一手勢流程——同步呼叫 getUserMedia（不 await）再 recognition.start()。
+  // 迴歸點：v48 網站修補／v49 原始檔為修 Android 而拿掉聆聽路徑的 getUserMedia，iPhone Chrome 便無法辨識。
+  // Android／桌面：維持不在聆聽路徑呼叫 getUserMedia，只同步 start()。
+  let gp = null;
+  if (env.ios){
+    try { gp = requestMic(); } catch (e) { gp = Promise.reject(e); }
+    micDbg(`${src}：iOS 同步呼叫 getUserMedia 與 recognition.start()`);
+  } else {
+    micDbg(`${src}：同步開始語音辨識（不呼叫 getUserMedia）`);
+  }
   const ok = startRec();
+  if (env.ios && gp){
+    gp.then(()=>{ micDbg("getUserMedia 成功，已關閉測試音訊"); showMicPerm(); },
+      e=>{ const k = e.name==="InsecureContext" ? "insecure" : gumKind(e);
+        micDbg(`getUserMedia 錯誤：${e.name||"Error"}${e.message ? " " + e.message : ""}`);
+        micErrShow(k, `${e.name||"Error"}${e.message ? "：" + e.message : ""}`); showMicPerm();
+        if (vw.rec){ try { vw.rec.abort(); } catch (er) {} }
+        vwMicUI("idle");
+        vwStatus(k==="nomic" ? "找不到麥克風，請改用鍵盤的麥克風或直接打字。" : "麥克風無法使用，請照下面的說明處理，或把游標放進回答框用鍵盤的麥克風來說。", true); });
+  }
   if (ok){ vwMicUI("listen"); try { navigator.vibrate && navigator.vibrate(40); } catch (e) {} showMicPerm(); }
   return ok;
 }
@@ -4327,11 +4278,14 @@ function startRec(){
   let rec;
   try { rec = new SR(); } catch (e) { micDbg(`建立語音辨識失敗：${e.name||e}`); micErrShow("nosr", e && e.message); return false; }
   vw.rec = rec;
-  rec.lang = "zh-TW"; rec.interimResults = true; rec.continuous = true;
+  const env = micEnv();
+  rec.lang = "zh-TW"; rec.interimResults = true; rec.continuous = !env.android;   // iOS／桌面維持 continuous=true；Android 用 false，結束後若仍在聽再重開
+  window.__micLast = Object.assign(window.__micLast || {}, {path: env.path, continuous: rec.continuous, lang: rec.lang, usedGum: !!env.ios});
   vw.base = $("#vw-text").value ? $("#vw-text").value.trim() + " " : "";
   let finals = "";
   rec.onstart = () => micDbg("語音辨識 onstart");
   rec.onaudiostart = () => micDbg("onaudiostart（收到聲音）");
+  rec.onspeechend = () => micDbg("onspeechend");
   rec.onresult = ev => {
     let interim = ""; finals = "";
     for (let i = 0; i < ev.results.length; i++){ const r = ev.results[i]; if (r.isFinal) finals += r[0].transcript; else interim += r[0].transcript; }
@@ -4340,18 +4294,24 @@ function startRec(){
   rec.onerror = ev => {
     const c = ev.error; micDbg(`語音辨識 onerror：${c}${ev.message ? " " + ev.message : ""}`);
     if (c==="not-allowed"){ micErrShow(micPolicyAllowed()===false ? "frame" : "blocked", `SpeechRecognition：${c}`); vwStatus("麥克風被擋住了，請照下面的說明處理，或直接打字回答。", true); showMicPerm(); }
-    else if (c==="service-not-allowed"){ micErrShow("nosvc", `SpeechRecognition：${c}`); vwStatus("這個瀏覽器沒有提供語音辨識，請直接打字回答。", true); }
+    else if (c==="service-not-allowed"){ micErrShow("nosvc", `SpeechRecognition：${c}`); vwStatus("語音辨識沒有成功，請再按一次麥克風；或把游標放進回答框，用鍵盤的麥克風來說。", true); }
     else if (c==="no-speech"){ micErrShow("nospeech"); vwStatus("沒有聽到聲音，請再按住麥克風說一次，或直接打字。", true); }
     else if (c==="audio-capture"){ micErrShow("nomic", "SpeechRecognition：audio-capture"); vwStatus("找不到麥克風，請直接在下面打字回答。", true); }
-    else if (c==="network"){ micErrShow("network"); vwStatus("語音辨識需要網路，現在連不上，請直接打字回答。", true); }
+    else if (c==="network"){ micErrShow("network"); vwStatus("語音辨識需要網路（會送到語音服務），現在連不上。請確認已連上網，或把游標放進回答框用鍵盤的麥克風來說。", true); }
     else if (c!=="aborted"){ micErrShow("other", `SpeechRecognition：${c}`); vwStatus("語音辨識出了點問題，請再試一次或直接打字。", true); }
   };
   rec.onend = () => {
     micDbg("語音辨識 onend");
+    // Android Chrome（continuous=false）常在停頓後結束：若使用者仍在聽，把已辨識的接到後面再重開。
+    if (env.android && !vw._stopRec && vw.micState==="listen"){
+      if (finals.trim()){ vw.base = (vw.base + finals).replace(/\s+/g," ").trim() + " "; finals = ""; $("#vw-text").value = vw.base; vwApplyTerms(); }
+      try { rec.start(); micDbg("onend：仍在聽，已重開辨識"); return; }
+      catch (e) { micDbg(`onend 重開失敗：${e.name||e}`); }
+    }
     const got = finals.trim();
     vw.rawNow = (vw.rawNow ? vw.rawNow + " " : "") + got; vwMicUI("idle"); vw.rec = null; vw.tapMode = false;
     if (got){ $("#vw-text").value = vw.base + got; vwApplyTerms(); vwStatus("聽完了，3 秒後自動確認；要修改就直接改文字，或按「確認內容」立刻送出。"); vwCdStart(); }
-    else if (!$("#mic-err").dataset.kind && /辨識中/.test($("#vw-status").textContent)) vwStatus("沒有辨識到文字，可以再按住說一次，或直接打字。");
+    else if (!$("#mic-err").dataset.kind && /辨識中/.test($("#vw-status").textContent)) vwStatus("沒有辨識到文字，可以再按住說一次，或把游標放進回答框用鍵盤的麥克風來說。");
   };
   try { rec.start(); micDbg("recognition.start()"); return true; }
   catch (e) { micDbg(`recognition.start() 失敗：${e.name||"Error"}${e.message ? " " + e.message : ""}`); vw.rec = null;
