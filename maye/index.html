@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#638280">
+  <title>估價嗎耶通</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <header class="top no-print">
+    <div class="wrap">
+      <div class="brand">MAYE QUOTE</div>
+      <h1>估價嗎耶通</h1>
+      <p>按麥克風說施工內容，說完就出估價單。也可以用下面的格子打字。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="home" class="view on" aria-label="首頁">
+      <div class="card home-card">
+        <div class="mic-wrap">
+          <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="開始錄音">
+            <span class="ico" aria-hidden="true">🎤</span>
+            <span id="mic-lab">開始說</span>
+          </button>
+          <div class="mic-hint" id="mic-hint">點一下開始，再說一次結束</div>
+        </div>
+        <div class="quota" id="quota-row" hidden>
+          <label class="switch">
+            <input type="checkbox" id="asr-on" checked>
+            <span>用台語辨識</span>
+          </label>
+          <span id="quota-txt">正在查詢本月次數…</span>
+        </div>
+        <p class="status" id="status">準備好了，請直接說施工內容。</p>
+      </div>
+
+      <div class="card">
+        <label class="lbl" for="speech">或直接打字（不扣辨識次數）</label>
+        <textarea id="speech" class="ta" placeholder="例如：平釘天花板 8 坪，新增一迴冷氣迴路，乳膠漆二底三度 20 坪…"></textarea>
+        <div class="actions">
+          <button type="button" id="btn-make" class="btn lg">產生估價單</button>
+        </div>
+        <p class="hint">單價只帶市場行情；沒有行情的項目會標「待填」，請再自己改。</p>
+      </div>
+    </section>
+
+    <section id="quote" class="view" aria-label="估價單">
+      <div class="card">
+        <div class="quote-head">
+          <h2>估價單</h2>
+          <button type="button" id="btn-back" class="btn ghost">回首頁再講一次</button>
+        </div>
+        <div class="spoken" id="spoken-box"></div>
+        <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單，請再檢查數量與單價。</div>
+
+        <h3>工程項目</h3>
+        <div class="table-wrap">
+          <div class="line-list" id="lines"></div>
+        </div>
+        <div class="actions">
+          <button type="button" id="btn-add" class="btn sec">新增一列</button>
+        </div>
+
+        <div class="totals" id="totals"></div>
+        <label class="tax-row"><input type="checkbox" id="tax" checked> 加 5% 營業稅</label>
+      </div>
+
+      <div class="card">
+        <h2>估價單資訊（預設不印出）</h2>
+        <p class="hint">這些只在這一頁填，每一項可單獨決定要不要出現在估價單上。</p>
+        <div class="meta" id="meta-fields"></div>
+      </div>
+
+      <div class="card no-print">
+        <h2>匯出與分享</h2>
+        <div class="export">
+          <button type="button" id="btn-copy" class="btn sec">複製文字</button>
+          <button type="button" id="btn-line" class="btn">用 LINE 分享</button>
+          <button type="button" id="btn-xlsx" class="btn sec">匯出 Excel</button>
+          <button type="button" id="btn-pdf" class="btn sec">匯出 PDF</button>
+        </div>
+        <p class="status" id="export-status"></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="print-sheet" aria-hidden="true"></div>
+
+  <script src="ai-adapter.js?v=1"></script>
+  <script src="app.js?v=1"></script>
+</body>
+</html>
