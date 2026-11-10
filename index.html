@@ -830,10 +830,20 @@ details.fold .fold-arrow{margin-left:auto;transition:transform .15s;color:var(--
 details.fold[open] .fold-arrow{transform:rotate(90deg)}
 .contact-h{display:flex;align-items:center;gap:10px;margin:0 0 8px}
 .contact-line{margin:0;font-size:17px}
-.site-footer{margin:36px 0 0;padding:20px 0 8px;border-top:1px solid var(--line);width:100%}
-.site-footer .contact-h{font-size:18px;font-weight:700;color:var(--ink)}
-.site-footer .contact-line{color:var(--muted);font-size:16px}
-@media (max-width:480px){.site-footer{margin-top:28px;padding-top:16px}.site-footer .contact-line{font-size:15px}}
+
+/* 偏遠地區 */
+.remote-box{display:grid;gap:8px;margin-top:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:14px}
+.remote-pct{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:600}
+.remote-pct input{width:84px;min-height:44px;text-align:center}
+.remote-ref summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:15px}
+.remote-ref p{margin:6px 0 0;font-size:14px;color:var(--sub)}
+.remote-tip{margin:0;padding:8px 12px;border-radius:12px;background:var(--warn-soft);font-size:14px}
+.remote-tip[hidden],.remote-box[hidden]{display:none}
+#remote{flex-wrap:wrap}
+.site-foot{margin:36px 0 0;padding:20px 0 8px;border-top:1px solid var(--line);width:100%}
+.site-foot .contact-h{font-size:18px;font-weight:700;color:var(--ink)}
+.site-foot .contact-line{color:var(--muted);font-size:16px}
+@media (max-width:480px){.site-foot{margin-top:28px;padding-top:16px}.site-foot .contact-line{font-size:15px}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol><symbol id="i-sheet" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="M8.5 11h7M8.5 15h5"/></symbol><symbol id="i-plan" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h7v9M14 3v6h7"/></symbol><symbol id="i-helper" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 20 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></symbol><symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v3.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V15"/></symbol><symbol id="i-export" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M4 15v3.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V15"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 5h6a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H3z"/><path d="M21 5h-6a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H21z"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 0 1 3 3L8 18.5z"/><path d="M13.5 7l3 3"/></symbol><symbol id="i-wood" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M3 12h18M9 6v6M15 12v6"/></symbol><symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v4"/></symbol><symbol id="i-brush" viewBox="0 0 24 24"><path d="M7 3h10v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><path d="M7 7h10"/><path d="M12 12v3"/><rect x="10.5" y="15" width="3" height="6" rx="1.5"/></symbol><symbol id="i-helmet" viewBox="0 0 24 24"><path d="M3 17.5h18"/><path d="M5 17.5a7 7 0 0 1 14 0"/><path d="M10 11V6.5h4V11"/><path d="M4 17.5V20h16v-2.5"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></symbol><symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol><symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><path d="M7.5 8h.01"/></symbol></svg>
@@ -884,7 +894,14 @@ details.fold[open] .fold-arrow{transform:rotate(90deg)}
         <div class="row">
           <div class="fld"><label for="cust">客戶</label><input id="cust" value="王先生（範例）"></div>
           <div class="fld"><label for="region">地區</label><select id="region"></select></div>
-          <div class="fld" style="flex:0 1 auto"><label>都會區／偏遠地區</label><div class="seg" id="remote"><button type="button" data-v="city" class="on">都會區</button><button type="button" data-v="remote">偏遠地區</button></div></div>
+          <div class="fld remote-fld" style="flex:1 1 100%"><label>都會區／偏遠地區</label><div class="seg" id="remote"><button type="button" data-v="city" class="on">都會區</button><button type="button" data-v="mountain">本島偏遠山區</button><button type="button" data-v="east">花東</button><button type="button" data-v="island">離島</button></div>
+            <div class="remote-box" id="remote-box" hidden>
+              <label class="remote-pct">偏遠地區加成 <input id="remote-pct" type="number" min="0" max="50" step="1" inputmode="numeric"> %<span class="chip warn">參考值，師傅可改</span></label>
+              <details class="remote-ref"><summary>參考依據</summary><p>參考工程會115年度一般房屋建築費編列基準地區係數上限（離島30%、原住民地區10～12%）、水土保持局偏遠地區參考單價加成上限20%、業者公開說明偏遠總成本約高5～15%；非法定行情</p></details>
+              <p class="hint">加成以工料小計（不含運費及交通費、不含稅金）計算；運費及交通費請在估價單另外填。</p>
+              <p class="remote-tip" id="island-tip" hidden>澎湖、金門、馬祖、綠島、蘭嶼、小琉球當地提供之勞務依離島建設條例第10條可能免徵營業稅，請師傅自行確認</p>
+            </div>
+          </div>
           <div class="fld" style="flex:0 1 150px"><label for="area">室內坪數 <span class="area-tag" id="area-tag" hidden></span></label><input id="area" type="number" min="1" step="0.5" value="28"></div>
           <div class="fld" style="flex:0 1 100px"><label for="age">屋齡（年）</label><input id="age" type="number" min="0" value="32"></div>
           <div class="fld" style="flex:0 1 100px"><label for="floor">樓層</label><input id="floor" type="number" min="1" value="4"></div>
@@ -1037,10 +1054,10 @@ details.fold[open] .fold-arrow{transform:rotate(90deg)}
     </div>
   </div>
 
-  <footer class="site-footer" id="sec-contact" aria-labelledby="h-contact">
+  <section class="panel site-foot" id="sec-contact" aria-labelledby="h-contact">
     <h2 class="contact-h" id="h-contact"><span class="itile sm" aria-hidden="true"><svg><use href="#i-helper"/></svg></span>客服聯繫</h2>
     <p class="contact-line">客服聯絡方式：（待補）</p>
-  </footer>
+  </section>
 </div>
 
 <div class="modal" id="plan-modal" role="dialog" aria-modal="true" aria-labelledby="h-plan" hidden>
@@ -2960,7 +2977,7 @@ const TEMPLATES = [
 ];
 const $ = s => document.querySelector(s);
 const fmt = n => Math.round(n).toLocaleString("zh-TW");
-const state = {baths:[{type:"exist", add:false, confirm:false}], bathN:1, bathQty:{}, bathSrc:"", remote:false, shipFee:0, tpl:"old", tier:"mid", trade:"carpentry", cplx:1, wall:"B", lines:[], scope:"all", protect:{all:false, carpentry:false, plumbing_electrical:false, painting:false}};
+const state = {baths:[{type:"exist", add:false, confirm:false}], bathN:1, bathQty:{}, bathSrc:"", remote:false, remoteType:"city", remotePct:{mountain:10, east:10, island:30}, shipFee:0, tpl:"old", tier:"mid", trade:"carpentry", cplx:1, wall:"B", lines:[], scope:"all", protect:{all:false, carpentry:false, plumbing_electrical:false, painting:false}};
 const PROT_KEY = "shifu-estimate-prot-v1";
 const PROTECT_KEY = "shifu-estimate-protect-v1";   // 各工種「保護工程」勾選狀態
 const protectSet = {};   // 使用者自己勾過／取消過的工種，範本不再覆蓋
@@ -3174,7 +3191,15 @@ function setBathsFromPlan(count, types){
   state.baths = Array.from({length:Math.max(state.bathN, 1)}, (_, i)=>{ const t = types[i]; const known = t==="new" || t==="exist"; return {type: known ? t : "exist", add:false, confirm:!known}; });
   state.bathSrc = "ai"; state.bathQty = {}; renderBaths();
 }
-$("#remote").addEventListener("click", e=>{ const b = e.target.closest("button[data-v]"); if (!b) return; state.remote = b.dataset.v==="remote"; [...$("#remote").children].forEach(x=>x.classList.toggle("on", x===b)); render(); renderLib(); });
+const REMOTE_LABEL = {mountain:"本島偏遠山區", east:"花東", island:"離島"};
+function applyRemoteUI(){
+  [...$("#remote").children].forEach(x=>x.classList.toggle("on", x.dataset.v===state.remoteType));
+  const on = state.remoteType!=="city"; $("#remote-box").hidden = !on; $("#island-tip").hidden = state.remoteType!=="island";
+  if (on) $("#remote-pct").value = String(state.remotePct[state.remoteType]);
+}
+$("#remote").addEventListener("click", e=>{ const b = e.target.closest("button[data-v]"); if (!b) return; state.remoteType = b.dataset.v; state.remote = state.remoteType!=="city"; applyRemoteUI(); render(); renderLib(); });
+$("#remote-pct").addEventListener("change", e=>{ let v = Number(e.target.value); if (!Number.isFinite(v)) v = 0; v = Math.max(0, Math.min(50, Math.round(v*10)/10)); if (state.remoteType!=="city") state.remotePct[state.remoteType] = v; e.target.value = String(v); render(); renderLib(); });
+applyRemoteUI();
 renderBaths();
 // ----- 「新成屋」範本的櫃體：木作櫃／系統櫃（範本不知道櫃長，尺數填 0 請師傅填）
 const TPL_CABS = {sys:[["衣櫃","W-401"],["高櫃","W-402"],["矮櫃","W-303"],["吊櫃","W-403"]], wood:[["衣櫃","W-305"],["高櫃","W-301"],["矮櫃","W-303"],["吊櫃","W-304"],["鞋櫃","W-306"]]};
@@ -3357,7 +3382,7 @@ function render(){
   const today = new Date(), exp = new Date(today.getTime()+14*864e5);
   const d = x=>`${x.getFullYear()}/${String(x.getMonth()+1).padStart(2,"0")}/${String(x.getDate()).padStart(2,"0")}`;
   $("#qno").textContent = "No. Q"+d(today).replace(/\//g,"")+"-012";
-  $("#m-cust").textContent = $("#cust").value||"—"; $("#m-site").textContent = $("#region").value+`・${floor} 樓${lift?"（電梯）":"（無電梯）"}・${bathText()}${state.remote ? "・偏遠地區" : ""}`;
+  $("#m-cust").textContent = $("#cust").value||"—"; $("#m-site").textContent = $("#region").value+`・${floor} 樓${lift?"（電梯）":"（無電梯）"}・${bathText()}${state.remote ? `・${REMOTE_LABEL[state.remoteType]}` : ""}`;
   $("#m-date").textContent = d(today); $("#m-exp").textContent = d(exp);
 
   const vis = visLines();
@@ -3404,7 +3429,10 @@ function render(){
   const leakRes = leak?Math.round(sub.painting*rc*rush*0.2):0;
   const tradesUsed = [sub.carpentry, sub.plumbing_electrical, sub.painting].filter(v=>v>0).length;
   const mgmt = $("#mgmt").checked && tradesUsed>0 ? Math.round(adj*A["統籌管理費"]) : 0;
-  const pre = (base?Math.max(A["最低出工費(元)"], adj+carry+old+leakRes+mgmt):0) + ship;   // 運費及交通費照師傅填的金額，不乘地區／管理費
+  const remotePct = state.remote ? (state.remotePct[state.remoteType] || 0) : 0;
+  const material = base ? Math.max(A["最低出工費(元)"], adj+carry+old+leakRes+mgmt) : 0;   // 工料小計：不含運費及交通費（X-001）、不含稅金
+  const remoteAdd = Math.round(material * remotePct / 100);   // 偏遠地區加成：工料小計 × 比例
+  const pre = material + remoteAdd + ship;   // 運費及交通費照師傅填的金額，不乘地區／管理費／加成
   const tax = $("#tax").checked?Math.round(pre*A["營業稅"]):0;
   const T = (l,v,c="")=>`<div class="${c}"><span>${l}</span><span class="mono">${v}</span></div>`;
   let h = "";
@@ -3415,8 +3443,9 @@ function render(){
     if (old) h+=T("隱蔽工程預備金（客戶選加，10%）", "+"+fmt(old), "sub");
     if (leakRes) h+=T("壁癌／漏水風險預備（油漆 20%）", "+"+fmt(leakRes), "sub");
     if (mgmt) h+=T("統籌管理費（8%）", "+"+fmt(mgmt), "sub");
+    if (remoteAdd) h+=T(`偏遠地區加成（${REMOTE_LABEL[state.remoteType]} ${remotePct}%）`, "+"+fmt(remoteAdd), "sub");
     if (ship) h+=T("運費及交通費（偏遠地區）", "+"+fmt(ship), "sub");
-    if (pre-ship===A["最低出工費(元)"]) h+=T("未達最低出工費，以最低出工費計", "", "sub");
+    if (pre-ship-remoteAdd===A["最低出工費(元)"]) h+=T("未達最低出工費，以最低出工費計", "", "sub");
     h+=T("未稅合計", fmt(pre));
     if (tax) h+=T("營業稅 5%", "+"+fmt(tax), "sub");
     h+=T("含稅總價（NT$）", fmt(pre+tax), "grand");
@@ -3435,16 +3464,17 @@ function render(){
   $("#copy").disabled = noLines;
   $("#xlsx").disabled = noLines;
   // 匯出 Excel 直接用這次渲染算好的數字，不另外計算
-  state._sheet = {rows:xrows, sub:{...sub}, base, rc, rush, adj, carry, old, leakRes, mgmt, ship, pre, tax, total:pre+tax,
-    minApplied: !!base && pre-ship===A["最低出工費(元)"], flags: noLines ? [] : [...flags],
+  state._sheet = {rows:xrows, sub:{...sub}, base, rc, rush, adj, carry, old, leakRes, mgmt, ship, remoteAdd, remoteLabel: remoteAdd ? `偏遠地區加成（${REMOTE_LABEL[state.remoteType]} ${remotePct}%）` : "", pre, tax, total:pre+tax,
+    minApplied: !!base && pre-ship-remoteAdd===A["最低出工費(元)"], flags: noLines ? [] : [...flags],
     meta:{qno:$("#qno").textContent, cust:$("#cust").value.trim(), date:$("#m-date").textContent, exp:$("#m-exp").textContent,
-      region:$("#region").value, floor, lift, area, age, bath:bathText(), remote:!!state.remote, wall:WALL_LABEL[state.wall], scope:state.scope, title:SCOPE_TITLE[state.scope]}};
+      region:$("#region").value, floor, lift, area, age, bath:bathText(), remote:state.remote ? REMOTE_LABEL[state.remoteType] : "", wall:WALL_LABEL[state.wall], scope:state.scope, title:SCOPE_TITLE[state.scope]}};
   if (noLines) $("#copybox").hidden = true;
   $("#risk").innerHTML = `<details class="fold"${riskOpen ? " open" : ""}><summary><b>現勘提醒</b><span class="fold-n">（${flags.length} 項）</span><span class="fold-arrow" aria-hidden="true">▸</span></summary><ul>${flags.map(f=>`<li>${f}</li>`).join("")}</ul></details>`;
 
   state._text = [`【${SCOPE_TITLE[state.scope]}】${$("#qno").textContent}`, `客戶：${$("#m-cust").textContent}　案場：${$("#m-site").textContent}`, `估價日期：${$("#m-date").textContent}　有效期限：${$("#m-exp").textContent}`, "",
     ...Object.keys(TRADES).flatMap(k=>vis.filter(l=>ITEMS[l.code].trade===k && !(l.needQty && !(l.qty>0)))).map(l=>{const it=ITEMS[l.code]; return `${TRADES[it.trade]}｜${it.item}　${fq(billQty(it.unit, l.qty))} ${it.unit}`;}), "",
     sub.painting?`牆面狀況：${WALL_LABEL[state.wall]}`:"", old?`隱蔽工程預備金（客戶選加，10%）：NT$ ${fmt(old)}`:"",
+    remoteAdd?`偏遠地區加成（${REMOTE_LABEL[state.remoteType]} ${remotePct}%）：NT$ ${fmt(remoteAdd)}`:"",
     `未稅合計：NT$ ${fmt(pre)}`, tax?`營業稅：NT$ ${fmt(tax)}`:"", `含稅總價：NT$ ${fmt(pre+tax)}`, flags.length?`\n※ 需現勘：${flags.join("；")}`:"", "※ 本單為預算報價，正式金額以現場丈量為準。"].filter(x=>x!=="").join("\n");
   afterRender.forEach(f=>{ try { f(); } catch (e) { console.error(e); } });
 }
@@ -3553,6 +3583,7 @@ function sheetAoa(){
     if (S.old) push(["", "", "隱蔽工程預備金（客戶選加，10%）", "", "", "", S.old], "sum");
     if (S.leakRes) push(["", "", "壁癌／漏水風險預備（油漆 20%）", "", "", "", S.leakRes], "sum");
     if (S.mgmt) push(["", "", "統籌管理費（8%）", "", "", "", S.mgmt], "sum");
+    if (S.remoteAdd) push(["", "", S.remoteLabel, "", "", "", S.remoteAdd], "sum");
     if (S.ship) push(["", "", "運費及交通費（偏遠地區）", "", "", "", S.ship], "sum");
     if (S.minApplied) push(["", "", "未達最低出工費，以最低出工費計"]);
     push(["", "", "未稅合計", "", "", "", S.pre], "sum");
@@ -3666,7 +3697,7 @@ function helperSummary(){
   const M = S.meta, L = [];
   const mulDefault = ["g","carpentry","plumbing_electrical","painting","profit"].every(k=>mul[k]===MUL_DEF[k]);
   L.push(`【估價單摘要】工種模式：${SCOPE_TITLE[state.scope]}`);
-  L.push(`地區：${M.region}（地區係數 ×${S.rc.toFixed(2)}）｜室內坪數：${M.area} 坪｜屋齡：${M.age} 年｜樓層：${M.floor} 樓（${M.lift ? "有電梯" : "無電梯"}）${M.bath ? `｜${M.bath}` : ""}${M.remote ? "｜偏遠地區" : ""}`);
+  L.push(`地區：${M.region}（地區係數 ×${S.rc.toFixed(2)}）｜室內坪數：${M.area} 坪｜屋齡：${M.age} 年｜樓層：${M.floor} 樓（${M.lift ? "有電梯" : "無電梯"}）${M.bath ? `｜${M.bath}` : ""}${M.remote ? `｜${M.remote}` : ""}`);
   L.push(`用料等級：${TIER_LABEL[state.tier]}｜牆面狀況：${M.wall}｜深色漆：${$("#dark").checked ? "是" : "否"}｜壁癌／水漬：${$("#leak").checked ? "有" : "無"}｜急件：${$("#rush").checked ? "是" : "否"}｜木作造型複雜度：${CPLX_NAME[state.cplx] || state.cplx}`);
   L.push(`隱蔽工程預備金：${$("#hide").checked ? "已勾選" : "未勾選"}｜保護工程：${state.protect[state.scope] ? "已勾選" : "未勾選"}（此模式用 ${PROT_CODE[state.scope]}）｜含燈具材料：${light.mat ? "已勾選" : "未勾選"}｜統籌管理費：${$("#mgmt").checked ? "收" : "不收"}｜開發票：${$("#tax").checked ? "是" : "否"}`);
   L.push(`利潤與倍數設定：${mulDefault ? "未調整" : `全域 ×${mul.g}、木工 ×${mul.carpentry}、水電 ×${mul.plumbing_electrical}、油漆 ×${mul.painting}、利潤 ${mul.profit}%`}；牆面倍數 良好 ×${mul.wallA}／普通 ×${mul.wallB}／差 ×${mul.wallC}（師傅的設定，不視為錯誤）`);
@@ -3688,6 +3719,7 @@ function helperSummary(){
     if (S.old) L.push(`隱蔽工程預備金（10%）：${fmt(S.old)}`);
     if (S.leakRes) L.push(`壁癌／漏水風險預備（油漆 20%）：${fmt(S.leakRes)}`);
     if (S.mgmt) L.push(`統籌管理費（8%）：${fmt(S.mgmt)}`);
+    if (S.remoteAdd) L.push(`${S.remoteLabel}：${fmt(S.remoteAdd)}`);
     if (S.ship) L.push(`運費及交通費（偏遠地區）：${fmt(S.ship)}`);
     if (S.minApplied) L.push("未達最低出工費，以最低出工費計");
     L.push(`未稅合計：${fmt(S.pre)}`, `營業稅：${fmt(S.tax)}`, `含稅總價：${fmt(S.total)}`);
@@ -4101,7 +4133,7 @@ function vwMicUI(st){
   const b=$("#vw-mic"); b.classList.toggle("on", st==="listen"); b.classList.toggle("proc", st==="proc"); b.setAttribute("aria-pressed", String(st==="listen"));
   $("#vw-mic-t").textContent = MIC_TXT[st]();
 }
-// ----- 麥克風授權與環境（語音辨識不要跟 getUserMedia 搶麥克風）
+// ----- 麥克風授權：在點擊事件內先用 getUserMedia 觸發瀏覽器詢問，取得後立刻關掉，再開語音辨識
 const inFrame = (()=>{ try { return window.self !== window.top; } catch (e) { return true; } })();
 function micEnv(){
   const ua = navigator.userAgent || "";
@@ -4144,23 +4176,20 @@ function micErrShow(kind, detail){
   const steps = `<ol><li>點網址列左邊的<b>鎖頭</b>（或「網站設定」圖示）</li><li>找到<b>麥克風</b></li><li>改成<b>允許</b></li><li><b>重新整理</b>這個頁面，再按一次麥克風</li></ol>`;
   const frameTip = `<p class="mic-tip"><b>請用瀏覽器直接開啟這個網頁（不要嵌在其他網站裡）再試。</b>目前估價通開在內嵌頁面裡，瀏覽器可能不讓它使用麥克風。</p>`;
   const typing = `<p class="mic-type">也可以直接在下面的框框<b>打字回答</b>，一樣能估價。</p>`;
-  const suggest = `<p>請用 <b>Chrome（Android）</b> 或 <b>Safari（iPhone）</b> 開啟本網址。電腦請用 Chrome 或 Edge。Firefox 沒有語音辨識。</p>`;
-  const noserviceBody = `<p>這個瀏覽器沒有提供語音辨識，請用 Chrome（Android）或 Safari（iPhone）開啟本網址。</p>${suggest}${micOpenBtns()}`;
-  const env = micEnv();
-  const inAppName = env.inApp ? env.kind : "";
   const M = {
-    blocked: `<h4>麥克風被擋住了</h4><p>請允許這個網站使用麥克風：</p>${micPolicyAllowed()===false ? frameTip : steps + (inFrame ? frameTip : "")}`,
+    blocked: `<h4>麥克風被擋住了</h4>${micPolicyAllowed()===false ? frameTip : steps + (inFrame ? frameTip : "")}`,
     frame: `<h4>麥克風被擋住了</h4>${frameTip}`,
     nomic: `<h4>找不到麥克風</h4><p>這台裝置沒有偵測到麥克風。請接上耳機麥克風，或檢查系統設定裡的麥克風是否開啟。</p>`,
     busy: `<h4>麥克風正被其他程式使用</h4><p>請關掉正在用麥克風的程式（例如視訊通話）再試一次。</p>`,
     nospeech: `<h4>沒有聽到聲音</h4><p>請靠近手機一點、大聲一點，再按一次麥克風。</p>`,
     network: `<h4>語音辨識需要網路</h4><p>Chrome 的語音辨識需要連上網路（送到語音服務）。請確認網路後再試，或直接打字回答。</p>`,
     insecure: `<h4>這個開啟方式不能用麥克風</h4><p>瀏覽器只允許在安全連線（https）下使用麥克風。</p>${inFrame ? frameTip : ""}`,
-    nosr: `<h4>這個瀏覽器不支援語音辨識</h4>${suggest}${micOpenBtns()}`,
-    noservice: `<h4>這個瀏覽器沒有提供語音辨識</h4>${noserviceBody}`,
-    inapp: `<h4>請換瀏覽器開啟</h4><p>目前是在${inAppName ? `「${escH(inAppName)}」的` : ""}內建瀏覽器裡，通常沒有語音辨識。</p>${noserviceBody}`,
+    nosr: `<h4>這個瀏覽器不支援語音辨識</h4><p>請用 <b>Chrome（Android）</b> 或 <b>Safari（iPhone）</b> 開啟本網址。電腦請用 Chrome 或 Edge。Firefox 沒有語音辨識。</p>${micOpenBtns()}`,
+    nosvc: `<h4>這個瀏覽器沒有提供語音辨識</h4><p>這個瀏覽器沒有提供語音辨識，請用 Chrome（Android）或 Safari（iPhone）開啟本網址。</p><p>請用 <b>Chrome（Android）</b> 或 <b>Safari（iPhone）</b> 開啟本網址。電腦請用 Chrome 或 Edge。Firefox 沒有語音辨識。</p>${micOpenBtns()}`,
+    inapp: `<h4>請換瀏覽器開啟</h4><p>目前是在${micEnv().inApp ? `「${escH(micEnv().kind)}」的` : ""}內建瀏覽器裡，通常沒有語音辨識。</p><p>這個瀏覽器沒有提供語音辨識，請用 Chrome（Android）或 Safari（iPhone）開啟本網址。</p>${micOpenBtns()}`,
     other: `<h4>麥克風無法啟動</h4><p>請再試一次。若一直失敗，請改用 Chrome（Android）或 Safari（iPhone），或直接打字。</p>`
   };
+  const kindMap = {noservice:"nosvc"}; kind = kindMap[kind] || kind;
   box.innerHTML = (M[kind] || M.other) + (detail ? `<p class="mic-detail">技術訊息：${escH(micTech(detail))}</p>` : "") + typing;
   box.hidden = false; box.dataset.kind = kind;
 }
@@ -4178,7 +4207,7 @@ function gumKind(e){
   if (n==="NotReadableError" || n==="TrackStartError") return "busy";
   return "other";
 }
-// 測試麥克風專用。辨識路徑不要呼叫 getUserMedia（Android Chrome 上會跟 SpeechRecognition 搶麥克風，出現 service-not-allowed）
+// 在點擊事件內呼叫（不可先 await 其他東西）
 let micGumStream = null, micGumSeq = 0, micRecWanted = false;
 function releaseMicStream(){
   micRecWanted = true;
@@ -4234,8 +4263,9 @@ function micBegin(src){
   }
   micErrHide();
   releaseMicStream();   // 若「測試麥克風」還留著音訊軌道，先關掉再開始辨識
+  // 在點擊事件內同步直接呼叫 recognition.start()（聆聽流程不先呼叫 getUserMedia）；每次用新的辨識實例
   micDbg(`${src}：同步開始語音辨識（不呼叫 getUserMedia）`);
-  const ok = startRec();   // 必須在使用者點擊／按住手勢裡同步呼叫，不可先 await
+  const ok = startRec();
   if (ok){ vwMicUI("listen"); try { navigator.vibrate && navigator.vibrate(40); } catch (e) {} showMicPerm(); }
   return ok;
 }
@@ -4297,7 +4327,7 @@ function startRec(){
   let rec;
   try { rec = new SR(); } catch (e) { micDbg(`建立語音辨識失敗：${e.name||e}`); micErrShow("nosr", e && e.message); return false; }
   vw.rec = rec;
-  rec.lang = "zh-TW"; rec.interimResults = true; rec.continuous = true;   // 不設定 processLocally／phrases 等新屬性
+  rec.lang = "zh-TW"; rec.interimResults = true; rec.continuous = true;
   vw.base = $("#vw-text").value ? $("#vw-text").value.trim() + " " : "";
   let finals = "";
   rec.onstart = () => micDbg("語音辨識 onstart");
@@ -4309,8 +4339,8 @@ function startRec(){
   };
   rec.onerror = ev => {
     const c = ev.error; micDbg(`語音辨識 onerror：${c}${ev.message ? " " + ev.message : ""}`);
-    if (c==="not-allowed"){ micErrShow(micPolicyAllowed()===false ? "frame" : "blocked", `SpeechRecognition：${c}`); vwStatus("麥克風被擋住了，請照下面的說明允許麥克風，或直接打字回答。", true); showMicPerm(); }
-    else if (c==="service-not-allowed"){ micErrShow(micPolicyAllowed()===false ? "frame" : "noservice", `SpeechRecognition：${c}`); vwStatus("這個瀏覽器沒有提供語音辨識，請用 Chrome 或 Safari 開啟，或直接打字。", true); showMicPerm(); }
+    if (c==="not-allowed"){ micErrShow(micPolicyAllowed()===false ? "frame" : "blocked", `SpeechRecognition：${c}`); vwStatus("麥克風被擋住了，請照下面的說明處理，或直接打字回答。", true); showMicPerm(); }
+    else if (c==="service-not-allowed"){ micErrShow("nosvc", `SpeechRecognition：${c}`); vwStatus("這個瀏覽器沒有提供語音辨識，請直接打字回答。", true); }
     else if (c==="no-speech"){ micErrShow("nospeech"); vwStatus("沒有聽到聲音，請再按住麥克風說一次，或直接打字。", true); }
     else if (c==="audio-capture"){ micErrShow("nomic", "SpeechRecognition：audio-capture"); vwStatus("找不到麥克風，請直接在下面打字回答。", true); }
     else if (c==="network"){ micErrShow("network"); vwStatus("語音辨識需要網路，現在連不上，請直接打字回答。", true); }
@@ -5253,7 +5283,7 @@ ${catalog}
         case "quote_no": return M.qno;
         case "date": return M.date;
         case "valid_until": return M.exp;
-        case "site": case "address": return `${M.region}・${M.floor} 樓${M.lift?"（電梯）":"（無電梯）"}${M.bath ? `・${M.bath}` : ""}${M.remote ? "・偏遠地區" : ""}`;
+        case "site": case "address": return `${M.region}・${M.floor} 樓${M.lift?"（電梯）":"（無電梯）"}${M.bath ? `・${M.bath}` : ""}${M.remote ? `・${M.remote}` : ""}`;
         case "area": return `${M.area} 坪`;
         case "age": return `${M.age} 年`;
         case "wall": return M.wall;
@@ -5302,8 +5332,9 @@ ${catalog}
         if (S.old) rows.push({name:"隱蔽工程預備金", amt:S.old, kind:"adj", key:"sum.old"});
         if (S.leakRes) rows.push({name:"壁癌／漏水風險預備", amt:S.leakRes, kind:"adj", key:"sum.leak"});
         if (S.mgmt) rows.push({name:"統籌管理費", amt:S.mgmt, kind:"adj", key:"sum.mgmt"});
-        const minD = (S.pre - (S.ship||0)) - (S.adj + S.carry + S.old + S.leakRes + S.mgmt);
+        const minD = (S.pre - (S.ship||0) - (S.remoteAdd||0)) - (S.adj + S.carry + S.old + S.leakRes + S.mgmt);
         if (minD > 0) rows.push({name:"最低出工費補足", amt:minD, kind:"adj", key:"sum.min"});
+        if (S.remoteAdd) rows.push({name:S.remoteLabel, amt:S.remoteAdd, kind:"adj", key:"sum.remote"});
       }
       return rows;
     }
@@ -5451,6 +5482,7 @@ ${catalog}
           if (S.old) t += T("tot.old", "隱蔽工程預備金（客戶選加，10%）", "+"+fmt(S.old));
           if (S.leakRes) t += T("tot.leak", "壁癌／漏水風險預備（油漆 20%）", "+"+fmt(S.leakRes));
           if (S.mgmt) t += T("tot.mgmt", "統籌管理費（8%）", "+"+fmt(S.mgmt));
+          if (S.remoteAdd) t += T("tot.remote", S.remoteLabel, "+"+fmt(S.remoteAdd));
           if (S.ship) t += T("tot.ship", "運費及交通費（偏遠地區）", "+"+fmt(S.ship));
           if (S.minApplied) t += T("tot.min", "未達最低出工費，以最低出工費計", "");
           t += T("tot.pre", L.totals.subtotal_label, fmt(S.pre), "pre");
@@ -5637,6 +5669,7 @@ ${catalog}
         if (S.old) add("tot.old", "隱蔽工程預備金（客戶選加，10%）", "+"+fmt(S.old));
         if (S.leakRes) add("tot.leak", "壁癌／漏水風險預備（油漆 20%）", "+"+fmt(S.leakRes));
         if (S.mgmt) add("tot.mgmt", "統籌管理費（8%）", "+"+fmt(S.mgmt));
+        if (S.remoteAdd) add("tot.remote", S.remoteLabel, "+"+fmt(S.remoteAdd));
         if (S.ship) add("tot.ship", "運費及交通費（偏遠地區）", "+"+fmt(S.ship));
         if (S.minApplied) add("tot.min", "未達最低出工費，以最低出工費計", "");
         add("tot.pre", L.totals.subtotal_label, fmt(S.pre), "pre");
