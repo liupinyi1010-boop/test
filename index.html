@@ -1517,9 +1517,9 @@ img, svg, canvas, video { max-width: 100%; height: auto; }
   const DEVICE_LS = "shifu-device-id-v1";
   // 部署 Cloudflare Worker 後，把下面改成正式網址（例如 https://shifu-ai-proxy.<帳號>.workers.dev）
   // 空白或含 PLACEHOLDER 時視為尚未設定，沒有本機金鑰就走 needs_api_key（本機規則後援仍可用）
-  const PROXY_URL = "";
+  const PROXY_URL = "https://shifu-quote-proxy.shifu-quote.workers.dev";
 
-  let proxyUrlOverride = "";
+  let proxyUrlOverride = null; // null = 用預設 PROXY_URL；設成 "" 可關閉代理
 
   function getApiKey() {
     try {
@@ -1538,11 +1538,14 @@ img, svg, canvas, video { max-width: 100%; height: auto; }
   }
 
   function setProxyUrl(u) {
-    proxyUrlOverride = String(u || "").trim();
+    // 明確傳入字串（含空字串）就覆寫；null/undefined 恢復預設
+    if (u == null) proxyUrlOverride = null;
+    else proxyUrlOverride = String(u).trim();
   }
 
   function getProxyUrl() {
-    return (proxyUrlOverride || PROXY_URL || "").trim();
+    if (proxyUrlOverride != null) return proxyUrlOverride;
+    return (PROXY_URL || "").trim();
   }
 
   function proxyConfigured() {
