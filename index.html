@@ -4092,7 +4092,7 @@ let DB = {
   },
   "research_note": "泥作防水、拆除清運為2026-11-10研究參考價區間，來源見各項 source；處理費依縣市官方資料帶入，無資料者不套係數（×1.0）並註明無公開資料。既有木作／水電／油漆單價未改。"
 };
-try { const r = await fetch("price_db.json", {cache:"no-store"}); if (r.ok) DB = await r.json(); } catch (e) {}
+try { const r = await fetch("price_db.json?v=56", {cache:"no-store"}); if (r.ok) DB = await r.json(); } catch (e) {}
 // ----- 燈具（水電）：安裝工與燈型材料。安裝工 E-008／E-009 依燈具價目固定單價
 const LAMPS = [
   ["E-101","崁燈 7cm","盞",150,"E-009"],["E-102","崁燈 9cm","盞",150,"E-009"],["E-103","崁燈 12cm","盞",160,"E-009"],["E-104","崁燈 15cm","盞",160,"E-009"],
@@ -5352,7 +5352,7 @@ let terms = DEFAULT_TERMS;
 try { localStorage.removeItem(TERMS_KEY); } catch (e) {}
 (async () => {
   try {
-    const r = await fetch("taigi_terms.json", {cache:"no-store"});
+    const r = await fetch("taigi_terms.json?v=56", {cache:"no-store"});
     if (!r.ok) return;
     const t = await r.json();
     if (validTerms(t)){ terms = t; TERM_RE = null; TERM_MAP = null; }
@@ -6342,6 +6342,59 @@ try {
   const MAX_UPS = 10;
   const shortKind = k => /3D|透視/i.test(String(k)) ? "3D" : /水電/.test(String(k)) ? "水電" : /現況/.test(String(k)) ? "現況" : "施工";
   const BATCH_MAX = 4;   // 每次送給分析服務的張數上限（再受執行環境單次上限限制）
+  // 正式 Worker MAX_INPUT_BYTES 目前是 512 KiB；超過會 413 input_too_large（不會扣每日次數）。
+  const SEND_BUDGET = 450 * 1024;
+  function payloadBytes(prompt, blobs){
+    let n = 256 + (new TextEncoder().encode(String(prompt||""))).length;
+    for (const b of (blobs||[])) n += 80 + Math.ceil((b && b.size || 0) * 4 / 3);
+    return n;
+  }
+  function loadImageFromBlob(blob){
+    return new Promise((res, rej)=>{
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = ()=>{ URL.revokeObjectURL(url); res(img); };
+      img.onerror = ()=>{ URL.revokeObjectURL(url); rej(new Error("image")); };
+      img.src = url;
+    });
+  }
+  async function encodeJpeg(img, maxEdge, quality){
+    const sw = img.naturalWidth || img.width || 1, sh = img.naturalHeight || img.height || 1;
+    const scale = Math.min(1, maxEdge / Math.max(sw, sh));
+    const w = Math.max(1, Math.round(sw * scale)), h = Math.max(1, Math.round(sh * scale));
+    const c = document.createElement("canvas"); c.width=w; c.height=h;
+    const ctx = c.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0,w,h);
+    const blob = await new Promise(r=>c.toBlob(r, "image/jpeg", quality));
+    return blob || null;
+  }
+  async function compressForSend(blob, maxBytes){
+    const cap = Math.max(24*1024, maxBytes || Math.floor(SEND_BUDGET * 0.85));
+    if (blob && blob.size <= cap && /^image\/jpeg$/i.test(blob.type||"")) return blob;
+    let img;
+    try { img = await loadImageFromBlob(blob); } catch (e) { return blob; }
+    let best = blob;
+    for (const edge of [2000, 1600, 1280, 1024, 896, 768]){
+      for (const q of [0.82, 0.74, 0.66, 0.58, 0.5]){
+        const out = await encodeJpeg(img, edge, q);
+        if (out && out.size < (best.size||Infinity)) best = out;
+        if (out && out.size <= cap) return out;
+      }
+    }
+    return best;
+  }
+  function packByBudget(items, promptFor, budget){
+    const cap = budget || SEND_BUDGET;
+    const batches = [];
+    let cur = [];
+    for (const it of items){
+      const trial = cur.concat([it]);
+      const n = payloadBytes(typeof promptFor==="function" ? promptFor(trial) : (promptFor||""), trial.map(x=>x.blob));
+      if (cur.length && n > cap){ batches.push(cur); cur = [it]; }
+      else cur = trial;
+    }
+    if (cur.length) batches.push(cur);
+    return batches;
+  }
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const MAX_BYTES = 20*1024*1024, PDF_PAGES = 12;
   const ups = []; let seq = 0, aiCtl = null, busyNow = false;
@@ -6364,6 +6417,11 @@ try {
 
   let sampleP = null;
   const getSample = () => sampleP ??= (window.claude && typeof window.claude.use==="function" ? Promise.resolve(window.claude.use("sample")).catch(()=>null) : Promise.resolve(null));
+  window.__planSendBudget = SEND_BUDGET;
+  window.__planPayloadBytes = payloadBytes;
+  window.__planCompressBlob = compressForSend;
+  window.__planPackByBudget = packByBudget;
+  window.__planErrMsg = (e)=>errMsg(e);
 
   // PDF：在瀏覽器裡把每頁轉成 PNG 再送給估價通
   let pdfjsP = null;
@@ -6388,7 +6446,7 @@ try {
       const c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);
       const ctx = c.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,c.width,c.height);
       await pg.render({canvasContext:ctx, viewport:v}).promise;
-      const blob = await new Promise(r=>c.toBlob(r, "image/png"));
+      const blob = await new Promise(r=>c.toBlob(r, "image/jpeg", 0.82));
       if (blob) out.push({name:`${file.name}（第 ${i} 頁）`, blob});
     }
     return {pages:out, total:doc.numPages};
@@ -6446,27 +6504,42 @@ try {
     if (classifying) return classifying;
     classifying = (async ()=>{
       const todo = ups.filter(u=>u.kindSrc==="name"); if (!todo.length) return;
-      const sample = await getSample(); if (!sample){ msg(`共 ${ups.length}／10 張圖面。此功能需要設定 AI 金鑰。已依檔名先標示類型，可點標籤修正。`, true); return; }
+      const sample = await getSample(); if (!sample){ msg(`共 ${ups.length}／10 張圖面。目前無法自動判斷類型，已依檔名先標示，可點標籤修正。`); return; }
       let lim = null; try { lim = await sample.limits(); } catch (e) {}
       if (!lim || !lim.images) return;
       const per = Math.max(1, Math.min(BATCH_MAX, lim.images.maxCount || 1));
       todo.forEach(u=>u.kindSrc = "pending"); renderThumbs();
+      for (const u of todo){
+        try { u.sendBlob = await compressForSend(u.blob, Math.floor(SEND_BUDGET * 0.7)); }
+        catch (e) { u.sendBlob = u.blob; }
+      }
+      const packed = packByBudget(todo.map(u=>({...u, blob:u.sendBlob||u.blob})), part=>{
+        return `分類 ${part.length} 張`;
+      }, Math.floor(SEND_BUDGET * 0.9));
+      let classifyErr = null;
       let needKey = false;
-      for (let i=0; i<todo.length; i+=per){
-        const part = todo.slice(i, i+per);
+      for (const pack of packed){
+        const part = pack.map(p=>todo.find(u=>u.id===p.id)||p).slice(0, per);
+        if (!part.length) continue;
         try {
           const r = await sample.json(`你是台灣室內裝修圖面分類助理。下面依序附上 ${part.length} 張圖，請判斷每張是哪一類：
 「平面圖」＝平面配置圖、施工平面圖、天花板圖、尺寸圖、櫃體立面等（木作、櫃體、天花、油漆用）；
 「水電圖」＝插座／開關／燈位／迴路／弱電／給排水等水電配置圖；
 「3D透視」＝3D 渲染或透視圖、照片般的室內示意圖。
-只回覆 JSON：{"types":[{"no":1,"type":"平面圖|水電圖|3D透視"}]}，no 為附圖順序 1～${part.length}。`, {images:part.map(u=>u.blob), modelTier:"quick", cache:false});
+只回覆 JSON：{"types":[{"no":1,"type":"平面圖|水電圖|3D透視"}]}，no 為附圖順序 1～${part.length}。`, {images:part.map(u=>u.sendBlob||u.blob), modelTier:"quick", cache:false});
           const T = {"平面圖":"平面圖","水電圖":"水電圖","3D透視":"3D 透視圖","3D 透視":"3D 透視圖"};
           part.forEach((u,j)=>{ const t = (Array.isArray(r && r.types) ? r.types : []).find(x=>+x.no===j+1); const k = t && (T[String(t.type).replace(/\s/g,"")] || T[String(t.type)]);
             if (u.kindSrc==="pending"){ if (k){ u.kind = k; u.kindSrc = "ai"; } else u.kindSrc = "name"; } });
-        } catch (e) { part.forEach(u=>{ if (u.kindSrc==="pending") u.kindSrc = "name"; }); if (e && e.code==="needs_api_key") needKey = true; }
+        } catch (e) {
+          classifyErr = classifyErr || e;
+          if (e && e.code==="needs_api_key") needKey = true;
+          part.forEach(u=>{ if (u.kindSrc==="pending") u.kindSrc = "name"; });
+        }
         renderThumbs();
       }
-      if (needKey) msg("此功能需要設定 AI 金鑰。已依檔名先標示類型，可點標籤修正；填好金鑰後再按「開始分析」。", true); else if (!busyNow && !warn3d()) msg(`共 ${ups.length}／10 張圖面，已自動判斷類型（可點標籤修正），請按「開始分析」。`);
+      if (!busyNow && classifyErr && !needKey) msg(errMsg(classifyErr) + " 類型已先依檔名標示，可點標籤修正後再按「開始分析」。", true);
+      else if (needKey) msg("此功能需要設定 AI 金鑰。已依檔名先標示類型，可點標籤修正；填好金鑰後再按「開始分析」。", true);
+      else if (!busyNow && !warn3d()) msg(`共 ${ups.length}／10 張圖面，已自動判斷類型（可點標籤修正），請按「開始分析」。`);
     })().finally(()=>{ classifying = null; if (ups.some(u=>u.kindSrc==="name") && !busyNow) {} });
     return classifying;
   }
@@ -6956,10 +7029,25 @@ ${catalog}
     empty_completion: "估價通 沒有回覆內容，請減少張數或換一張較清楚的圖再試。",
     invalid_json: "分析結果的格式無法解讀。請再按一次「開始分析」；若一直失敗，請減少一次上傳的張數。",
     prompt_too_large: "內容太大，請減少一次上傳的張數。",
+    input_too_large: "圖面資料太大，目前雲端單次可傳送的量有限。請一次少傳幾張，或先把圖縮成較小的 JPG 再試。",
+    quota_exceeded: "今日雲端分析次數已用完（全站或這個網路的共用上限）。請明天再試，或到右上角「設定」填入自己的 AI 金鑰。其他估價功能不受影響。",
+    needs_api_key: "尚未設定可用的分析服務。請到設定填入 AI 金鑰，或確認已接上雲端代理。",
+    origin_rejected: "這個網頁來源不能使用雲端分析。請從正式估價通網站開啟，或在設定填入自己的 AI 金鑰。",
+    timeout: "分析逾時，請少傳幾張或稍後再按「開始分析」。",
     cancelled: "已停止分析。",
-    upstream_error: "連線或估價通分析服務暫時出錯，請稍後再按一次「開始分析」。"
+    upstream_error: "連線或估價通分析服務暫時出錯，請稍後再按一次「開始分析」。",
+    network: "無法連線到分析服務，請檢查網路後再按「開始分析」。"
   };
-  const errMsg = e => ERR[e && e.code] || ERR.upstream_error;
+  function errMsg(e){
+    const c = e && e.code || "";
+    if (c && ERR[c]) return ERR[c];
+    const m = String((e && (e.message || e.err)) || "");
+    if (/quota_exceeded|次數已用完|今日全站|今日 AI/.test(c+" "+m)) return ERR.quota_exceeded;
+    if (/input_too_large|prompt_too_large|413|內容太大|圖面資料太大/.test(c+" "+m)) return ERR.input_too_large;
+    if (/origin_rejected/.test(c+" "+m)) return ERR.origin_rejected;
+    if (/failed to fetch|NetworkError|網路|無法連線|Load failed/i.test(m) || c==="TypeError" || c==="NetworkError") return ERR.network;
+    return ERR.upstream_error;
+  }
   function busy(on){ busyNow=on; $("#ai-go").disabled = on || !ups.length; $("#ai-stop").hidden = !on; $("#ai-go").textContent = on ? "分析中…" : "開始分析"; }
   $("#ai-stop").addEventListener("click", ()=>aiCtl && aiCtl.abort());
   $("#ai-go").addEventListener("click", async ()=>{
@@ -6976,19 +7064,36 @@ ${catalog}
       const big = ups.find(u=>lim.images.maxInputBytes && u.blob.size > lim.images.maxInputBytes);
       if (big){ msg(`「${big.name}」檔案太大，請壓縮或裁切後再上傳。`, true); return; }
       if (classifying){ msg("等待圖面類型判斷完成…"); try { await classifying; } catch (e) {} }
-      const all = ups.map((u,j)=>({...u, no:j+1}));
+      msg("正在壓縮圖面以便傳送…");
+      for (const u of ups){
+        try { u.sendBlob = await compressForSend(u.blob, Math.floor(SEND_BUDGET * 0.7)); }
+        catch (e) { u.sendBlob = u.blob; }
+      }
+      const all = ups.map((u,j)=>({...u, no:j+1, blob:u.sendBlob||u.blob, origBlob:u.blob}));
+      const stillBig = all.find(u => payloadBytes("x", [u.blob]) > SEND_BUDGET);
+      if (stillBig){ msg(`「${stillBig.name}」即使壓縮後仍超過雲端單次上限，請改用較小的 JPG 或一次少傳幾張。`, true); return; }
       ai.only3d = all.every(u=>shortKind(u.kind)==="3D");
       ai.kinds = Object.fromEntries(all.map(u=>[String(u.no), u.kind]));
-      // 分批：平面圖／水電圖分組，每批再補上 3D 透視圖供判斷高矮與款式（3D 不計數量，跨批重複不影響金額）
+      // 分批：平面圖／水電圖分組，每批再補上 3D 透視圖；同時確保每一批（含壓縮後的圖）不超過雲端 512 KiB 上限
       const d3 = all.filter(u=>shortKind(u.kind)==="3D"), flat = all.filter(u=>shortKind(u.kind)!=="3D");
-      const batches = [];
-      if (!flat.length){ for (let i=0; i<d3.length; i+=per) batches.push(d3.slice(i, i+per)); }
+      const promptOf = (bt, note)=>buildPrompt(bt, note||"");
+      const fit = (list) => packByBudget(list, bt=>promptOf(bt, "x"), SEND_BUDGET);
+      let batches = [];
+      if (!flat.length){ batches = fit(d3); }
       else {
-        const g = d3.length && per >= 3 ? per - Math.min(d3.length, Math.max(1, per - 2)) : per;
-        for (let i=0; i<flat.length; i+=g){ const chunk = flat.slice(i, i+g); batches.push(chunk.concat(d3.slice(0, per - chunk.length))); }
+        const base = fit(flat);
+        batches = base.map(chunk=>{
+          const room = [];
+          for (const pic of d3){
+            const trial = chunk.concat(room).concat([pic]);
+            if (payloadBytes(promptOf(trial, "x"), trial.map(x=>x.blob)) <= SEND_BUDGET && trial.length <= per) room.push(pic);
+          }
+          return chunk.concat(room);
+        });
         const used = new Set(batches.flat().map(u=>u.no)), rest = d3.filter(u=>!used.has(u.no));
-        for (let i=0; i<rest.length; i+=per) batches.push(rest.slice(i, i+per));
+        if (rest.length) batches = batches.concat(fit(rest));
       }
+      window.__lastPlanBatches = batches.map(bt => ({n:bt.length, bytes: payloadBytes(promptOf(bt,"x"), bt.map(x=>x.blob)), names:bt.map(x=>x.name)}));
       const hasMep = all.some(u=>shortKind(u.kind)==="水電");
       aiCtl = new AbortController();
       const t0 = Date.now(); let doneImgs = new Set(), cur = 0;
@@ -7002,6 +7107,7 @@ ${catalog}
         bt.forEach(u=>doneImgs.add(u.no)); show();
       }
       ai.batches = batches.length;
+      window.__lastPlanAnalyze = {batches: batches.length, bytes:(window.__lastPlanBatches||[]), ok:true};
       mergeResults(results); renderAi();
       if (ai.only3d) msg("只有 3D 透視圖：無法計算尺寸與數量，結果只列可能的工項與規格。請搭配施工平面圖一起上傳再分析。", true);
       else msg(`已分析 ${all.length}／${all.length} 張${batches.length>1 ? `（分 ${batches.length} 批後合併）` : ""}：辨識出 ${ai.items.length} 個工項、${ai.cabs.length} 個櫃體、${ai.diffs.length} 個圖面差異、${ai.confirm.length} 個待確認事項。請檢查數量、勾選後再按「套用到估價單」。`);
@@ -7721,7 +7827,7 @@ ${catalog}
     $("#fmt-pdf").addEventListener("click", ()=>doExport("pdf"));
     $("#fmt-png").addEventListener("click", ()=>doExport("png"));
 /* shifu styled Excel + blank-template fill (injected into format IIFE) */
-    const XLSX_JS_SRCS = ["./exceljs.min.js", "https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js", "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"];
+    const XLSX_JS_SRCS = ["./exceljs.min.js?v=56", "https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js", "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"];
     function loadExcelJS(){
       if (window.ExcelJS) return Promise.resolve(window.ExcelJS);
       const trySrc = (i) => new Promise((res, rej)=>{
