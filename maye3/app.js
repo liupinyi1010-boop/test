@@ -13,7 +13,7 @@
     { spoken: ["米知", "米突", "米吐", "米嘟"], standard: "公尺", code: null, note: "長度單位 m" },
     { spoken: ["紅毛土", "紅毛塗"], standard: "水泥", code: null, note: "台語 âng-mn̂g-thôo" }
   ];
-  const UNITS = ["平方公尺", "公尺", "公分", "台尺", "坪", "尺", "寸", "分", "處", "口", "迴", "盞", "座", "樘", "式", "工", "個", "組", "只", "台", "屋", "米知", "米突", "米"];
+  const UNITS = ["平方公尺", "公尺", "公分", "公釐", "台尺", "坪", "尺", "呎", "寸", "分", "處", "口", "迴", "盞", "顆", "座", "樘", "式", "工", "個", "組", "只", "台", "屋", "米知", "米突", "米"];
   const CN_D = { "零": 0, "〇": 0, "一": 1, "二": 2, "兩": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9 };
   const NUM = "([0-9]+(?:\\.[0-9]+)?|[零〇一二兩三四五六七八九十百千萬點]+)";
   const DIG = "([0-9]|[一二兩三四五六七八九])";
@@ -38,9 +38,10 @@
     { re: /燈溝|間接照明/, code: "W-104" },
     { re: /窗簾盒/, code: "W-105" },
     { re: /維修孔/, code: "W-106" },
-    { re: /輕隔間/, code: "W-201" },
+    { re: /木作隔間|木作輕隔間|輕隔間/, code: "W-201" },
     { re: /木作衣櫃|衣櫃/, code: "W-305" },
     { re: /吊櫃/, code: "W-304" },
+    { re: /展示櫃|書櫃/, code: "W-307" },
     { re: /矮櫃|電視櫃/, code: "W-303" },
     { re: /鞋櫃/, code: "W-306" },
     { re: /高櫃/, code: "W-301" },
@@ -58,7 +59,7 @@
     { re: /跳色/, code: "A-108" },
     { re: /壁癌/, code: "A-404" },
     { re: /油漆保護|保護工程/, code: "A-001" },
-    { re: /220\s*V|220伏特|冷氣迴路|專用迴路/, code: "E-005" },
+    { re: /220\s*V\s*迴路|220\s*V|220伏特|冷氣迴路|專用迴路/, code: "E-005" },
     { re: /110\s*V|110伏特|新增迴路/, code: "E-003" },
     { re: /延伸.{0,6}插座|新增插座|加插座/, code: "E-002" },
     { re: /插座.{0,4}更換|開關面板/, code: "E-001" },
@@ -148,7 +149,20 @@
   }
   const CEILING_TYPO_RE = /瓶釘天花|平(?:定|頂|町|訂|丁|挺|廳|釘)?天花/g;
   function fixCeilingTerms(text) {
-    return String(text || "").replace(CEILING_TYPO_RE, "平釘天花");
+    let s = String(text || "");
+    s = s.replace(CEILING_TYPO_RE, "平釘天花");
+    s = s.replace(/平[\u4e00-\u9fff]{0,2}釘[\u4e00-\u9fff]{0,2}天花/g, "平釘天花");
+    s = s.replace(/(?:需|要)?安釘了?天花/g, "平釘天花");
+    s = s.replace(/釘了天花/g, "平釘天花");
+    return s;
+  }
+  function fixAsrTradeTerms(text) {
+    let s = String(text || "");
+    // 坎／崁 是嵌燈的常見聽寫；呎在數字後當作尺；參邊櫃近音為側邊櫃（裝修口頭常見，不是修邊櫃）
+    s = s.replace(/[坎崁]燈/g, "嵌燈");
+    s = s.replace(/[參参]邊櫃/g, "側邊櫃");
+    s = s.replace(/([0-9]+(?:\.[0-9]+)?|[零〇一二兩三四五六七八九十百千萬]+)\s*呎/g, "$1尺");
+    return s;
   }
   function fixPingUnit(text) {
     let s = String(text || "");
@@ -203,6 +217,11 @@
     if (afterNum !== s) {
       hits.push({ from: s, to: afterNum, rule: "numeral" });
       s = afterNum;
+    }
+    const afterAsr = fixAsrTradeTerms(s);
+    if (afterAsr !== s) {
+      hits.push({ from: s, to: afterAsr, rule: "asr-trade" });
+      s = afterAsr;
     }
     const spaced = s.replace(/([一-龥])(\d)/g, "$1 $2");
     if (spaced !== s) s = spaced;
@@ -1150,13 +1169,45 @@
     return { sub, tax, total: sub + tax };
   }
 
-  const UNIT_ALT = { "米": "公尺", "米知": "公尺", "米突": "公尺", "台尺": "尺" };
+  const UNIT_ALT = { "米": "公尺", "米知": "公尺", "米突": "公尺", "台尺": "尺", "呎": "尺" };
   function unitCanon(u) {
     const t = String(u || "").trim();
     return UNIT_ALT[t] || t;
   }
-  function findQtys(text) {
+  const SPEC_UNITS = { "公分": 1, "公釐": 1, "公厘": 1, "厘米": 1 };
+  const NAME_CONNECT = /^(再加|還要|另外|然後|以及|還有|接著|而且|並且|并且|跟住|然後要|再來)/;
+  const SEGMENT_ALIASES = [
+    { re: /平釘天花板|平釘天花/, code: "W-101" },
+    { re: /木作輕隔間|木作隔間|輕隔間/, code: "W-201" },
+    { re: /系統衣櫃/, code: "W-401" },
+    { re: /系統高櫃/, code: "W-301" },
+    { re: /系統櫃/, code: "W-402" },
+    { re: /鞋櫃/, code: "W-306" },
+    { re: /電視展示櫃|展示櫃|開放式書櫃|書櫃/, code: "W-307" },
+    { re: /電視矮櫃|矮櫃|電視櫃/, code: "W-303" },
+    { re: /窗簾盒/, code: "W-105" },
+    { re: /天花嵌燈|嵌燈/, code: "E-009" },
+    { re: /跳色/, code: "A-108" },
+    { re: /全室油漆|乳膠漆|二底三度/, code: "A-102" },
+    { re: /全室電線重拉|重拉電線/, code: "E-013" },
+    { re: /全室水電/, code: "P-011" },
+    { re: /220\s*V\s*迴路|220\s*V|220伏特|冷氣迴路|專用迴路/, code: "E-005" },
+    { re: /110\s*V\s*迴路|110\s*V|110伏特/, code: "E-003" },
+    { re: /踢腳/, code: "W-703" },
+    { re: /打牆|打壁|敲牆|開槽|鑿壁/, code: "P-013" },
+    { re: /延伸.{0,6}插座|新增插座|加插座/, code: "E-002" },
+    { re: /插座.{0,4}更換|開關面板/, code: "E-001" },
+    { re: /插座/, code: "SOCKET" },
+    { re: /油漆/, code: "A-102" },
+    { re: /網路迴路|網路線迴路/, pending: "網路迴路" },
+    { re: /燈具迴路/, pending: "燈具迴路" },
+    { re: /電器櫃/, pending: "電器櫃" },
+    { re: /側邊櫃/, pending: "側邊櫃" }
+  ];
+
+  function findQtys(text, opts) {
     const src = String(text || "");
+    const includeSpec = opts && opts.includeSpec;
     const unitPat = UNITS.slice().sort((a, b) => b.length - a.length)
       .map((u) => u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
     const re = new RegExp(`${NUM}\\s*(${unitPat})`, "g");
@@ -1164,7 +1215,20 @@
     let m;
     while ((m = re.exec(src))) {
       const n = parseNumber(m[1]);
-      if (n != null) out.push({ qty: n, unit: unitCanon(m[2]), index: m.index, raw: m[0] });
+      const unit = unitCanon(m[2]);
+      if (n == null) continue;
+      const spec = !!SPEC_UNITS[unit] || !!SPEC_UNITS[m[2]];
+      if (spec && !includeSpec) continue;
+      const pre = src.slice(Math.max(0, m.index - 2), m.index);
+      const post = src.slice(m.index + m[0].length, m.index + m[0].length + 16);
+      const token = String(m[1] || "");
+      const isPriceUnit = /(?:^|[每])$/.test(pre) || /^(一|1|每)$/.test(token);
+      const postNum = post.match(/^\s*([0-9]{3,}|[零〇一二兩三四五六七八九十百千萬點]+)/);
+      const postVal = postNum ? (parseNumber(postNum[1]) || 0) : 0;
+      const postAfter = postNum ? post.slice(postNum[0].length) : "";
+      if (isPriceUnit && postVal >= 100 && !/^\s*(?:V|伏特|伏)/i.test(postAfter) && postVal !== 110 && postVal !== 220) continue;
+      if (/^每$/.test(pre.trim()) || /^每/.test(token)) continue;
+      out.push({ qty: n, unit: spec ? unit : (unit || m[2]), index: m.index, raw: m[0], length: m[0].length, spec });
     }
     return out;
   }
@@ -1183,18 +1247,252 @@
     return best || { qty: null, unit: preferredUnit || "" };
   }
 
+  function cleanName(s) {
+    return String(s || "")
+      .replace(/[，。、,;；:\s]+/g, " ")
+      .replace(/^(要|再|請|幫我|幫忙|然後|以及|還有|接著|而且|並且|并且)\s*/g, "")
+      .trim();
+  }
+  function splitLeadingVerb(s) {
+    const t = String(s || "").trim();
+    const m = t.match(NAME_CONNECT);
+    if (!m) return { rest: t, verb: "" };
+    return { verb: m[1], rest: t.slice(m[1].length).trim() };
+  }
+  function collectSpecs(text) {
+    const specs = findQtys(text, { includeSpec: true }).filter((q) => q.spec);
+    if (!specs.length) return "";
+    return specs.map((q) => q.qty + q.unit).join("、");
+  }
+  function decideSocket(name, unit) {
+    const n = String(name || "");
+    const u = unitCanon(unit);
+    if (/延伸|新增插座|加插座/.test(n) || u === "口") return "E-002";
+    if (/更換|開關面板/.test(n) || u === "組") return "E-001";
+    return u === "口" ? "E-002" : "E-001";
+  }
+  function aliasHits(name) {
+    const src = String(name || "");
+    const hits = [];
+    for (const al of SEGMENT_ALIASES) {
+      const re = new RegExp(al.re.source, "g");
+      let m;
+      while ((m = re.exec(src))) {
+        hits.push({
+          start: m.index,
+          end: m.index + m[0].length,
+          text: m[0],
+          code: al.code || null,
+          pending: al.pending || null,
+          len: m[0].length
+        });
+      }
+    }
+    hits.sort((a, b) => b.len - a.len || a.start - b.start);
+    const used = [];
+    for (const h of hits) {
+      if (used.some((u) => !(h.end <= u.start || h.start >= u.end))) continue;
+      used.push(h);
+    }
+    used.sort((a, b) => a.start - b.start);
+    return used;
+  }
+  function partsFromName(name, qty, unit, specNote) {
+    const src = cleanName(name);
+    if (!src) return [];
+    const hits = aliasHits(src);
+    const out = [];
+    if (!hits.length) {
+      out.push({ code: null, name: src, qty, unit: unit || "式", pending: true, note: specNote || "單價庫沒有對應行情" });
+      return out;
+    }
+    for (const h of hits) {
+      let code = h.code;
+      let pendingName = h.pending;
+      if (code === "SOCKET") {
+        code = decideSocket(src, unit);
+        pendingName = null;
+      }
+      const note = specNote || "";
+      if (code && itemByCode(code)) {
+        out.push({ code, name: itemByCode(code).item, qty, unit, pending: false, note });
+      } else {
+        out.push({ code: null, name: pendingName || h.text || src, qty, unit: unit || "式", pending: true, note: note || "單價庫沒有對應行情" });
+      }
+    }
+    // leftover CJK not covered by aliases → 待填, do not invent a price
+    let leftover = src;
+    for (const h of hits.slice().sort((a, b) => b.start - a.start)) {
+      leftover = leftover.slice(0, h.start) + leftover.slice(h.end);
+    }
+    leftover = leftover.replace(/[0-9]+(?:\.[0-9]+)?/g, " ")
+      .replace(/公分|公釐|公厘|厘米|規格/g, " ")
+      .replace(/新增|再加|還要|另外|然後|以及|還有|接著|而且|並且|并且|幫我|幫忙|請|要|加|補|做|裝|換|延伸/g, " ")
+      .replace(/[，。、,;；:\s]/g, " ").trim();
+    leftover = leftover.replace(/^(水電|木工|油漆|工程|牆壁|牆面|地面|客廳|臥室|廚房|廁所|浴室|房間|全室)$/g, "").trim();
+    if (/^[\u4e00-\u9fff]{2,}$/.test(leftover)
+        && !/^(公分|公釐|厘米|規格|數量|單價)$/.test(leftover)
+        && !out.some((p) => (p.name || "").indexOf(leftover) >= 0 || leftover.indexOf((p.pending ? "" : (p.name || ""))) >= 0)) {
+      out.push({ code: null, name: leftover, qty: qty, unit: unit || "式", pending: true, note: "單價庫沒有對應行情" });
+    }
+    return out;
+  }
+  function segmentSpeech(text) {
+    const src = String(text || "");
+    const qtys = findQtys(src);
+    const specs = findQtys(src, { includeSpec: true }).filter((q) => q.spec);
+    const segs = [];
+    let roomArea = null;
+    for (let i = 0; i < qtys.length; i++) {
+      const q = qtys[i];
+      const prevEnd = i === 0 ? 0 : qtys[i - 1].index + qtys[i - 1].length;
+      const nextStart = i + 1 < qtys.length ? qtys[i + 1].index : src.length;
+      let before = src.slice(prevEnd, q.index);
+      let after = src.slice(q.index + q.length, nextStart);
+      const split = splitLeadingVerb(after);
+      after = split.rest;
+      const verbToNext = split.verb;
+      const nameBefore = cleanName(before);
+      const nameAfter = cleanName(after);
+      // 開頭單獨的坪數（例如「30 坪平釘天花 25 坪」）當全室面積，不當第一個工項
+      if (i === 0 && !nameBefore && q.unit === "坪" && nameAfter && qtys.length > 1) {
+        roomArea = { qty: q.qty, unit: q.unit };
+        // 把品名留給下一筆
+        if (qtys[i + 1]) {
+          /* next iteration will see this trailing name in its 'before' if we don't consume it;
+             because after sits between this unit and next qty, next.before would be nameAfter+verb.
+             We already split verb; prepend nameAfter to a stash for next. */
+        }
+        segs.push({ kind: "context", qty: q.qty, unit: q.unit, name: nameAfter, carryName: nameAfter + (verbToNext ? " " + verbToNext : "") });
+        continue;
+      }
+      let name = nameBefore;
+      if (i > 0 && segs[segs.length - 1] && segs[segs.length - 1].kind === "context" && segs[segs.length - 1].carryName) {
+        const carried = cleanName(segs[segs.length - 1].carryName);
+        if (!name) name = carried;
+        else if (carried && name.indexOf(carried) < 0) name = cleanName(carried + " " + name);
+      }
+      // 數量後面的文字：不完整的動詞（新增／加）才把後面第一個工項併進來，其餘留給下一筆
+      const nextItemPrefix = /^(新增|加|再加|還要|另外|然後|要|做|裝|補|請)/;
+      if (nameAfter && !NAME_CONNECT.test(nameAfter) && !nextItemPrefix.test(nameAfter)) {
+        const beforeHits = aliasHits(name);
+        const afterHits = aliasHits(nameAfter);
+        const incomplete = !name || (beforeHits.length === 0 && /(新增|再加|^加|要|補|做|裝|換|延伸)/.test(name));
+        if (incomplete) {
+          if (!afterHits.length) {
+            name = cleanName((name ? name + " " : "") + nameAfter);
+          } else {
+            const first = afterHits[0];
+            const chunk = String(nameAfter).slice(0, first.end);
+            name = cleanName((name ? name + " " : "") + chunk);
+          }
+        } else if (nameAfter && afterHits.length) {
+          // 「三口插座」這種數量緊貼後面品名，且前面是上一項殘句時，數量歸後面
+          function unitFits(nm) {
+            return partsFromName(nm, 1, q.unit, "").some(function (p) {
+              return p.code && itemByCode(p.code) && unitCanon(itemByCode(p.code).unit) === unitCanon(q.unit);
+            });
+          }
+          if (unitFits(nameAfter) && !unitFits(name)) name = nameAfter;
+        }
+      }
+      const specNear = specs.filter((sp) => sp.index >= prevEnd && sp.index <= nextStart)
+        .map((sp) => sp.qty + sp.unit).join("、");
+      segs.push({ kind: "item", name, qty: q.qty, unit: q.unit, spec: specNear, index: q.index });
+    }
+    if (roomArea) segs.roomArea = roomArea;
+    return segs;
+  }
+  function emitParts(parts, items, usedKeys) {
+    for (const p of parts) {
+      if (!p || !p.name && !p.code) continue;
+      let row;
+      if (p.code && itemByCode(p.code) && !p.pending) {
+        row = lineFromCode(p.code, p.qty, p.unit);
+        if (p.note) row.note = p.note;
+      } else {
+        row = pendingLine(p.name || "未命名項目", p.qty, p.unit, p.note || "單價庫沒有對應行情");
+      }
+      const key = (row.code || "") + "|" + row.name + "|" + row.qty + "|" + row.unit;
+      if (usedKeys.has(key)) continue;
+      usedKeys.add(key);
+      items.push(row);
+    }
+  }
+
   function localParse(text) {
     const corr = applySpeechCorrections(text || "");
     const norm = normalizeAnswer(corr.text);
     const src = norm.text;
-    const used = new Set();
     const items = [];
+    const usedKeys = new Set();
+    const usedCodesSoft = new Set();
+    const segs = segmentSpeech(src);
+    const roomArea = segs.roomArea || null;
+    for (const seg of segs) {
+      if (!seg || seg.kind !== "item") continue;
+      let name = seg.name;
+      let qty = seg.qty;
+      let unit = seg.unit;
+      // 全室油漆若沒帶到數量，用開頭的全室坪數
+      const parts = partsFromName(name, qty, unit, seg.spec ? ("規格 " + seg.spec) : "");
+      if (parts.length > 1) {
+        const allCabinets = parts.every((p) => /櫃|窗簾/.test(p.name || ""));
+        const bare = String(name || "").match(/(?:^|[^0-9])([0-9]+(?:\.[0-9]+)?)(?!\s*(?:坪|尺|呎|組|口|迴|盞|顆|式|個|處|公尺|公分))/);
+        if (allCabinets && bare && parts.length >= 2) {
+          // 「電器櫃 40側邊櫃 8 尺」：40 沒有單位，不當 8 尺的數量分給前一項
+          const earlier = parts.slice(0, -1);
+          const last = parts[parts.length - 1];
+          last.qty = qty;
+          last.unit = unit || last.unit;
+          earlier.forEach((p) => {
+            p.qty = 1;
+            p.unit = "式";
+            p.note = (p.note ? p.note + "；" : "") + "口述提及 " + bare[1] + "（單位不明）";
+          });
+        } else if (!allCabinets) {
+          const last = parts[parts.length - 1];
+          last.qty = qty;
+          last.unit = unit || last.unit;
+          for (const p of parts.slice(0, -1)) {
+            if ((p.code === "A-102" || /全室油漆|乳膠漆/.test(p.name || "")) && roomArea) {
+              p.qty = roomArea.qty;
+              p.unit = roomArea.unit;
+              if (!p.note) p.note = "依口述全室坪數";
+            } else {
+              p.qty = p.qty && p !== last ? (p.code && itemByCode(p.code) && itemByCode(p.code).unit === unit ? qty : 1) : p.qty;
+              if (!(p.code && itemByCode(p.code) && unitCanon(itemByCode(p.code).unit) === unitCanon(unit))) {
+                p.qty = 1;
+                p.unit = (p.code && itemByCode(p.code) && itemByCode(p.code).unit) || "式";
+              }
+            }
+          }
+        }
+      }
+      emitParts(parts, items, usedKeys);
+      parts.forEach((p) => { if (p.code) usedCodesSoft.add(p.code); });
+    }
+    // 全室油漆出現但還沒列到數量時，補上全室坪數
+    if (roomArea && /全室油漆|全室.{0,4}漆/.test(src) && !items.some((it) => /油漆|乳膠漆/.test(it.name) && it.code === "A-102")) {
+      const already = items.some((it) => it.code === "A-102");
+      if (!already && /全室油漆/.test(src)) {
+        emitParts([{ code: "A-102", name: itemByCode("A-102") && itemByCode("A-102").item, qty: roomArea.qty, unit: roomArea.unit, pending: false, note: "依口述全室坪數" }], items, usedKeys);
+        usedCodesSoft.add("A-102");
+      }
+    }
+    // 舊規則後援：沒切到數量的工項（系統高櫃、全室水電、水泥等）
     function take(code, at, unitHint) {
-      if (!code || used.has(code) || !itemByCode(code)) return;
+      if (!code || !itemByCode(code)) return;
+      if (items.some((it) => it.code === code)) return;
       const it = itemByCode(code);
-      const q = nearestQty(src, at == null ? src.search(it.item) : at, unitHint || it.unit);
-      items.push(lineFromCode(code, q.qty > 0 ? q.qty : 1, q.unit || it.unit));
-      used.add(code);
+      const prefer = unitHint || it.unit;
+      const q = nearestQty(src, at == null ? src.search(it.item) : at, prefer);
+      const unitOk = q && q.unit && prefer && unitCanon(q.unit) === unitCanon(prefer);
+      const row = lineFromCode(code, (q.qty > 0 && unitOk) ? q.qty : 1, unitOk ? q.unit : it.unit);
+      const key = (row.code || "") + "|" + row.name + "|" + row.qty + "|" + row.unit;
+      if (usedKeys.has(key)) return;
+      usedKeys.add(key);
+      items.push(row);
     }
     for (const h of norm.hits) {
       if (h.code && itemByCode(h.code)) {
@@ -1206,7 +1504,6 @@
       const m = src.match(rule.re);
       if (m) take(rule.code, m.index, itemByCode(rule.code) && itemByCode(rule.code).unit);
     }
-    // 水泥／紅毛土：三個工種目錄沒有「水泥」单项，標待填
     if (/水泥/.test(src) && !items.some((it) => /水泥/.test(it.name))) {
       const q = nearestQty(src, src.indexOf("水泥"), "公尺");
       items.push(pendingLine("水泥", q.qty, q.unit || "公尺", "單價庫（水電／木工／油漆）沒有水泥行情"));
@@ -1215,7 +1512,7 @@
       items.push(pendingLine(src.slice(0, 20), 1, "式", "無法對應目錄，請師傅自行修正"));
     }
     attachSpokenPrices(items, src);
-    return { text: src, hits: norm.hits, items, local: true };
+    return { text: src, hits: norm.hits, items, local: true, roomArea };
   }
 
   function catalogForPrompt() {
@@ -1280,7 +1577,9 @@
       "估價單不要列出工種分類。請自行判斷工種並對到目錄。",
       "數量、單位、材料與工法都要從口述解析並正確填入 name、qty、unit。「米知」「米突」「米之」當公尺。「紅毛土」「洪毛土」「紅毛兔」是水泥。",
       "若師傅有說出單價（例如「一坪四千五」「單價 3800」「每坪三千八百元」「一組二千五」「4500 一坪」），該項目的 unitPrice 必須用口述單價，不要改回目錄行情。若只說某一項的總價（「這項總共三萬」）且能對到該項目，則 unitPrice = 總價÷數量。電話、地址門牌、220V／110V 不是單價。沒有口述單價時，目錄有對應的項目 unitPrice 必須等於目錄行情，pending=false。",
-      "目錄沒有對應：name 用標準名稱，unitPrice 必須是 0，pending=true（畫面會標「待填」）。不得虛構單價。",
+      "目錄沒有對應：name 用標準名稱，unitPrice 必須是 0，pending=true（畫面會標「待填」）。不得虛構單價。目錄沒有的工項（例如電器櫃、側邊櫃、網路迴路、燈具迴路）仍要逐筆列出並標 pending，不得省略，也不得改掛到不相干的目錄項。",
+      "長句常沒有標點，請依「品名 + 數量 + 單位」在數量與單位處切段，不要把前一項的數量錯接到下一項。開頭若先出現單獨的坪數（例如「30 坪」後面才是平釘天花 25 坪），那是全室面積，不要當成第一個工項的數量；「全室油漆」若沒另說數量，可用這個全室坪數。",
+      "「公分／cm」是規格不是數量。例如「天花嵌燈 9 公分 20 顆」數量是 20 顆（或 20 盞），9 公分寫在 note。數字後面的「呎」當作「尺」。坎燈／崁燈是嵌燈。參邊櫃是側邊櫃。跳色就是跳色，不要改成調色。",
       "若口述有提到客戶資料，一併填入 customer。沒有說到的欄位必須留空白字串，不得虛構姓名、電話、地址、區域、建築形式或樓層。",
       "區域只允許「都會」或「偏遠」。建築形式只允許「公寓」「大樓」「透天」「廠辦」「其他」。樓層寫成「3樓」這種形式即可。",
       "只回一個 JSON 物件，格式：",
@@ -1319,11 +1618,54 @@
     return out;
   }
 
+  function isLongTranscript(text) {
+    const s = String(text || "");
+    const unitHits = (s.match(/[0-9零〇一二兩三四五六七八九十百千萬]+\s*(?:坪|尺|呎|組|口|迴|盞|顆|式|個|處|公尺)/g) || []).length;
+    return s.length >= 80 || unitHits >= 8;
+  }
   async function defaultAi(prompt) {
     if (typeof state.aiHandler === "function") return state.aiHandler(prompt);
     const claude = window.claude && typeof window.claude.use === "function" ? window.claude.use("sample") : null;
-    if (claude && typeof claude.json === "function") return claude.json(prompt, { modelTier: "quick" });
+    const long = isLongTranscript(state.raw || prompt);
+    const opts = { modelTier: "quick", max_tokens: 4096, timeoutMs: long ? 60000 : 30000 };
+    if (claude && typeof claude.json === "function") return claude.json(prompt, opts);
     throw Object.assign(new Error("no-ai"), { code: "needs_api_key" });
+  }
+  function itemKey(it) {
+    const name = String((it && (it.name || "")) || "").replace(/\s+/g, "");
+    return (it && it.code ? String(it.code) : "") + "|" + name;
+  }
+  function namesOverlap(a, b) {
+    const x = String(a || "").replace(/\s+/g, "");
+    const y = String(b || "").replace(/\s+/g, "");
+    if (!x || !y) return false;
+    return x === y || x.indexOf(y) >= 0 || y.indexOf(x) >= 0;
+  }
+  function mergeMissingLocal(aiItems, localItems) {
+    const out = (aiItems || []).slice();
+    for (const loc of localItems || []) {
+      const hit = out.some((it) => (loc.code && it.code && loc.code === it.code) || namesOverlap(it.name, loc.name));
+      if (!hit) out.push(loc);
+    }
+    return out;
+  }
+  function fallbackBannerText() {
+    const e = state.lastAiError;
+    const code = e && e.code;
+    const reasons = {
+      quota_exceeded: "今日雲端次數已用完",
+      rate_limited: "雲端暫時忙碌",
+      timeout: "雲端回覆太久",
+      invalid_json: "雲端回覆無法整理成估價單",
+      empty_completion: "雲端回覆無法整理成估價單",
+      upstream_error: "雲端連線沒有成功",
+      unavailable: "雲端連線沒有成功",
+      origin_rejected: "這個頁面目前用不上雲端分析",
+      needs_api_key: "這個頁面目前用不上雲端分析"
+    };
+    const why = code && reasons[code];
+    const head = why ? ("雲端分析沒有成功（" + why + "），") : "雲端分析沒有成功，";
+    return head + "已改用本機用語對照產生估價單。還沒對到行情的會標待填。若要修改，請下載 Excel 後自己改。";
   }
 
   async function generateFromText(text, opts) {
@@ -1343,9 +1685,14 @@
     if (!force) {
       try {
         const data = await defaultAi(buildPrompt(raw, norm.text, original, corr.hits));
-        const items = adoptAiItems(data);
+        let items = adoptAiItems(data);
         attachSpokenPrices(items, raw);
+        const local = localParse(raw);
+        if (local && local.items && local.items.length) {
+          items = mergeMissingLocal(items, local.items);
+        }
         if (items.length) {
+          state.lastAiError = null;
           state.items = items;
           state.source = "ai";
           const rw = data && data.rewritten != null ? String(data.rewritten).trim() : "";
@@ -1482,8 +1829,10 @@
     renderSpoken();
     renderSheet();
     const isFb = state.source === "fallback";
+    const banText = isFb ? fallbackBannerText() : "";
     document.querySelectorAll("#fallback-banner, #fallback-banner-modal").forEach((ban) => {
       ban.classList.toggle("on", isFb);
+      if (isFb && banText) ban.textContent = banText;
     });
     updateTotalBanner();
     updateGuidance();
@@ -1601,7 +1950,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=4.4";
+      s.src = "exceljs.min.js?v=4.5";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -2230,9 +2579,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=4.4"),
-        loadJson("taigi_terms.json?v=4.4"),
-        loadJson("user_corrections.json?v=4.4").catch(function () { return null; })
+        loadJson("price_db.json?v=4.5"),
+        loadJson("taigi_terms.json?v=4.5"),
+        loadJson("user_corrections.json?v=4.5").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -2321,6 +2670,8 @@
     adoptCustomer,
     applyUserCorrections,
     applySpeechCorrections,
+    fallbackBannerText,
+    segmentSpeech,
     extractSpokenPrices,
     attachSpokenPrices,
     parseNumber,

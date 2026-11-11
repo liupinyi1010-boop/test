@@ -127,25 +127,63 @@
 
   function stripJsonFence(text) {
     let t = String(text || "").trim();
-    const m = t.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+    const m = t.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
     if (m) t = m[1].trim();
+    else t = t.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
     return t;
+  }
+
+  function stripTrailingCommas(s) {
+    return String(s || "").replace(/,\s*([\]}])/g, "$1");
+  }
+
+  function tryRepairJson(s) {
+    let t = stripTrailingCommas(String(s || "").trim());
+    t = t.replace(/,?\s*"[^"\\]*(?:\\.[^"\\]*)*"\s*:\s*[^,}\]]*$/, "");
+    t = t.replace(/,?\s*"[^"\\]*(?:\\.[^"\\]*)*"\s*$/, "");
+    t = t.replace(/,\s*$/, "");
+    const stack = [];
+    let inStr = false, esc = false;
+    for (let i = 0; i < t.length; i++) {
+      const ch = t[i];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (ch === "\\") esc = true;
+        else if (ch === '"') inStr = false;
+        continue;
+      }
+      if (ch === '"') inStr = true;
+      else if (ch === "{") stack.push("}");
+      else if (ch === "[") stack.push("]");
+      else if (ch === "}" || ch === "]") {
+        if (stack.length && stack[stack.length - 1] === ch) stack.pop();
+      }
+    }
+    if (inStr) t += '"';
+    while (stack.length) t += stack.pop();
+    return stripTrailingCommas(t);
   }
 
   function parseJsonLoose(text) {
     const t = stripJsonFence(text);
-    try {
-      return JSON.parse(t);
-    } catch (e1) {
-      const a = t.indexOf("{"),
-        b = t.lastIndexOf("}");
-      if (a >= 0 && b > a) {
-        try {
-          return JSON.parse(t.slice(a, b + 1));
-        } catch (e2) {}
-      }
-      throw makeErr("invalid_json", "AI 回覆不是合法 JSON");
+    const attempts = [t, stripTrailingCommas(t)];
+    const a = t.indexOf("{"), b = t.lastIndexOf("}");
+    if (a >= 0 && b > a) attempts.push(t.slice(a, b + 1), stripTrailingCommas(t.slice(a, b + 1)));
+    const iArr = t.indexOf("["), jArr = t.lastIndexOf("]");
+    if (iArr >= 0 && jArr > iArr && (a < 0 || iArr < a)) {
+      attempts.push(t.slice(iArr, jArr + 1));
     }
+    attempts.push(tryRepairJson(t));
+    if (a >= 0) attempts.push(tryRepairJson(t.slice(a)));
+    const seen = new Set();
+    for (const cand of attempts) {
+      if (!cand || seen.has(cand)) continue;
+      seen.add(cand);
+      try {
+        return JSON.parse(cand);
+      } catch (e) {}
+    }
+    throw makeErr("invalid_json", "AI 回覆不是合法 JSON");
   }
 
   function extractMessageText(data) {
@@ -179,6 +217,11 @@
     throw makeErr("upstream_error", "AI 服務回應錯誤（" + res.status + "）" + (raw ? "：" + raw.slice(0, 180) : ""));
   }
 
+  function wantedMaxTokens(options, fallback) {
+    const n = Number(options && (options.max_tokens || options.maxTokens));
+    return Number.isFinite(n) && n > 0 ? Math.max(256, Math.min(n, 8192)) : fallback;
+  }
+
   async function callAnthropicDirect(key, content, options) {
     let res;
     try {
@@ -192,7 +235,7 @@
         },
         body: JSON.stringify({
           model: pickModel(options && options.modelTier),
-          max_tokens: 8096,
+          max_tokens: wantedMaxTokens(options, 8096),
           messages: [{ role: "user", content }],
         }),
         signal: options && options.signal,
@@ -210,7 +253,16 @@
     const data = await res.json();
     const text = extractMessageText(data);
     if (!text) throw makeErr("empty_completion", "AI 沒有回覆內容");
-    return parseJsonLoose(text);
+    try {
+      const parsed = parseJsonLoose(text);
+      if (data && data.stop_reason) parsed._stop_reason = data.stop_reason;
+      return parsed;
+    } catch (e) {
+      if (data && data.stop_reason === "max_tokens") {
+        throw makeErr("invalid_json", "AI 回覆被截斷，將再試一次");
+      }
+      throw e;
+    }
   }
 
   async function callAnthropicProxy(content, options) {
@@ -221,7 +273,7 @@
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           modelTier: (options && options.modelTier) || "quick",
-          max_tokens: 2048,
+          max_tokens: wantedMaxTokens(options, 4096),
           messages: [{ role: "user", content }],
         }),
         signal: options && options.signal,
@@ -230,6 +282,7 @@
       if (options && options.signal && options.signal.aborted) {
         throw makeErr("cancelled", "已停止分析。");
       }
+      if (net && net.name === "TimeoutError") throw makeErr("timeout", "服務回覆逾時，請稍後再試。");
       throw makeErr("upstream_error", "無法連線到雲端 AI 代理，請確認網路或改在設定填入本機金鑰。");
     }
     if (!res.ok) await readFetchError(res);
@@ -237,7 +290,34 @@
     if (data && data.ok === false) throw mapProxyError(data, res.status);
     const text = extractMessageText(data);
     if (!text) throw makeErr("empty_completion", "AI 沒有回覆內容");
-    return parseJsonLoose(text);
+    try {
+      const parsed = parseJsonLoose(text);
+      if (data && data.stop_reason) parsed._stop_reason = data.stop_reason;
+      return parsed;
+    } catch (e) {
+      if (data && data.stop_reason === "max_tokens") {
+        throw makeErr("invalid_json", "AI 回覆被截斷，將再試一次");
+      }
+      throw e;
+    }
+  }
+
+  function withTimeoutSignal(options, timeoutMs) {
+    const parent = options && options.signal;
+    if (!timeoutMs || timeoutMs <= 0) return { signal: parent, cancel: function () {} };
+    const ctrl = new AbortController();
+    const id = setTimeout(function () {
+      try { ctrl.abort(); } catch (e) {}
+    }, timeoutMs);
+    if (parent) {
+      if (parent.aborted) ctrl.abort();
+      else parent.addEventListener("abort", function () { ctrl.abort(); }, { once: true });
+    }
+    return {
+      signal: ctrl.signal,
+      cancel: function () { clearTimeout(id); },
+      timedOut: function () { return ctrl.signal.aborted && !(parent && parent.aborted); }
+    };
   }
 
   async function callAnthropic(prompt, options) {
@@ -262,9 +342,28 @@
     });
 
     const key = getApiKey();
-    if (key) return callAnthropicDirect(key, content, options);
-    if (proxyConfigured()) return callAnthropicProxy(content, options);
-    throw makeErr("needs_api_key", AI_NOTICE);
+    if (!key && !proxyConfigured()) throw makeErr("needs_api_key", AI_NOTICE);
+    const timeoutMs = Number(options && options.timeoutMs) > 0 ? Number(options.timeoutMs) : 30000;
+    let lastErr = null;
+    const retries = 2;
+    for (let i = 0; i < retries; i++) {
+      const gate = withTimeoutSignal(options, timeoutMs);
+      try {
+        const opts = Object.assign({}, options || {}, { signal: gate.signal, max_tokens: wantedMaxTokens(options, 4096) });
+        const data = key ? await callAnthropicDirect(key, content, opts) : await callAnthropicProxy(content, opts);
+        gate.cancel();
+        return data;
+      } catch (e) {
+        gate.cancel();
+        if (gate.timedOut()) lastErr = makeErr("timeout", "服務回覆逾時，請稍後再試。");
+        else lastErr = e;
+        if (options && options.signal && options.signal.aborted) throw makeErr("cancelled", "已停止分析。");
+        const code = lastErr && lastErr.code;
+        const retryable = code === "invalid_json" || code === "empty_completion" || code === "timeout" || code === "upstream_error";
+        if (!retryable || i === retries - 1) throw lastErr;
+      }
+    }
+    throw lastErr || makeErr("upstream_error", "雲端服務連線或回應錯誤，請稍後再試。");
   }
 
   function asrHeaders() {
@@ -436,6 +535,7 @@
   }
 
   const api = {
+    parseJsonLoose,
     getApiKey,
     setApiKey,
     AI_KEY_LS,
