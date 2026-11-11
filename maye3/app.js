@@ -190,7 +190,182 @@
         localStorage.setItem(PREFS_KEY, JSON.stringify(o));
       } catch (e) {}
     }
+    scheduleFitBrand();
     return { theme, font, themeLocked: lockTheme };
+  }
+  function scheduleFitBrand() {
+    if (scheduleFitBrand._t) cancelAnimationFrame(scheduleFitBrand._t);
+    scheduleFitBrand._t = requestAnimationFrame(function () {
+      scheduleFitBrand._t = 0;
+      fitBrandAndWordmark();
+    });
+  }
+  function textInkRect(el) {
+    const empty = { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0 };
+    if (!el) return empty;
+    const nodes = [];
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    let n;
+    while ((n = walk.nextNode())) {
+      if (n.nodeValue && n.nodeValue.length) nodes.push(n);
+    }
+    if (!nodes.length) {
+      const r = el.getBoundingClientRect();
+      return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height };
+    }
+    const range = document.createRange();
+    let top = Infinity, bottom = -Infinity;
+    nodes.forEach((node) => {
+      range.selectNodeContents(node);
+      const r = range.getBoundingClientRect();
+      if (r.height || r.width) {
+        if (r.top < top) top = r.top;
+        if (r.bottom > bottom) bottom = r.bottom;
+      }
+    });
+    const first = nodes[0];
+    const last = nodes[nodes.length - 1];
+    const lastLen = last.nodeValue.length;
+    const firstLen = first.nodeValue.length;
+    range.setStart(first, 0);
+    range.setEnd(first, Math.min(1, firstLen));
+    const firstR = range.getBoundingClientRect();
+    range.setStart(last, Math.max(0, lastLen - 1));
+    range.setEnd(last, lastLen);
+    const lastR = range.getBoundingClientRect();
+    const left = firstR.width || firstR.height ? firstR.left : 0;
+    const right = lastR.width || lastR.height ? lastR.right : left;
+    if (!isFinite(top)) {
+      top = Math.min(firstR.top, lastR.top);
+      bottom = Math.max(firstR.bottom, lastR.bottom);
+    }
+    return { left, right, top, bottom, width: Math.max(0, right - left), height: Math.max(0, bottom - top) };
+  }
+
+  function titleGlyphInk(title) {
+    const textInk = textInkRect(title);
+    const fallback = function () {
+      const fs = parseFloat(getComputedStyle(title).fontSize) || 0;
+      const box = title.getBoundingClientRect();
+      const height = fs ? fs * 0.9 : textInk.height;
+      const top = box.top + Math.max(0, (box.height - height) / 2);
+      return { left: textInk.left, right: textInk.right, width: textInk.width, top, bottom: top + height, height };
+    };
+    try {
+      const cs = getComputedStyle(title);
+      const text = String(title.textContent || "").trim() || "估";
+      const ctx = document.createElement("canvas").getContext("2d");
+      ctx.font = cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+      const m = ctx.measureText(text);
+      if (m.actualBoundingBoxAscent == null || m.fontBoundingBoxAscent == null) return fallback();
+      const nodes = [];
+      const walk = document.createTreeWalker(title, NodeFilter.SHOW_TEXT, null);
+      let n;
+      while ((n = walk.nextNode())) {
+        if (n.nodeValue && n.nodeValue.length) nodes.push(n);
+      }
+      if (!nodes.length) return fallback();
+      const range = document.createRange();
+      range.setStart(nodes[0], 0);
+      range.setEnd(nodes[0], Math.min(1, nodes[0].nodeValue.length));
+      const r = range.getBoundingClientRect();
+      const baseline = r.top + m.fontBoundingBoxAscent;
+      const top = baseline - m.actualBoundingBoxAscent;
+      const bottom = baseline + m.actualBoundingBoxDescent;
+      const height = bottom - top;
+      if (!(height > 2)) return fallback();
+      return { left: textInk.left, right: textInk.right, width: textInk.width, top, bottom, height };
+    } catch (e) {
+      return fallback();
+    }
+  }
+  function visibleMarkImg(mark) {
+    if (!mark) return null;
+    const imgs = mark.querySelectorAll("img");
+    for (let i = 0; i < imgs.length; i++) {
+      const cs = getComputedStyle(imgs[i]);
+      if (cs.display !== "none" && cs.visibility !== "hidden") return imgs[i];
+    }
+    return imgs[0] || null;
+  }
+  function fitWordmarkToTitle(wm, title) {
+    wm.style.letterSpacing = "0px";
+    wm.style.marginRight = "0px";
+    if (wm.dataset.fitFs) {
+      wm.style.fontSize = "";
+      delete wm.dataset.fitFs;
+    }
+    const target = textInkRect(title).width;
+    if (!(target > 8)) return;
+    const widthAt = function (sp) {
+      wm.style.letterSpacing = sp + "px";
+      return textInkRect(wm).width;
+    };
+    function applySpacing() {
+      let current = widthAt(0);
+      if (current >= target - 0.5 && current <= target * 1.03) {
+        wm.style.letterSpacing = "0px";
+        return current;
+      }
+      if (current < target - 0.5) {
+        let lo = 0, hi = 2;
+        while (widthAt(hi) < target && hi < 24) hi *= 2;
+        hi = Math.min(hi, 24);
+        for (let i = 0; i < 20; i++) {
+          const mid = (lo + hi) / 2;
+          if (widthAt(mid) < target) lo = mid;
+          else hi = mid;
+        }
+        const sp = (lo + hi) / 2;
+        wm.style.letterSpacing = sp + "px";
+        return textInkRect(wm).width;
+      }
+      return current;
+    }
+    let finalW = applySpacing();
+    if (target && Math.abs(finalW - target) / target > 0.03) {
+      const fs = parseFloat(getComputedStyle(wm).fontSize) || 16;
+      const root = parseFloat(getComputedStyle(document.documentElement).fontSize) || 20;
+      const minFs = 0.7 * root;
+      const maxFs = 1.05 * root;
+      const scale = target / Math.max(finalW, 1);
+      const next = Math.min(maxFs, Math.max(minFs, fs * scale));
+      if (Math.abs(next - fs) > 0.2) {
+        wm.style.fontSize = next + "px";
+        wm.dataset.fitFs = "1";
+        finalW = applySpacing();
+      }
+    }
+    const ink = textInkRect(wm);
+    const box = wm.getBoundingClientRect();
+    const overhang = box.right - ink.right;
+    wm.style.marginRight = overhang > 0.25 ? (-overhang) + "px" : "0px";
+  }
+  function fitBrandAndWordmark() {
+    document.querySelectorAll(".brand, .quote-modal-brand").forEach((row) => {
+      const mark = row.querySelector(".brand-mark");
+      const title = row.querySelector("h1, h2");
+      const wm = row.querySelector(".wordmark");
+      if (mark && title) {
+        const ink = titleGlyphInk(title);
+        if (ink.height > 2) {
+          const img = visibleMarkImg(mark);
+          let aspect = 434 / 512;
+          if (img && img.naturalWidth && img.naturalHeight) {
+            aspect = img.naturalWidth / img.naturalHeight;
+          }
+          const h = Math.round(ink.height * 1000) / 1000;
+          const w = Math.round(h * aspect * 1000) / 1000;
+          mark.style.width = w + "px";
+          mark.style.height = h + "px";
+          mark.style.flexBasis = w + "px";
+          const titleBox = title.getBoundingClientRect();
+          const padTop = ink.top - titleBox.top;
+          mark.style.marginTop = (Math.round(padTop * 1000) / 1000) + "px";
+        }
+      }
+      if (title && wm) fitWordmarkToTitle(wm, title);
+    });
   }
   function toggleTheme() {
     const cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
@@ -1193,7 +1368,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=4.1";
+      s.src = "exceljs.min.js?v=4.3";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1822,9 +1997,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=4.1"),
-        loadJson("taigi_terms.json?v=4.1"),
-        loadJson("user_corrections.json?v=4.1").catch(function () { return null; })
+        loadJson("price_db.json?v=4.3"),
+        loadJson("taigi_terms.json?v=4.3"),
+        loadJson("user_corrections.json?v=4.3").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1844,6 +2019,15 @@
     applySpeechSupportUI();
     applyLineBrowserHint();
     applyUiPrefs(readPrefs(), { save: false });
+    try {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { scheduleFitBrand(); }).catch(function () {});
+      }
+    } catch (e) {}
+    document.querySelectorAll(".brand-mark-img").forEach(function (img) {
+      if (!img.complete) img.addEventListener("load", scheduleFitBrand, { once: true });
+    });
+    window.addEventListener("resize", scheduleFitBrand);
     restoreState();
     updateGuidance();
     if ((state.items.length || state.raw) && location.hash === "#quote") {
@@ -1921,6 +2105,9 @@
     readPrefs,
     confirmClear,
     beginRecording,
+    fitBrandAndWordmark,
+    textInkRect,
+    titleGlyphInk,
     ready: () => state.ready
   };
   window.__isZeroNumericInput = isZeroNumericInput;
