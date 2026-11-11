@@ -444,7 +444,17 @@
         btn.type = "button";
         btn.className = b.cls || "btn";
         if (b.id) btn.id = b.id;
-        btn.textContent = b.label;
+        if (b.icon) {
+          const ico = document.createElement("span");
+          ico.className = "btn-ico";
+          ico.setAttribute("aria-hidden", "true");
+          ico.innerHTML = b.icon;
+          btn.appendChild(ico);
+        }
+        const lab = document.createElement("span");
+        lab.className = "btn-lab";
+        lab.textContent = b.label;
+        btn.appendChild(lab);
         btn.addEventListener("click", (e) => {
           e.preventDefault();
           if (typeof b.fn === "function") b.fn();
@@ -468,9 +478,9 @@
       title: "下載報價單",
       desc: "請選一種檔案。PDF 方便查看和列印；Excel 方便您自己改數字。",
       buttons: [
-        { id: "btn-pdf", label: "下載 PDF（方便查看、列印）", cls: "btn lg", fn: () => { closeModal(); exportPdf().catch((e) => { console.error(e); setExportStatus("匯出 PDF 失敗，請再試一次。", true); }); } },
-        { id: "btn-xlsx", label: "下載 Excel（方便自己改數字）", cls: "btn lg sec", fn: () => { closeModal(); exportXlsx().catch((e) => { console.error(e); setExportStatus("匯出 Excel 失敗，請再試一次。", true); }); } },
-        { id: "btn-line", label: "用 LINE 分享", cls: "btn sec lg", fn: () => { window.open(lineShareUrl(), "_blank", "noopener"); } },
+        { id: "btn-pdf", label: "下載 PDF（方便查看、列印）", cls: "btn lg tile tile-tan", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg>', fn: () => { closeModal(); exportPdf().catch((e) => { console.error(e); setExportStatus("匯出 PDF 失敗，請再試一次。", true); }); } },
+        { id: "btn-xlsx", label: "下載 Excel（方便自己改數字）", cls: "btn lg tile tile-dark", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M4 10h16M4 15h16M10 5v14"></path></svg>', fn: () => { closeModal(); exportXlsx().catch((e) => { console.error(e); setExportStatus("匯出 Excel 失敗，請再試一次。", true); }); } },
+        { id: "btn-line", label: "用 LINE 分享", cls: "btn sec lg", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v9H8l-4 4V6z"></path></svg>', fn: () => { window.open(lineShareUrl(), "_blank", "noopener"); } },
         { id: "btn-modal-cancel", label: "取消", cls: "btn ghost lg", fn: closeModal }
       ]
     });
@@ -481,7 +491,7 @@
       title: "清除全部資料？",
       desc: "會把剛才講的內容、客戶資料和估價單全部清掉，清掉就不能復原。確定要清除嗎？",
       buttons: [
-        { id: "btn-confirm-clear", label: "確定清除", cls: "btn danger lg", fn: () => { closeModal(); clearSession(); setStatus("已清除。請再按綠色大按鈕開始講，或在下面格子打字。"); } },
+        { id: "btn-confirm-clear", label: "確定清除", cls: "btn danger lg", fn: () => { closeModal(); clearSession(); setStatus("已清除。請再按下面的大按鈕開始講，或在下面格子打字。"); } },
         { id: "btn-cancel-clear", label: "取消", cls: "btn ghost lg", fn: closeModal }
       ]
     });
@@ -1062,7 +1072,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.6";
+      s.src = "exceljs.min.js?v=3.7";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1413,7 +1423,7 @@
     if (mode === "rec") {
       if (lab) lab.textContent = "講完了";
       btn.setAttribute("aria-label", "講完了，產生估價單");
-      if (hint) hint.textContent = "正在聽您說話。講完再按一次這個紅色按鈕。";
+      if (hint) hint.textContent = "正在聽您說話。講完再按一次這個大按鈕。";
       startRecTimer();
       setLiveSpeech(($("#speech") && $("#speech").value) || "正在聽您說話…", true);
     } else if (mode === "busy") {
@@ -1509,7 +1519,7 @@
     const t = String(text || "").trim();
     if (!t) {
       if (sessionBackup) { applySnapshot(sessionBackup); sessionBackup = null; persist(); }
-      setStatus("沒有聽到內容，已保留原來的資料。請再按綠色大按鈕講一次，或改在下面格子打字。", true);
+      setStatus("沒有聽到內容，已保留原來的資料。請再按下面的大按鈕講一次，或改在下面格子打字。", true);
       micUI("idle");
       return;
     }
@@ -1555,7 +1565,7 @@
     rec.onerror = (e) => {
       const code = e && e.error;
       if (state.rec && state.rec._keep && (code === "no-speech" || code === "aborted")) return;
-      let msg = "沒有聽清楚。請再按一次綠色按鈕重講，或改在下面格子打字，也可以用鍵盤上的麥克風。";
+      let msg = "沒有聽清楚。請再按一次大按鈕重講，或改在下面格子打字，也可以用鍵盤上的麥克風。";
       if (code === "not-allowed" || code === "service-not-allowed") {
         msg = "沒有麥克風權限。請到手機或瀏覽器設定，允許這個網站使用麥克風，再按一次按鈕。也可以在下面格子打字。";
       }
@@ -1587,7 +1597,7 @@
       return;
     }
     micUI("rec");
-    setStatus("正在聽您說話。您說的話會出現在按鈕下面，講完請再按一次紅色按鈕。");
+    setStatus("正在聽您說話。您說的話會出現在按鈕下面，講完請再按一次這個大按鈕。");
   }
 
   function stopBrowserAsr() {
@@ -1668,9 +1678,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=3.6"),
-        loadJson("taigi_terms.json?v=3.6"),
-        loadJson("user_corrections.json?v=3.6").catch(function () { return null; })
+        loadJson("price_db.json?v=3.7"),
+        loadJson("taigi_terms.json?v=3.7"),
+        loadJson("user_corrections.json?v=3.7").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {

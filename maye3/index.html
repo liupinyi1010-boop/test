@@ -3,16 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#3f5f5c">
+  <meta name="theme-color" content="#1F1F1F">
   <title>估價嗎耶通</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.6">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=3.7">
 </head>
 <body>
   <header class="top no-print">
     <div class="wrap">
+      <p class="eyebrow">語音估價</p>
       <h1>估價嗎耶通</h1>
       <p>按下面的大按鈕，用講話做估價單。客戶姓名、電話、地址和施工項目，一次講完就好。</p>
     </div>
@@ -23,7 +24,15 @@
       <div class="card home-card">
         <div class="mic-wrap">
           <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="按這裡開始講">
-            <span class="ico" aria-hidden="true">🎤</span>
+            <span class="mic-orb" aria-hidden="true">
+              <span class="mic-ring"></span>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="2.5" width="6" height="11" rx="3"></rect>
+                <path d="M6 11.5a6 6 0 0 0 12 0"></path>
+                <path d="M12 17.5v3.2"></path>
+                <path d="M8 21h8"></path>
+              </svg>
+            </span>
             <span id="mic-lab">按這裡開始講</span>
           </button>
           <div class="mic-hint" id="mic-hint">先按一下開始，講完再按一次</div>
@@ -39,7 +48,7 @@
         <div class="banner line-hint" id="line-browser" hidden>
           您現在是用 LINE 裡面的視窗。若不能用麥克風，請點右上角「⋯」，選擇用外部瀏覽器（Safari 或 Chrome）開啟這一頁。
         </div>
-        <p class="status" id="status">準備好了。請按綠色大按鈕，開始講客戶和施工內容。</p>
+        <p class="status" id="status">準備好了。請按下面的大按鈕，開始講客戶和施工內容。</p>
         <div class="example" id="say-example">
           <div class="example-lab">可以這樣說：</div>
           <p>「客戶王先生，電話 0912-345-678，地址高雄市左營區重立路 12 號。平釘天花板 8 坪，新增一迴冷氣迴路。」</p>
@@ -50,7 +59,15 @@
         <label class="lbl" for="speech">也可以在這裡打字</label>
         <textarea id="speech" class="ta" placeholder="例如：客戶王先生，電話 0912-345-678，地址高雄市左營區重立路 12 號，透天 3 樓。平釘天花板 8 坪，新增一迴冷氣迴路，乳膠漆二底三度 20 坪…"></textarea>
         <div class="actions">
-          <button type="button" id="btn-make" class="btn lg">用上面的文字產生估價單</button>
+          <button type="button" id="btn-make" class="btn lg pill-cta">
+            <span class="pill-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="M13 6l6 6-6 6"></path>
+              </svg>
+            </span>
+            <span>用上面的文字產生估價單</span>
+          </button>
           <button type="button" id="btn-clear" class="btn sec danger">清除全部資料</button>
         </div>
         <p class="hint">單價依市場行情；沒有行情的會標「待填」。若要改數量或單價，請下載 Excel 後自己改。離開再回來，資料會留著，除非重新錄音或按清除。</p>
@@ -78,7 +95,16 @@
         <h2>下載報價單</h2>
         <p class="hint">若要改數量、單價或客戶資料，請下載 Excel 後自己改；改完後複價和合計會自動重算。</p>
         <div class="export">
-          <button type="button" id="btn-download" class="btn lg">下載報價單</button>
+          <button type="button" id="btn-download" class="btn lg pill-cta">
+            <span class="pill-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12"></path>
+                <path d="M7 11l5 5 5-5"></path>
+                <path d="M5 21h14"></path>
+              </svg>
+            </span>
+            <span>下載報價單</span>
+          </button>
         </div>
         <p class="status" id="export-status"></p>
       </div>
@@ -96,7 +122,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=3.6"></script>
-  <script src="app.js?v=3.6"></script>
+  <script src="ai-adapter.js?v=3.7"></script>
+  <script src="app.js?v=3.7"></script>
 </body>
 </html>
