@@ -3,12 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#F2F2F7">
-  <title>估價嗎耶通</title>
+  <meta name="theme-color" content="#EFE8DF">
+  <title>估價嗎耶通 · Good Job My tone</title>
+  <script>
+  (function(){
+    try{
+      var p=JSON.parse(localStorage.getItem("maye-ui-prefs")||"{}");
+      var theme=(p.theme==="light"||p.theme==="dark")?p.theme:((window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light");
+      var font=(p.font==="s"||p.font==="m"||p.font==="l")?p.font:"m";
+      document.documentElement.setAttribute("data-theme",theme);
+      document.documentElement.setAttribute("data-font",font);
+      var m=document.querySelector('meta[name="theme-color"]');
+      if(m)m.setAttribute("content",theme==="dark"?"#0E0E0E":"#EFE8DF");
+    }catch(e){
+      document.documentElement.setAttribute("data-theme","light");
+      document.documentElement.setAttribute("data-font","m");
+    }
+  })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.9">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=4.0">
+  <link rel="icon" href="favicon.svg?v=4.0" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=4.0" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.0" sizes="180x180">
 </head>
 <body>
   <div class="page-scene" aria-hidden="true"></div>
@@ -17,8 +36,34 @@
     <div class="top-scene" aria-hidden="true"></div>
     <div class="wrap">
       <p class="eyebrow">語音估價</p>
-      <h1>估價嗎耶通</h1>
-      <p>按下面的大按鈕，用講話做估價單。客戶姓名、電話、地址和施工項目，一次講完就好。</p>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.0" alt="" width="112" height="112">
+          <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.0" alt="" width="112" height="112">
+        </div>
+        <div class="brand-text">
+          <h1>估價嗎耶通</h1>
+          <p class="wordmark">Good Job My tone</p>
+        </div>
+      </div>
+      <p class="lede">按下面的大按鈕，用講話做估價單。客戶姓名、電話、地址和施工項目，一次講完就好。</p>
+      <div class="prefs" role="group" aria-label="畫面設定">
+        <button type="button" id="btn-theme" class="pref-btn" aria-pressed="false" aria-label="目前是明亮模式，按下去改成深色模式">
+          <span class="pref-ico theme-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1L6 18M18 6l1.1-1.1"></path></svg>
+          </span>
+          <span class="pref-ico theme-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5z"></path></svg>
+          </span>
+          <span id="theme-lab">明亮</span>
+        </button>
+        <div class="font-seg" role="radiogroup" aria-label="字體大小">
+          <span class="font-seg-lab">字體</span>
+          <button type="button" data-font="s" aria-pressed="false">小</button>
+          <button type="button" data-font="m" aria-pressed="true">中</button>
+          <button type="button" data-font="l" aria-pressed="false">大</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -57,8 +102,14 @@
             <span class="coach-bubble" id="coach-mic-lab">按這裡</span>
             <span class="coach-arrow" aria-hidden="true"></span>
           </div>
+          <div class="mic-stage" aria-hidden="true">
+            <span class="mic-blob mic-blob-a"></span>
+            <span class="mic-blob mic-blob-b"></span>
+            <span class="mic-blob mic-blob-c"></span>
+          </div>
           <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="按這裡開始講">
             <span class="mic-orb" aria-hidden="true">
+              <span class="mic-sheen"></span>
               <span class="mic-ring"></span>
               <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="9" y="2.5" width="6" height="11" rx="3"></rect>
@@ -117,7 +168,7 @@
     </section>
 
     <section id="quote" class="view quote-panel" aria-label="估價單">
-      <div class="card">
+      <div class="card quote-summary" id="download-card">
         <div class="quote-head">
           <div>
             <div class="ready-badge" id="ready-badge" hidden>
@@ -128,26 +179,23 @@
           </div>
           <button type="button" id="btn-top" class="btn ghost">回到上面</button>
         </div>
-        <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單。若要修改，請下載 Excel 後自己改。</div>
-
-        <div class="total-banner" id="total-banner" hidden></div>
-
-        <h3 class="preview-lab">報價單預覽</h3>
-        <div class="sheet-wrap" id="sheet-wrap">
-          <article class="quote-sheet" id="quote-sheet" aria-label="報價單預覽"></article>
-        </div>
-        <p class="hint" id="tax-note">若要修改，請下載 Excel 後自己改。預覽可以用手指左右滑，或兩指放大。</p>
-      </div>
-
-      <div class="card no-print" id="download-card">
-        <h2>下載報價單</h2>
-        <p class="hint">若要改數量、單價或客戶資料，請下載 Excel 後自己改；改完後複價和合計會自動重算。</p>
+        <p class="hint">完整報價單會在彈窗裡用捲動視窗查看。也可以直接下載。</p>
         <div class="export">
-          <div class="coach coach-dl" id="coach-dl" hidden>
-            <span class="coach-bubble">按這裡下載</span>
+          <div class="coach coach-view" id="coach-view" hidden>
+            <span class="coach-bubble">按這裡查看</span>
             <span class="coach-arrow" aria-hidden="true"></span>
           </div>
-          <button type="button" id="btn-download" class="btn lg pill-cta">
+          <button type="button" id="btn-view-quote" class="btn lg pill-cta">
+            <span class="pill-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 3h7l5 5v13H7z"></path>
+                <path d="M14 3v5h5"></path>
+                <path d="M9 12h6M9 16h6"></path>
+              </svg>
+            </span>
+            <span>查看報價單</span>
+          </button>
+          <button type="button" id="btn-download-page" class="btn lg pill-cta">
             <span class="pill-ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3v12"></path>
@@ -163,6 +211,53 @@
     </section>
   </main>
 
+  <div id="quote-modal" class="quote-modal" hidden aria-hidden="true">
+    <div class="quote-modal-backdrop" data-quote-close="1"></div>
+    <div class="quote-modal-box" role="dialog" aria-modal="true" aria-labelledby="quote-modal-title">
+      <div class="quote-modal-bar">
+        <div>
+          <div class="ready-badge" id="ready-badge-modal" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+            <span>估價單好了</span>
+          </div>
+          <div class="quote-modal-brand">
+            <div class="brand-mark brand-mark-sm" aria-hidden="true">
+              <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.0" alt="" width="64" height="64">
+              <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.0" alt="" width="64" height="64">
+            </div>
+            <h2 id="quote-modal-title">估價單</h2>
+          </div>
+        </div>
+        <button type="button" id="btn-quote-close" class="btn lg">關閉</button>
+      </div>
+      <div class="quote-modal-scroll" id="quote-modal-scroll">
+        <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單。若要修改，請下載 Excel 後自己改。</div>
+        <div class="total-banner" id="total-banner" hidden></div>
+        <h3 class="preview-lab">報價單預覽</h3>
+        <div class="sheet-wrap" id="sheet-wrap">
+          <article class="quote-sheet" id="quote-sheet" aria-label="報價單預覽"></article>
+        </div>
+        <p class="hint" id="tax-note">若要修改，請下載 Excel 後自己改。預覽可以用手指左右滑，或兩指放大。</p>
+      </div>
+      <div class="quote-modal-foot">
+        <div class="coach coach-dl" id="coach-dl" hidden>
+          <span class="coach-bubble">按這裡下載</span>
+          <span class="coach-arrow" aria-hidden="true"></span>
+        </div>
+        <button type="button" id="btn-download" class="btn lg pill-cta">
+          <span class="pill-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v12"></path>
+              <path d="M7 11l5 5 5-5"></path>
+              <path d="M5 21h14"></path>
+            </svg>
+          </span>
+          <span>下載報價單</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="modal" class="modal" hidden>
     <div class="modal-backdrop" data-modal-close="1"></div>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -175,7 +270,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=3.9"></script>
-  <script src="app.js?v=3.9"></script>
+  <script src="ai-adapter.js?v=4.0"></script>
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>

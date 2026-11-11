@@ -142,6 +142,76 @@
     return correctionList().map((c) => String(c.from) + " → " + String(c.to)).join("\n");
   }
   const STORE_KEY = "maye-quote-state-v3";
+  const PREFS_KEY = "maye-ui-prefs";
+  function systemTheme() {
+    try {
+      return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+    } catch (e) { return "light"; }
+  }
+  function readPrefs() {
+    try {
+      const p = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
+      const themeLocked = p.theme === "light" || p.theme === "dark";
+      return {
+        theme: themeLocked ? p.theme : systemTheme(),
+        font: (p.font === "s" || p.font === "m" || p.font === "l") ? p.font : "m",
+        themeLocked
+      };
+    } catch (e) {
+      return { theme: systemTheme(), font: "m", themeLocked: false };
+    }
+  }
+  function applyUiPrefs(next, opts) {
+    opts = opts || {};
+    const cur = readPrefs();
+    const theme = (next && (next.theme === "light" || next.theme === "dark")) ? next.theme : cur.theme;
+    const font = (next && (next.font === "s" || next.font === "m" || next.font === "l")) ? next.font : cur.font;
+    const lockTheme = !!(opts.lockTheme || cur.themeLocked || (next && (next.theme === "light" || next.theme === "dark") && opts.save));
+    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-font", font);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#0E0E0E" : "#EFE8DF");
+    const lab = $("#theme-lab");
+    if (lab) lab.textContent = theme === "dark" ? "深色" : "明亮";
+    const btn = $("#btn-theme");
+    if (btn) {
+      btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+      btn.setAttribute("aria-label", theme === "dark"
+        ? "目前是深色模式，按下去改成明亮模式"
+        : "目前是明亮模式，按下去改成深色模式");
+    }
+    document.querySelectorAll("[data-font]").forEach((el) => {
+      el.setAttribute("aria-pressed", el.getAttribute("data-font") === font ? "true" : "false");
+    });
+    if (opts.save) {
+      try {
+        const o = { font };
+        if (lockTheme) o.theme = theme;
+        localStorage.setItem(PREFS_KEY, JSON.stringify(o));
+      } catch (e) {}
+    }
+    return { theme, font, themeLocked: lockTheme };
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    const font = document.documentElement.getAttribute("data-font") || "m";
+    applyUiPrefs({ theme: cur === "dark" ? "light" : "dark", font }, { save: true, lockTheme: true });
+  }
+  function setFontSize(font) {
+    const theme = document.documentElement.getAttribute("data-theme") || systemTheme();
+    applyUiPrefs({ theme, font }, { save: true });
+  }
+  function isQuoteModalOpen() {
+    const el = $("#quote-modal");
+    return !!(el && !el.hidden);
+  }
+  function isDownloadModalOpen() {
+    const el = $("#modal");
+    return !!(el && !el.hidden);
+  }
+  function syncBodyLock() {
+    document.body.classList.toggle("modal-open", isDownloadModalOpen() || isQuoteModalOpen());
+  }
   let persistTimer = null;
   let sessionBackup = null;
   let modalMode = null;
@@ -251,6 +321,7 @@
     if (ta) ta.value = "";
     const q = $("#quote");
     if (q) q.classList.remove("on");
+    closeQuoteModal();
     renderQuote();
     renderMeta();
     const tax = $("#tax");
@@ -438,17 +509,43 @@
       if (coachLab) coachLab.textContent = rec ? "講完再按一次" : "按這裡";
     }
     if (ready) ready.hidden = !quoteOn;
-    if (coachDl) coachDl.hidden = !(quoteOn && !rec && !busy);
+    const readyM = $("#ready-badge-modal");
+    if (readyM) readyM.hidden = !quoteOn;
+    const qOpen = isQuoteModalOpen();
+    const coachView = $("#coach-view");
+    if (coachView) coachView.hidden = !(quoteOn && !qOpen && !rec && !busy);
+    if (coachDl) coachDl.hidden = !(quoteOn && qOpen && !rec && !busy);
     const hint = $("#mic-hint");
     if (hint) hint.hidden = !!(rec || busy);
   }
   function closeModal() {
     const el = $("#modal");
     if (el) el.hidden = true;
-    document.body.classList.remove("modal-open");
     modalMode = null;
     const box = $("#modal-actions");
     if (box) box.innerHTML = "";
+    syncBodyLock();
+  }
+  function openQuoteModal() {
+    if (!state.items.length) return;
+    const el = $("#quote-modal");
+    if (!el) return;
+    renderQuote();
+    el.hidden = false;
+    el.setAttribute("aria-hidden", "false");
+    syncBodyLock();
+    updateGuidance();
+    const sc = $("#quote-modal-scroll");
+    if (sc) sc.scrollTop = 0;
+  }
+  function closeQuoteModal() {
+    const el = $("#quote-modal");
+    if (el) {
+      el.hidden = true;
+      el.setAttribute("aria-hidden", "true");
+    }
+    syncBodyLock();
+    updateGuidance();
   }
   function openModal(cfg) {
     const el = $("#modal");
@@ -485,7 +582,7 @@
       });
     }
     el.hidden = false;
-    document.body.classList.add("modal-open");
+    syncBodyLock();
     const first = box && box.querySelector("button");
     if (first) setTimeout(() => first.focus(), 20);
   }
@@ -886,13 +983,14 @@
       renderQuote();
       setExportStatus("");
       persist();
+      openQuoteModal();
       updateGuidance();
-        if (q) q.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
       try {
         if (location.hash !== "#quote") history.pushState({ maye: "quote" }, "", "#quote");
       } catch (e) {}
       return;
     }
+    closeQuoteModal();
     const top = document.querySelector("header.top") || $("#home");
     if (top && typeof top.scrollIntoView === "function") top.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
     else window.scrollTo(0, 0);
@@ -1096,7 +1194,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.9";
+      s.src = "exceljs.min.js?v=4.0";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1557,7 +1655,7 @@
       await generateFromText(t);
       micUI("idle");
       showView("quote");
-      setStatus("估價單做好了，請往下看。若要改數字，請按下面的下載，選 Excel 再改。");
+      setStatus("估價單做好了，請在彈窗裡查看。也可以按「查看報價單」。若要改數字，請按下載，選 Excel 再改。");
     } catch (e) {
       micUI("idle");
       setStatus(e && e.code === "empty" ? "請先講內容，或在下面格子打字。" : "這次沒有做成功，請再試一次，或改在下面格子打字。", true);
@@ -1656,7 +1754,7 @@
     try {
       await generateFromText(text);
       showView("quote");
-      setStatus("估價單做好了，請往下看。若要改數字，請按下面的下載，選 Excel 再改。");
+      setStatus("估價單做好了，請在彈窗裡查看。也可以按「查看報價單」。若要改數字，請按下載，選 Excel 再改。");
     } catch (e) {
       setStatus(e && e.code === "empty" ? "請先講內容，或在下面格子打字。" : "這次沒有做成功，請再試一次，或改在下面格子打字。", true);
     }
@@ -1670,6 +1768,13 @@
     const top = $("#btn-top"); if (top) top.addEventListener("click", () => showView("home"));
     const clr = $("#btn-clear"); if (clr) clr.addEventListener("click", confirmClear);
     const dl = $("#btn-download"); if (dl) dl.addEventListener("click", openDownloadModal);
+    const dlPage = $("#btn-download-page"); if (dlPage) dlPage.addEventListener("click", openDownloadModal);
+    const viewQ = $("#btn-view-quote"); if (viewQ) viewQ.addEventListener("click", () => openQuoteModal());
+    const qClose = $("#btn-quote-close"); if (qClose) qClose.addEventListener("click", () => closeQuoteModal());
+    const themeBtn = $("#btn-theme"); if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
+    document.querySelectorAll("[data-font]").forEach((el) => {
+      el.addEventListener("click", () => setFontSize(el.getAttribute("data-font")));
+    });
     const speech = $("#speech");
     if (speech) speech.addEventListener("input", () => persistSoon());
     const modal = $("#modal");
@@ -1678,8 +1783,16 @@
         if (e.target && e.target.dataset && e.target.dataset.modalClose) closeModal();
       });
     }
+    const qModal = $("#quote-modal");
+    if (qModal) {
+      qModal.addEventListener("click", (e) => {
+        if (e.target && e.target.dataset && e.target.dataset.quoteClose) closeQuoteModal();
+      });
+    }
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal && !modal.hidden) closeModal();
+      if (e.key !== "Escape") return;
+      if (isDownloadModalOpen()) closeModal();
+      else if (isQuoteModalOpen()) closeQuoteModal();
     });
     window.addEventListener("pageshow", (ev) => {
       if (ev.persisted) restoreState();
@@ -1703,9 +1816,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=3.9"),
-        loadJson("taigi_terms.json?v=3.9"),
-        loadJson("user_corrections.json?v=3.9").catch(function () { return null; })
+        loadJson("price_db.json?v=4.0"),
+        loadJson("taigi_terms.json?v=4.0"),
+        loadJson("user_corrections.json?v=4.0").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1724,11 +1837,15 @@
     }
     applySpeechSupportUI();
     applyLineBrowserHint();
+    applyUiPrefs(readPrefs(), { save: false });
     restoreState();
     updateGuidance();
     if ((state.items.length || state.raw) && location.hash === "#quote") {
       const q = $("#quote");
-      if (q) q.scrollIntoView({ block: "start" });
+      if (q) {
+        q.classList.add("on");
+        q.scrollIntoView({ block: "start" });
+      }
     }
     state.ready = true;
   }
@@ -1789,6 +1906,13 @@
     hasSessionData,
     openDownloadModal,
     closeModal,
+    openQuoteModal,
+    closeQuoteModal,
+    isQuoteModalOpen,
+    toggleTheme,
+    setFontSize,
+    applyUiPrefs,
+    readPrefs,
     confirmClear,
     beginRecording,
     ready: () => state.ready
