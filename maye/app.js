@@ -89,11 +89,10 @@
     source: "idle",
     meta: { customer: "", address: "", region: "", building: "", floor: "" },
     show: { customer: false, address: false, region: false, building: false, floor: false },
-    asrOn: true,
-    quotaRemain: null,
-    quotaLimit: null,
+    rewritten: "",
     rec: null,
-    aiHandler: null
+    aiHandler: null,
+    speechCtorOverride: undefined
   };
   let TERM_MAP = null, TERM_RE = null;
 
@@ -130,7 +129,7 @@
     return s.replace(/[ \t\u3000]+/g, " ").trim();
   }
   function termWords(t) {
-    const w = [...(t.spoken || []), ...(t.asr_variants || [])];
+    const w = [...(t.spoken || []), ...(t.asr_variants || []), ...(t.homophones || [])];
     const std = String(t.standard || "").trim();
     if (std && !w.includes(std)) w.push(std);
     return w;
@@ -290,21 +289,67 @@
       `${it.code}|${it.item}|${it.unit}|${midPrice(it)}`
     ).join("\n");
   }
+  const CORE_STANDARDS = new Set([
+    "水泥","公尺","平方公尺","天花板（類型未定）","平釘天花板(矽酸鈣板)",
+    "立體造型天花板","流明天花板","踢腳板","乳膠漆一底二度","乳膠漆二底三度",
+    "窗簾盒","粉光","磁磚","混凝土／水泥","台尺","批土"
+  ]);
+  function termVariants(t) {
+    return termWords(t);
+  }
+  function formatTermLine(t) {
+    const vars = [];
+    const seen = new Set();
+    for (const w of termVariants(t)) {
+      const k = String(w||"").trim();
+      if (!k || k===t.standard || seen.has(k)) continue;
+      seen.add(k); vars.push(k);
+    }
+    const code = t.code ? ("｜目錄 "+t.code) : "";
+    return (t.standard||"") + code + (vars.length ? ("｜同音或口頭：" + vars.slice(0, 18).join("、")) : "");
+  }
+  function selectTermsForPrompt(text) {
+    const src = String(text||"");
+    const picked = [];
+    const used = new Set();
+    for (const t of allTermEntries()) {
+      const std = String(t.standard||"");
+      const isCore = CORE_STANDARDS.has(std) || (t.code && itemByCode(t.code));
+      let hit = isCore;
+      if (!hit) {
+        for (const w of termVariants(t)) {
+          const k = String(w||"").trim();
+          if (k.length>=2 && src.indexOf(k)>=0) { hit = true; break; }
+        }
+      }
+      if (!hit) continue;
+      const key = std + "|" + (t.code||"");
+      if (used.has(key)) continue;
+      used.add(key);
+      picked.push(t);
+    }
+    return picked;
+  }
   function buildPrompt(spoken, normalized) {
+    const termLines = selectTermsForPrompt((spoken||"")+" "+(normalized||"")).map(formatTermLine);
     return [
-      "你是估價助理。請依師傅口述產生估價單品項。",
+      "你是估價助理。請依師傅口述產生估價單品項，並把台語／同音錯字轉寫成國語工項。",
+      "中文語音辨識常把台語術語聽成同音或近音的錯字，例如把「紅毛土」寫成「洪毛土／紅毛兔／宏毛土」，把「米知」（公尺）寫成「米之／米突／米吐」。請依發音近似度，對照下面的術語表還原成國語標準名稱。術語表沒有的不要臆造新工項或新單價。",
       "只使用下面「單價目錄」裡的工項與單價（水電、木工、油漆）。不得虛構或改寫單價。",
       "估價單不要列出工種分類。請自行判斷工種並對到目錄。",
-      "數量與單位要從口述解析。『米知』『米突』當公尺。『紅毛土』是水泥。",
+      "數量與單位要從口述解析。「米知」「米突」「米之」當公尺。「紅毛土」「洪毛土」「紅毛兔」是水泥。",
       "目錄有對應：填 code、name、qty、unit，unitPrice 必須等於目錄中的行情數字。pending=false。",
       "目錄沒有對應：name 用標準名稱，unitPrice 必須是 0，pending=true（畫面會標「待填」）。",
       "只回一個 JSON 物件，格式：",
-      '{"items":[{"code":"W-101","name":"平釘天花板(矽酸鈣板)","qty":8,"unit":"坪","unitPrice":4400,"pending":false,"note":""}],"note":""}',
+      '{"rewritten":"水泥補 2 公尺，平釘天花板 8 坪","items":[{"code":"W-101","name":"平釘天花板(矽酸鈣板)","qty":8,"unit":"坪","unitPrice":4400,"pending":false,"note":""}],"note":""}',
+      "rewritten 是給師傅確認的國語轉寫（不要只重複錯字原文）。",
       "單價目錄（代碼|品名|單位|行情）：",
       catalogForPrompt(),
-      "師傅口述：",
+      "台語／同音術語表（本機已先篩過相關條目，並保留核心詞）：",
+      termLines.join("\n"),
+      "師傅口述（辨識原文，可能含同音錯字）：",
       spoken,
-      "用語正規化：",
+      "本機初步正規化（供參考，仍請依發音判斷）：",
       normalized
     ].join("\n");
   }
@@ -351,6 +396,8 @@
         if (items.length) {
           state.items = items;
           state.source = "ai";
+          const rw = data && data.rewritten != null ? String(data.rewritten).trim() : "";
+          state.rewritten = rw || norm.text;
           return { ok: true, source: "ai", items };
         }
       } catch (e) {
@@ -360,6 +407,7 @@
     const local = localParse(raw);
     state.items = local.items;
     state.source = "fallback";
+    state.rewritten = local.text || norm.text;
     return { ok: true, source: "fallback", items: local.items };
   }
 
@@ -488,7 +536,12 @@
   function renderSpoken() {
     const el = $("#spoken-box");
     if (!el) return;
-    el.textContent = state.raw ? ("口述：「" + state.raw + "」") : "";
+    if (!state.raw) { el.innerHTML = ""; return; }
+    const rw = state.rewritten || state.normalized || "";
+    el.innerHTML =
+      '<div class="row"><span class="lab">辨識原文</span><div class="val">「' + esc(state.raw) + '」</div></div>' +
+      '<div class="row"><span class="lab">轉寫後的國語工項</span><div class="val">「' + esc(rw) + '」</div></div>' +
+      '<p class="hint">請確認轉寫是否正確；不對可以直接改下面的品名、數量與單價。</p>';
   }
   function renderQuote() {
     renderSpoken();
@@ -515,6 +568,11 @@
   function exportText() {
     const t = totals();
     const lines = ["估價嗎耶通", ""];
+    if (state.raw) {
+      lines.push("辨識原文：" + state.raw);
+      lines.push("轉寫國語：" + (state.rewritten || state.normalized || ""));
+      lines.push("");
+    }
     const meta = visibleMetaLines();
     if (meta.length) { lines.push(...meta, ""); }
     lines.push("品名\t數量\t單位\t單價\t複價");
@@ -556,7 +614,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=1";
+      s.src = "exceljs.min.js?v=2";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -890,51 +948,86 @@
 
   function micUI(mode) {
     const btn = $("#mic"), lab = $("#mic-lab"), hint = $("#mic-hint");
+    if (!btn) return;
     btn.classList.toggle("is-rec", mode === "rec");
     btn.classList.toggle("is-busy", mode === "busy");
     btn.setAttribute("aria-pressed", mode === "rec" ? "true" : "false");
-    if (mode === "rec") { lab.textContent = "停止"; hint.textContent = "說完再點一下，就會產生估價單"; }
-    else if (mode === "busy") { lab.textContent = "辨識中"; hint.textContent = "正在辨識，請稍候…"; }
+    if (mode === "rec") { lab.textContent = "停止"; hint.textContent = "文字會即時出現在下方，說完再點一下就出估價單"; }
+    else if (mode === "busy") { lab.textContent = "產生中"; hint.textContent = "正在產生估價單，請稍候…"; }
     else { lab.textContent = "開始說"; hint.textContent = "點一下開始，再說一次結束"; }
   }
 
-  function asrWanted() {
-    const box = $("#asr-on");
-    const row = $("#quota-row");
-    if (!box || !box.checked || (row && row.hidden)) return false;
-    if (state.quotaRemain != null && state.quotaRemain <= 0) return false;
-    const ai = window.__SHIFU_AI__;
-    return !!(ai && typeof ai.proxyConfigured === "function" && ai.proxyConfigured() && typeof ai.transcribe === "function");
+  function speechCtor() {
+    if (state.speechCtorOverride !== undefined) return state.speechCtorOverride;
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
   }
-  function applyQuota(q) {
-    if (!q) return;
-    if (q.remaining != null) state.quotaRemain = Math.max(0, Number(q.remaining));
-    if (q.limit != null) state.quotaLimit = Number(q.limit);
-    const txt = $("#quota-txt"), box = $("#asr-on");
-    const row = $("#quota-row");
-    if (row && state.quotaRemain != null) row.hidden = false;
-    if (txt && state.quotaRemain != null) {
-      txt.textContent = state.quotaRemain <= 0
-        ? "本月台語辨識次數已用完，改用瀏覽器辨識或打字。"
-        : ("本月還剩 " + state.quotaRemain + " 次");
+  function speechSupported() { return !!speechCtor(); }
+  function applySpeechSupportUI() {
+    const ok = speechSupported();
+    const ban = $("#speech-unavail");
+    const mic = $("#mic");
+    if (ban) {
+      ban.hidden = ok;
+      ban.classList.toggle("on", !ok);
     }
-    if (box && state.quotaRemain != null && state.quotaRemain <= 0) box.checked = false;
+    if (mic) {
+      mic.disabled = !ok;
+      if (!ok) mic.setAttribute("aria-disabled", "true");
+      else mic.removeAttribute("aria-disabled");
+    }
+    if (!ok) setStatus("這個瀏覽器沒有內建語音辨識，請改用打字或鍵盤聽寫。", true);
   }
-  async function refreshQuota() {
-    const row = $("#quota-row");
-    const ai = window.__SHIFU_AI__;
-    if (!(ai && typeof ai.proxyConfigured === "function" && ai.proxyConfigured() && typeof ai.getAsrQuota === "function")) {
-      if (row) row.hidden = true;
+  function setSpeechSupported(on) {
+    if (on === false) state.speechCtorOverride = null;
+    else if (on === true) state.speechCtorOverride = undefined;
+    applySpeechSupportUI();
+    return speechSupported();
+  }
+  function installSpeechMock(opts) {
+    opts = opts || {};
+    if (opts.supported === false) {
+      state.speechCtorOverride = null;
+      applySpeechSupportUI();
       return;
     }
-    if (row) row.hidden = false;
-    try {
-      const q = await ai.getAsrQuota({ plan: "basic" });
-      applyQuota(q);
-    } catch (e) {
-      const txt = $("#quota-txt");
-      if (txt) txt.textContent = "暫時查不到剩餘次數，仍可嘗試；失敗會改打字或瀏覽器辨識。";
+    const text = String(opts.transcript || "");
+    function MockRec() {
+      this.lang = "";
+      this.continuous = false;
+      this.interimResults = false;
+      this._timer = null;
     }
+    MockRec.prototype.start = function () {
+      const self = this;
+      const fire = (full, isFinal) => {
+        const ev = {
+          resultIndex: 0,
+          results: [ Object.assign([{ transcript: full, confidence: 0.9 }], { isFinal: isFinal, length: 1 }) ]
+        };
+        ev.results.length = 1;
+        if (typeof self.onresult === "function") self.onresult(ev);
+      };
+      const mid = text.slice(0, Math.max(1, Math.ceil(text.length * 0.45)));
+      setTimeout(() => fire(mid, false), 10);
+      // keep listening until stop(); also store last final-ready text
+      self._pending = text;
+    };
+    MockRec.prototype.stop = function () {
+      const self = this;
+      const full = self._pending || text;
+      const ev = {
+        resultIndex: 0,
+        results: [ Object.assign([{ transcript: full, confidence: 0.95 }], { isFinal: true, length: 1 }) ]
+      };
+      ev.results.length = 1;
+      if (typeof self.onresult === "function") self.onresult(ev);
+      setTimeout(() => { if (typeof self.onend === "function") self.onend(); }, 10);
+    };
+    MockRec.prototype.abort = function () {
+      if (typeof this.onend === "function") this.onend();
+    };
+    state.speechCtorOverride = MockRec;
+    applySpeechSupportUI();
   }
 
   async function finishSpeech(text) {
@@ -948,7 +1041,7 @@
       await generateFromText(t);
       micUI("idle");
       showView("quote");
-      setStatus("估價單已產生，請再檢查數量與單價。");
+      setStatus("估價單已產生，請再確認轉寫與單價。");
     } catch (e) {
       micUI("idle");
       setStatus(e && e.code === "empty" ? "請先說內容或打字。" : "產生失敗，請再試一次。", true);
@@ -956,9 +1049,9 @@
   }
 
   function startBrowserAsr() {
-    const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const Rec = speechCtor();
     if (!Rec) {
-      setStatus("這個瀏覽器不能語音辨識，請直接打字。", true);
+      applySpeechSupportUI();
       return;
     }
     const rec = new Rec();
@@ -976,9 +1069,19 @@
       const ta = $("#speech");
       if (ta) ta.value = (finalText + " " + interim).trim();
     };
-    rec.onerror = () => { setStatus("瀏覽器辨識沒有成功，請改打字。", true); micUI("idle"); state.rec = null; };
+    rec.onerror = (e) => {
+      if (state.rec && state.rec._keep && e && (e.error === "no-speech" || e.error === "aborted")) return;
+      setStatus("瀏覽器辨識沒有成功，請改打字，或使用鍵盤上的麥克風聽寫。", true);
+      micUI("idle");
+      state.rec = null;
+    };
     rec.onend = () => {
-      if (state.rec && state.rec._keep) { try { rec.start(); } catch (e) {} return; }
+      if (state.rec && state.rec._keep) {
+        try { rec.start(); } catch (e) {
+          setTimeout(() => { try { if (state.rec && state.rec._keep) rec.start(); } catch (e2) {} }, 250);
+        }
+        return;
+      }
       const text = ($("#speech") && $("#speech").value) || finalText;
       state.rec = null;
       finishSpeech(text);
@@ -986,7 +1089,7 @@
     state.rec = { kind: "browser", rec, _keep: true };
     rec.start();
     micUI("rec");
-    setStatus("正在聽…說完請再點麥克風。");
+    setStatus("正在聽…文字會即時出現，說完請再點麥克風。");
   }
 
   function stopBrowserAsr() {
@@ -996,70 +1099,10 @@
     try { r.rec.stop(); } catch (e) { finishSpeech($("#speech") && $("#speech").value); }
   }
 
-  function startYating() {
-    const ai = window.__SHIFU_AI__;
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
-      setStatus("這個瀏覽器不能錄音給台語辨識，改用瀏覽器辨識或打字。", true);
-      return startBrowserAsr();
-    }
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      const types = ["audio/mp4", "audio/aac", "audio/webm;codecs=opus", "audio/webm"];
-      const mime = (MediaRecorder.isTypeSupported && types.find((t) => MediaRecorder.isTypeSupported(t))) || "";
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
-      const chunks = [];
-      rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
-      rec.start(250);
-      state.rec = { kind: "yating", rec, stream, chunks, mime: rec.mimeType || mime, started: Date.now() };
-      micUI("rec");
-      setStatus("台語辨識錄音中…說完再點一下。");
-    }).catch(() => {
-      setStatus("無法開啟麥克風，請改打字，或到瀏覽器允許麥克風。", true);
-      micUI("idle");
-    });
-  }
-
-  function stopYating() {
-    const y = state.rec;
-    if (!y || y.kind !== "yating") return;
-    state.rec = null;
-    const finished = new Promise((res) => {
-      if (!y.rec || y.rec.state === "inactive") return res();
-      y.rec.onstop = () => res();
-      try { y.rec.stop(); } catch (e) { res(); }
-      setTimeout(res, 1500);
-    });
-    micUI("busy");
-    setStatus("台語辨識中…");
-    finished.then(async () => {
-      try { y.stream && y.stream.getTracks().forEach((t) => t.stop()); } catch (e) {}
-      const blob = new Blob(y.chunks || [], { type: y.mime || "audio/webm" });
-      if (blob.size < 200) { setStatus("沒有錄到聲音，請再試一次或改打字。", true); micUI("idle"); return; }
-      try {
-        const r = await window.__SHIFU_AI__.transcribe(blob, {
-          plan: "basic",
-          duration: Math.max(1, Math.round((Date.now() - (y.started || Date.now())) / 1000))
-        });
-        applyQuota(r);
-        const text = String(r && r.text || "").trim();
-        await finishSpeech(text);
-      } catch (e) {
-        if (e && e.remaining != null) applyQuota(e);
-        const why = e && e.code === "quota_exceeded" ? "本月台語辨識次數已用完" : "台語辨識沒有成功";
-        setStatus(why + "，請改打字或再試瀏覽器辨識。", true);
-        micUI("idle");
-        const box = $("#asr-on"); if (box) box.checked = false;
-      }
-    });
-  }
-
   function toggleMic() {
-    if (state.rec) {
-      if (state.rec.kind === "yating") stopYating();
-      else stopBrowserAsr();
-      return;
-    }
-    if (asrWanted()) startYating();
-    else startBrowserAsr();
+    if (!speechSupported()) { applySpeechSupportUI(); return; }
+    if (state.rec) { stopBrowserAsr(); return; }
+    startBrowserAsr();
   }
 
   async function onMake() {
@@ -1119,8 +1162,8 @@
     renderMeta();
     try {
       const [db, terms] = await Promise.all([
-        loadJson("price_db.json?v=1"),
-        loadJson("taigi_terms.json?v=1")
+        loadJson("price_db.json?v=2"),
+        loadJson("taigi_terms.json?v=2")
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1135,7 +1178,7 @@
     } catch (e) {
       setStatus("單價或用語資料載入失敗，請檢查網路後再重新整理。", true);
     }
-    refreshQuota();
+    applySpeechSupportUI();
   }
 
   window.__MAYE__ = {
@@ -1167,8 +1210,11 @@
     removeRow(id) { state.items = state.items.filter((r) => r.id !== id); renderLines(); renderTotals(); },
     showView,
     setAiHandler(fn) { state.aiHandler = fn; },
-    applyQuota,
-    refreshQuota,
+    speechSupported,
+    setSpeechSupported,
+    installSpeechMock,
+    applySpeechSupportUI,
+    selectTermsForPrompt,
     catalogList,
     isZeroNumericInput,
     isZeroishValue,

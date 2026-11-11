@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
   <header class="top no-print">
@@ -29,18 +29,14 @@
           </button>
           <div class="mic-hint" id="mic-hint">點一下開始，再說一次結束</div>
         </div>
-        <div class="quota" id="quota-row" hidden>
-          <label class="switch">
-            <input type="checkbox" id="asr-on" checked>
-            <span>用台語辨識</span>
-          </label>
-          <span id="quota-txt">正在查詢本月次數…</span>
+        <div class="banner unavail" id="speech-unavail" hidden>
+          這個瀏覽器沒有內建語音辨識。請改用下面的格子打字，或使用手機鍵盤上的麥克風聽寫，或用 Safari／Chrome 開啟。
         </div>
-        <p class="status" id="status">準備好了，請直接說施工內容。</p>
+        <p class="status" id="status">準備好了，請直接說施工內容。說話時文字會即時出現在下方。</p>
       </div>
 
       <div class="card">
-        <label class="lbl" for="speech">或直接打字（不扣辨識次數）</label>
+        <label class="lbl" for="speech">或直接打字</label>
         <textarea id="speech" class="ta" placeholder="例如：平釘天花板 8 坪，新增一迴冷氣迴路，乳膠漆二底三度 20 坪…"></textarea>
         <div class="actions">
           <button type="button" id="btn-make" class="btn lg">產生估價單</button>
@@ -91,7 +87,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=1"></script>
-  <script src="app.js?v=1"></script>
+  <script src="ai-adapter.js?v=2"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>

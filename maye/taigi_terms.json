@@ -1,6 +1,6 @@
 {
-  "version": "2026-11-10-v50-merged",
-  "note": "合併 #terms-default、taigi-db.json、taigi-terms-additions.json、taigi-units.json、site-terms.json、使用者工地閩南語術語，以及國語 ASR 近音寫法。頁面載入此檔，#terms-default 為後備。auto=false 的數字／單位／句型只供參考，由程式用規則轉換尺寸分。",
+  "version": "2026-11-11-v2-homophones",
+  "note": "合併 #terms-default、taigi-db.json、taigi-terms-additions.json、taigi-units.json、site-terms.json、使用者工地閩南語術語，以及國語 ASR 近音寫法。頁面載入此檔，#terms-default 為後備。auto=false 的數字／單位／句型只供參考，由程式用規則轉換尺寸分。 v2 新增 homophones（常見同音字變體）：由同一術語既有 spoken／asr_variants 的單字替換，以及至少在兩條術語出現過的替換關係推導，不虛構新工項。",
   "sources": [
     "embedded:#terms-default",
     "taigi-db/taigi-db.json",
@@ -11,13 +11,14 @@
     "asr-variants:generated"
   ],
   "summary": {
-    "terms": 113,
+    "terms": 114,
     "auto_false": 17,
     "matchable": 96,
     "spoken": 248,
     "asr_variants": 258,
     "match_keys": 506,
-    "with_code": 23
+    "with_code": 23,
+    "homophones": 749
   },
   "terms": [
     {
@@ -53,7 +54,27 @@
       ],
       "category": "結構",
       "tailo": "thian-pông",
-      "taigi_hanzi": "天篷"
+      "taigi_hanzi": "天篷",
+      "homophones": [
+        "田就",
+        "天井（てんじょう）",
+        "添崩",
+        "天篷",
+        "田棚",
+        "天就",
+        "添就",
+        "田舊",
+        "添井（てんじょう）",
+        "田井（てんじょう）",
+        "天崩",
+        "田崩",
+        "添篷",
+        "添棚",
+        "田篷",
+        "天棚",
+        "添舊",
+        "天舊"
+      ]
     },
     {
       "spoken": [
@@ -73,7 +94,15 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "平釘天花"
+      "taigi_hanzi": "平釘天花",
+      "homophones": [
+        "平釘天花",
+        "平頂天花",
+        "平釘",
+        "平頂",
+        "做平釘",
+        "做平頂"
+      ]
     },
     {
       "spoken": [
@@ -91,7 +120,12 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "間接照明"
+      "taigi_hanzi": "間接照明",
+      "homophones": [
+        "間接照明",
+        "層板燈",
+        "反射照明"
+      ]
     },
     {
       "spoken": [
@@ -120,7 +154,25 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "卡電扣阿"
+      "taigi_hanzi": "卡電扣阿",
+      "homophones": [
+        "卡電扣阿",
+        "卡店扣啊",
+        "卡電摳阿",
+        "卡電扣鴨",
+        "卡電扣啊",
+        "卡電扣呀",
+        "卡店扣鴨",
+        "卡店扣阿",
+        "卡店扣呀",
+        "卡電摳鴨",
+        "卡電摳啊",
+        "卡電摳呀",
+        "卡店摳啊",
+        "卡店摳阿",
+        "卡店摳鴨",
+        "卡店摳呀"
+      ]
     },
     {
       "spoken": [
@@ -137,7 +189,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "窗仔簾"
+      "taigi_hanzi": "窗仔簾",
+      "homophones": [
+        "卡電",
+        "窗仔簾"
+      ]
     },
     {
       "spoken": [
@@ -180,7 +236,57 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "哈巴機"
+      "taigi_hanzi": "哈巴機",
+      "homophones": [
+        "哈媽ㄎ一",
+        "哈巴Ki",
+        "哈馬雞",
+        "哈巴機",
+        "哈瑪機",
+        "哈罵ㄎ一",
+        "哈嘛ㄎ一",
+        "哈馬ㄎ一",
+        "哈芭Ki",
+        "哈帕Ki",
+        "哈罵雞",
+        "哈媽雞",
+        "哈嘛雞",
+        "哈瑪雞",
+        "哈馬機",
+        "哈馬基",
+        "哈芭機",
+        "哈帕機",
+        "哈巴雞",
+        "哈巴基",
+        "哈巴幾",
+        "哈媽機",
+        "哈瑪基",
+        "哈瑪幾",
+        "哈帕ㄎ一",
+        "哈瑪ㄎ一",
+        "哈巴ㄎ一",
+        "哈芭ㄎ一",
+        "哈媽Ki",
+        "哈嘛Ki",
+        "哈馬Ki",
+        "哈罵Ki",
+        "哈瑪Ki",
+        "哈芭雞",
+        "哈馬幾",
+        "哈帕雞",
+        "哈嘛機",
+        "哈罵機",
+        "哈罵基",
+        "哈罵幾",
+        "哈媽基",
+        "哈媽幾",
+        "哈嘛幾",
+        "哈嘛基",
+        "哈帕基",
+        "哈芭基",
+        "哈芭幾",
+        "哈帕幾"
+      ]
     },
     {
       "spoken": [
@@ -196,7 +302,10 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "燙俗"
+      "taigi_hanzi": "燙俗",
+      "homophones": [
+        "燙俗"
+      ]
     },
     {
       "spoken": [
@@ -218,7 +327,14 @@
         "asr-variants"
       ],
       "category": "結構",
-      "taigi_hanzi": "櫥仔"
+      "taigi_hanzi": "櫥仔",
+      "homophones": [
+        "櫥仔",
+        "讀阿",
+        "讀鴨",
+        "讀啊",
+        "讀呀"
+      ]
     },
     {
       "spoken": [
@@ -240,7 +356,14 @@
         "asr-variants"
       ],
       "category": "結構",
-      "taigi_hanzi": "屜仔"
+      "taigi_hanzi": "屜仔",
+      "homophones": [
+        "屜仔",
+        "脫啊",
+        "脫鴨",
+        "脫阿",
+        "脫呀"
+      ]
     },
     {
       "spoken": [
@@ -259,7 +382,13 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "拗溜"
+      "taigi_hanzi": "拗溜",
+      "homophones": [
+        "拗溜",
+        "熬溜",
+        "凹六",
+        "後鈕"
+      ]
     },
     {
       "spoken": [
@@ -282,7 +411,19 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "列盧"
+      "taigi_hanzi": "列盧",
+      "homophones": [
+        "列盧",
+        "內魯",
+        "類魯",
+        "累魯",
+        "內嚕",
+        "內滷",
+        "類嚕",
+        "類滷",
+        "累滷",
+        "累嚕"
+      ]
     },
     {
       "spoken": [
@@ -305,7 +446,15 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "美麗亞"
+      "taigi_hanzi": "美麗亞",
+      "homophones": [
+        "美麗亞",
+        "美麗牙",
+        "妹麗啊",
+        "妹麗鴨",
+        "妹麗阿",
+        "妹麗呀"
+      ]
     },
     {
       "spoken": [
@@ -329,7 +478,15 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "角仔"
+      "taigi_hanzi": "角仔",
+      "homophones": [
+        "角仔",
+        "喀阿",
+        "角才",
+        "喀鴨",
+        "喀啊",
+        "喀呀"
+      ]
     },
     {
       "spoken": [
@@ -352,7 +509,17 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "雷扣拉"
+      "taigi_hanzi": "雷扣拉",
+      "homophones": [
+        "雷扣拉",
+        "雷扣喇",
+        "布扣拉",
+        "布扣喇",
+        "雷扣那",
+        "雷扣南",
+        "布扣那",
+        "布扣南"
+      ]
     },
     {
       "spoken": [
@@ -370,7 +537,12 @@
         "site-terms"
       ],
       "category": "常用句",
-      "taigi_hanzi": "木匠"
+      "taigi_hanzi": "木匠",
+      "homophones": [
+        "木匠",
+        "做木的",
+        "木師"
+      ]
     },
     {
       "spoken": [
@@ -386,7 +558,10 @@
         "site-terms"
       ],
       "category": "結構",
-      "taigi_hanzi": "隔間"
+      "taigi_hanzi": "隔間",
+      "homophones": [
+        "隔間"
+      ]
     },
     {
       "spoken": [
@@ -402,7 +577,10 @@
         "site-terms"
       ],
       "category": "結構",
-      "taigi_hanzi": "地板"
+      "taigi_hanzi": "地板",
+      "homophones": [
+        "地板"
+      ]
     },
     {
       "spoken": [
@@ -418,7 +596,10 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "水電"
+      "taigi_hanzi": "水電",
+      "homophones": [
+        "水電"
+      ]
     },
     {
       "spoken": [
@@ -434,7 +615,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "電火"
+      "taigi_hanzi": "電火",
+      "homophones": [
+        "電火"
+      ]
     },
     {
       "spoken": [
@@ -451,7 +635,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "電火球仔"
+      "taigi_hanzi": "電火球仔",
+      "homophones": [
+        "電火球仔",
+        "電火泡仔"
+      ]
     },
     {
       "spoken": [
@@ -468,7 +656,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "電火線"
+      "taigi_hanzi": "電火線",
+      "homophones": [
+        "電火線",
+        "電線"
+      ]
     },
     {
       "spoken": [
@@ -484,7 +676,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "插座"
+      "taigi_hanzi": "插座",
+      "homophones": [
+        "插座"
+      ]
     },
     {
       "spoken": [
@@ -500,7 +695,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "開關"
+      "taigi_hanzi": "開關",
+      "homophones": [
+        "開關"
+      ]
     },
     {
       "spoken": [
@@ -516,7 +714,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "陪斯豆掛"
+      "taigi_hanzi": "陪斯豆掛",
+      "homophones": [
+        "陪斯豆掛"
+      ]
     },
     {
       "spoken": [
@@ -545,7 +746,23 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "不累尬"
+      "taigi_hanzi": "不累尬",
+      "homophones": [
+        "不累尬",
+        "布累嘎",
+        "不雷卡",
+        "不累Ga",
+        "不類尬",
+        "不內尬",
+        "雷累嘎",
+        "布類嘎",
+        "布內嘎",
+        "不布卡",
+        "不類Ga",
+        "不內Ga",
+        "雷內嘎",
+        "雷類嘎"
+      ]
     },
     {
       "spoken": [
@@ -562,7 +779,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "漏電斷路器"
+      "taigi_hanzi": "漏電斷路器",
+      "homophones": [
+        "漏電斷路器",
+        "ELCB"
+      ]
     },
     {
       "spoken": [
@@ -579,7 +800,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "總開關箱"
+      "taigi_hanzi": "總開關箱",
+      "homophones": [
+        "總開關箱",
+        "配電箱"
+      ]
     },
     {
       "spoken": [
@@ -597,7 +822,12 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "摸哭斯"
+      "taigi_hanzi": "摸哭斯",
+      "homophones": [
+        "摸哭斯",
+        "某哭死",
+        "模哭斯"
+      ]
     },
     {
       "spoken": [
@@ -626,7 +856,26 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "阿死"
+      "taigi_hanzi": "阿死",
+      "homophones": [
+        "阿斯",
+        "阿死",
+        "鴨斯",
+        "啊斯",
+        "呀斯",
+        "鴨死",
+        "啊死",
+        "呀死",
+        "阿四",
+        "阿司",
+        "鴨四",
+        "鴨司",
+        "啊四",
+        "啊司",
+        "呀司",
+        "呀四",
+        "阿三"
+      ]
     },
     {
       "spoken": [
@@ -648,7 +897,15 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "鐵布西路"
+      "taigi_hanzi": "鐵布西路",
+      "homophones": [
+        "鐵布西路",
+        "鐵步西路",
+        "鐵雷西路",
+        "鐵布喜路",
+        "鐵步喜路",
+        "鐵雷喜路"
+      ]
     },
     {
       "spoken": [
@@ -669,7 +926,13 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "電火布"
+      "taigi_hanzi": "電火布",
+      "homophones": [
+        "電火布",
+        "點灰婆",
+        "點輝跛",
+        "電火雷"
+      ]
     },
     {
       "spoken": [
@@ -686,7 +949,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "水道頭"
+      "taigi_hanzi": "水道頭",
+      "homophones": [
+        "水道頭",
+        "水捘仔"
+      ]
     },
     {
       "spoken": [
@@ -702,7 +969,13 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "馬桶"
+      "taigi_hanzi": "馬桶",
+      "homophones": [
+        "馬桶",
+        "嘛桶",
+        "罵桶",
+        "媽桶"
+      ]
     },
     {
       "spoken": [
@@ -719,7 +992,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "打壓"
+      "taigi_hanzi": "打壓",
+      "homophones": [
+        "打壓",
+        "打壓測試"
+      ]
     },
     {
       "spoken": [
@@ -739,7 +1016,12 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "厚速共"
+      "taigi_hanzi": "厚速共",
+      "homophones": [
+        "厚速共",
+        "厚速拱",
+        "厚速貢"
+      ]
     },
     {
       "spoken": [
@@ -757,7 +1039,15 @@
         "site-terms"
       ],
       "category": "單位",
-      "taigi_hanzi": "三分管"
+      "taigi_hanzi": "三分管",
+      "homophones": [
+        "三分管",
+        "四分管",
+        "六分管",
+        "三昏管",
+        "四昏管",
+        "六昏管"
+      ]
     },
     {
       "spoken": [
@@ -774,7 +1064,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "崁燈"
+      "taigi_hanzi": "崁燈",
+      "homophones": [
+        "崁燈",
+        "嵌燈"
+      ]
     },
     {
       "spoken": [
@@ -790,7 +1084,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "吸頂燈"
+      "taigi_hanzi": "吸頂燈",
+      "homophones": [
+        "吸頂燈"
+      ]
     },
     {
       "spoken": [
@@ -806,7 +1103,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "軌道燈"
+      "taigi_hanzi": "軌道燈",
+      "homophones": [
+        "軌道燈"
+      ]
     },
     {
       "spoken": [
@@ -823,7 +1123,11 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "磁吸軌道燈"
+      "taigi_hanzi": "磁吸軌道燈",
+      "homophones": [
+        "磁吸軌道燈",
+        "磁吸"
+      ]
     },
     {
       "spoken": [
@@ -840,7 +1144,10 @@
       ],
       "category": "工法",
       "tailo": "iû-tshat",
-      "taigi_hanzi": "油漆"
+      "taigi_hanzi": "油漆",
+      "homophones": [
+        "油漆"
+      ]
     },
     {
       "spoken": [
@@ -857,7 +1164,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "一底二度"
+      "taigi_hanzi": "一底二度",
+      "homophones": [
+        "一底二度",
+        "一底二刷"
+      ]
     },
     {
       "spoken": [
@@ -873,7 +1184,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "二底三度"
+      "taigi_hanzi": "二底三度",
+      "homophones": [
+        "二底三度",
+        "二底四度"
+      ]
     },
     {
       "spoken": [
@@ -896,7 +1211,21 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "批土"
+      "taigi_hanzi": "批土",
+      "homophones": [
+        "批土",
+        "補土",
+        "填縫土",
+        "填縫塗",
+        "填縫兔",
+        "填縫吐",
+        "批兔",
+        "批吐",
+        "批塗",
+        "補塗",
+        "補兔",
+        "補吐"
+      ]
     },
     {
       "spoken": [
@@ -912,7 +1241,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "拉卡"
+      "taigi_hanzi": "拉卡",
+      "homophones": [
+        "拉卡"
+      ]
     },
     {
       "spoken": [
@@ -936,7 +1268,17 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "優利旦"
+      "taigi_hanzi": "優利旦",
+      "homophones": [
+        "優利旦",
+        "尤利旦",
+        "優力",
+        "優哩旦",
+        "優里旦",
+        "尤哩旦",
+        "尤里旦",
+        "尤力"
+      ]
     },
     {
       "spoken": [
@@ -957,7 +1299,13 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "欸婆西"
+      "taigi_hanzi": "欸婆西",
+      "homophones": [
+        "欸婆西",
+        "ㄟ波西",
+        "欸婆喜",
+        "ㄟ波喜"
+      ]
     },
     {
       "spoken": [
@@ -981,7 +1329,18 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "矽利康"
+      "taigi_hanzi": "矽利康",
+      "homophones": [
+        "矽利康",
+        "矽利控",
+        "矽哩康",
+        "矽里康",
+        "矽哩控",
+        "矽里控",
+        "矽利孔",
+        "矽哩孔",
+        "矽里孔"
+      ]
     },
     {
       "spoken": [
@@ -1004,7 +1363,15 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "美利抓"
+      "taigi_hanzi": "美利抓",
+      "homophones": [
+        "美利抓",
+        "美利爪",
+        "美哩抓",
+        "美里抓",
+        "美哩爪",
+        "美里爪"
+      ]
     },
     {
       "spoken": [
@@ -1022,7 +1389,11 @@
       ],
       "category": "工法",
       "tailo": "thiah",
-      "taigi_hanzi": "拆"
+      "taigi_hanzi": "拆",
+      "homophones": [
+        "拆",
+        "拆除"
+      ]
     },
     {
       "spoken": [
@@ -1040,7 +1411,12 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "見底"
+      "taigi_hanzi": "見底",
+      "homophones": [
+        "見底",
+        "打到見底",
+        "拆到見底"
+      ]
     },
     {
       "spoken": [
@@ -1057,7 +1433,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "打毛"
+      "taigi_hanzi": "打毛",
+      "homophones": [
+        "打毛",
+        "抓貓"
+      ]
     },
     {
       "spoken": [
@@ -1073,7 +1453,10 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "去皮"
+      "taigi_hanzi": "去皮",
+      "homophones": [
+        "去皮"
+      ]
     },
     {
       "spoken": [
@@ -1090,7 +1473,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "天花全拆"
+      "taigi_hanzi": "天花全拆",
+      "homophones": [
+        "天花全拆",
+        "拆天花板"
+      ]
     },
     {
       "spoken": [
@@ -1107,7 +1494,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "拆櫃體"
+      "taigi_hanzi": "拆櫃體",
+      "homophones": [
+        "拆櫃體",
+        "拆櫃"
+      ]
     },
     {
       "spoken": [
@@ -1141,7 +1532,37 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "阿桃阿"
+      "taigi_hanzi": "阿桃阿",
+      "homophones": [
+        "阿桃啊",
+        "鴨桃阿",
+        "阿桃阿",
+        "鴨桃啊",
+        "啊桃啊",
+        "呀桃啊",
+        "阿陶啊",
+        "阿桃鴨",
+        "阿桃呀",
+        "啊桃阿",
+        "呀桃阿",
+        "鴨陶阿",
+        "鴨桃鴨",
+        "鴨桃呀",
+        "阿陶阿",
+        "鴨陶啊",
+        "啊桃鴨",
+        "啊陶啊",
+        "啊桃呀",
+        "呀桃呀",
+        "呀陶啊",
+        "呀桃鴨",
+        "阿陶呀",
+        "阿陶鴨",
+        "啊陶阿",
+        "呀陶阿",
+        "鴨陶呀",
+        "鴨陶鴨"
+      ]
     },
     {
       "spoken": [
@@ -1177,7 +1598,50 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "媽路啊"
+      "taigi_hanzi": "媽路啊",
+      "homophones": [
+        "媽路啊",
+        "巴魯",
+        "罵噜阿",
+        "罵路啊",
+        "嘛路啊",
+        "馬路啊",
+        "媽路鴨",
+        "媽路阿",
+        "媽路呀",
+        "芭魯",
+        "帕魯",
+        "巴嚕",
+        "巴滷",
+        "媽噜阿",
+        "嘛噜阿",
+        "馬噜阿",
+        "罵噜鴨",
+        "罵噜啊",
+        "罵噜呀",
+        "媽噜啊",
+        "罵路阿",
+        "罵路呀",
+        "罵路鴨",
+        "嘛噜啊",
+        "嘛路阿",
+        "嘛路呀",
+        "嘛路鴨",
+        "馬路鴨",
+        "馬噜啊",
+        "馬路呀",
+        "馬路阿",
+        "媽噜鴨",
+        "媽噜呀",
+        "芭滷",
+        "芭嚕",
+        "帕滷",
+        "帕嚕",
+        "嘛噜呀",
+        "嘛噜鴨",
+        "馬噜呀",
+        "馬噜鴨"
+      ]
     },
     {
       "spoken": [
@@ -1202,7 +1666,17 @@
         "asr-variants"
       ],
       "category": "常用句",
-      "taigi_hanzi": "塗水"
+      "taigi_hanzi": "塗水",
+      "homophones": [
+        "土水",
+        "塗水",
+        "塗水師",
+        "兔水",
+        "吐水",
+        "土水師",
+        "兔水師",
+        "吐水師"
+      ]
     },
     {
       "spoken": [
@@ -1226,7 +1700,15 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "帕底"
+      "taigi_hanzi": "帕底",
+      "homophones": [
+        "怕ㄉㄟˋ",
+        "帕底",
+        "粗底",
+        "打底",
+        "巴底",
+        "芭底"
+      ]
     },
     {
       "spoken": [
@@ -1260,7 +1742,26 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "喜鴨給"
+      "taigi_hanzi": "喜鴨給",
+      "homophones": [
+        "喜阿ㄎㄟˋ",
+        "西阿給",
+        "喜鴨給",
+        "婚羹",
+        "西阿ㄎㄟˋ",
+        "喜鴨ㄎㄟˋ",
+        "喜啊ㄎㄟˋ",
+        "喜呀ㄎㄟˋ",
+        "喜阿給",
+        "西鴨給",
+        "西啊給",
+        "西呀給",
+        "喜啊給",
+        "喜呀給",
+        "西呀ㄎㄟˋ",
+        "西啊ㄎㄟˋ",
+        "西鴨ㄎㄟˋ"
+      ]
     },
     {
       "spoken": [
@@ -1290,7 +1791,21 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "太魯"
+      "taigi_hanzi": "太魯",
+      "homophones": [
+        "太魯",
+        "泰魯",
+        "太嚕",
+        "台魯",
+        "臺魯",
+        "太滷",
+        "泰嚕",
+        "泰滷",
+        "台嚕",
+        "臺嚕",
+        "台滷",
+        "臺滷"
+      ]
     },
     {
       "spoken": [
@@ -1326,7 +1841,25 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "膨拱"
+      "taigi_hanzi": "膨拱",
+      "homophones": [
+        "膨拱",
+        "碰共",
+        "膨管",
+        "捧共",
+        "彭共",
+        "捧拱",
+        "碰拱",
+        "彭拱",
+        "膨共",
+        "膨貢",
+        "碰貢",
+        "捧管",
+        "碰管",
+        "彭管",
+        "捧貢",
+        "彭貢"
+      ]
     },
     {
       "spoken": [
@@ -1352,7 +1885,18 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "孔鼓勵"
+      "taigi_hanzi": "孔鼓勵",
+      "homophones": [
+        "控古力",
+        "孔鼓勵",
+        "控固力",
+        "孔古力",
+        "控鼓勵",
+        "恐鼓勵",
+        "孔固力",
+        "恐古力",
+        "恐固力"
+      ]
     },
     {
       "spoken": [
@@ -1386,7 +1930,32 @@
       ],
       "category": "材料",
       "tailo": "âng-mn̂g-thôo",
-      "taigi_hanzi": "紅毛塗"
+      "taigi_hanzi": "紅毛塗",
+      "homophones": [
+        "紅毛塗",
+        "ㄤ摸托",
+        "昂摸頭",
+        "紅毛土",
+        "洪毛塗",
+        "宏毛塗",
+        "紅毛兔",
+        "紅毛吐",
+        "昂摸托",
+        "ㄤ摸頭",
+        "盎摸頭",
+        "昂摩頭",
+        "洪毛土",
+        "宏毛土",
+        "ㄤ摩托",
+        "洪毛吐",
+        "洪毛兔",
+        "宏毛吐",
+        "宏毛兔",
+        "盎摸托",
+        "昂摩托",
+        "ㄤ摩頭",
+        "盎摩頭"
+      ]
     },
     {
       "spoken": [
@@ -1421,7 +1990,39 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "那罵控"
+      "taigi_hanzi": "那罵控",
+      "homophones": [
+        "南媽控",
+        "喇嘛控",
+        "那罵控",
+        "那媽控",
+        "喇媽控",
+        "南罵控",
+        "南嘛控",
+        "南馬控",
+        "南媽孔",
+        "那嘛控",
+        "喇罵控",
+        "喇馬控",
+        "喇嘛孔",
+        "那馬控",
+        "那罵孔",
+        "那嗎控",
+        "南嗎控",
+        "喇嗎控",
+        "那媽孔",
+        "喇媽孔",
+        "南罵孔",
+        "南嘛孔",
+        "南馬孔",
+        "南嗎孔",
+        "那嘛孔",
+        "喇罵孔",
+        "喇馬孔",
+        "喇嗎孔",
+        "那馬孔",
+        "那嗎孔"
+      ]
     },
     {
       "spoken": [
@@ -1438,7 +2039,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "叩敗"
+      "taigi_hanzi": "叩敗",
+      "homophones": [
+        "叩敗",
+        "口敗"
+      ]
     },
     {
       "spoken": [
@@ -1460,7 +2065,14 @@
         "asr-variants"
       ],
       "category": "工法",
-      "taigi_hanzi": "夏水"
+      "taigi_hanzi": "夏水",
+      "homophones": [
+        "夏水",
+        "夏最",
+        "下罪",
+        "霞水",
+        "霞最"
+      ]
     },
     {
       "spoken": [
@@ -1476,7 +2088,10 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "麻吉"
+      "taigi_hanzi": "麻吉",
+      "homophones": [
+        "麻吉"
+      ]
     },
     {
       "spoken": [
@@ -1492,7 +2107,10 @@
         "site-terms"
       ],
       "category": "材料",
-      "taigi_hanzi": "磚仔"
+      "taigi_hanzi": "磚仔",
+      "homophones": [
+        "磚仔"
+      ]
     },
     {
       "spoken": [
@@ -1532,7 +2150,62 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "零夠車"
+      "taigi_hanzi": "零夠車",
+      "homophones": [
+        "零夠車",
+        "內溝啊掐",
+        "類勾阿掐",
+        "零溝車",
+        "零勾車",
+        "類溝啊掐",
+        "累溝啊掐",
+        "內勾啊掐",
+        "內夠啊掐",
+        "內溝鴨掐",
+        "內溝阿掐",
+        "內溝呀掐",
+        "內溝啊恰",
+        "累勾阿掐",
+        "內勾阿掐",
+        "類溝阿掐",
+        "類夠阿掐",
+        "類勾鴨掐",
+        "類勾啊掐",
+        "類勾呀掐",
+        "類勾阿恰",
+        "類夠啊掐",
+        "類溝鴨掐",
+        "類溝啊恰",
+        "類溝呀掐",
+        "累溝呀掐",
+        "累夠啊掐",
+        "累溝啊恰",
+        "累溝鴨掐",
+        "累勾啊掐",
+        "累溝阿掐",
+        "內勾啊恰",
+        "內勾鴨掐",
+        "內勾呀掐",
+        "內夠呀掐",
+        "內夠阿掐",
+        "內夠啊恰",
+        "內夠鴨掐",
+        "內溝鴨恰",
+        "內溝阿恰",
+        "內溝呀恰",
+        "累夠阿掐",
+        "累勾阿恰",
+        "累勾呀掐",
+        "累勾鴨掐",
+        "內勾阿恰",
+        "類溝阿恰",
+        "類夠鴨掐",
+        "類夠阿恰",
+        "類夠呀掐",
+        "類勾鴨恰",
+        "類勾啊恰",
+        "類勾呀恰"
+      ]
     },
     {
       "spoken": [
@@ -1549,7 +2222,11 @@
         "site-terms"
       ],
       "category": "工法",
-      "taigi_hanzi": "騷day"
+      "taigi_hanzi": "騷day",
+      "homophones": [
+        "騷day",
+        "燒底"
+      ]
     },
     {
       "spoken": [
@@ -1568,7 +2245,12 @@
         "site-terms"
       ],
       "category": "單位",
-      "taigi_hanzi": "嘿北"
+      "taigi_hanzi": "嘿北",
+      "homophones": [
+        "嘿北",
+        "嘿被",
+        "嘿麥"
+      ]
     },
     {
       "spoken": [
@@ -1589,7 +2271,13 @@
         "site-terms"
       ],
       "category": "單位",
-      "taigi_hanzi": "仙"
+      "taigi_hanzi": "仙",
+      "homophones": [
+        "仙",
+        "縣",
+        "CM",
+        "cm"
+      ]
     },
     {
       "spoken": [
@@ -1606,7 +2294,10 @@
         "site-terms"
       ],
       "category": "單位",
-      "taigi_hanzi": "硬擠"
+      "taigi_hanzi": "硬擠",
+      "homophones": [
+        "硬擠"
+      ]
     },
     {
       "spoken": [
@@ -1626,7 +2317,14 @@
       ],
       "category": "單位",
       "tailo": "hun",
-      "taigi_hanzi": "分"
+      "taigi_hanzi": "分",
+      "homophones": [
+        "昏",
+        "分",
+        "台分",
+        "hun",
+        "台昏"
+      ]
     },
     {
       "spoken": [
@@ -1643,7 +2341,14 @@
         "embedded",
         "units"
       ],
-      "auto": false
+      "auto": false,
+      "homophones": [
+        "分",
+        "台分",
+        "hun",
+        "昏",
+        "台昏"
+      ]
     },
     {
       "spoken": [
@@ -1667,7 +2372,14 @@
         "asr-variants"
       ],
       "category": "結構",
-      "taigi_hanzi": "哈利"
+      "taigi_hanzi": "哈利",
+      "homophones": [
+        "哈利",
+        "娘",
+        "哈哩",
+        "哈里",
+        "哈力"
+      ]
     },
     {
       "spoken": [
@@ -1690,7 +2402,23 @@
         "asr-variants"
       ],
       "category": "結構",
-      "taigi_hanzi": "帕拉呸斗"
+      "taigi_hanzi": "帕拉呸斗",
+      "homophones": [
+        "帕拉呸斗",
+        "巴拉呸斗",
+        "帕拉胚斗",
+        "帕拉佩斗",
+        "帕啦呸斗",
+        "芭拉呸斗",
+        "巴拉佩斗",
+        "巴啦呸斗",
+        "巴拉胚斗",
+        "芭拉胚斗",
+        "帕啦胚斗",
+        "帕啦佩斗",
+        "芭拉佩斗",
+        "芭啦呸斗"
+      ]
     },
     {
       "spoken": [
@@ -1714,7 +2442,21 @@
         "asr-variants"
       ],
       "category": "結構",
-      "taigi_hanzi": "阿搜比"
+      "taigi_hanzi": "阿搜比",
+      "homophones": [
+        "阿搜比",
+        "鴨搜比",
+        "啊搜比",
+        "呀搜比",
+        "阿收比",
+        "阿嗖比",
+        "鴨收比",
+        "鴨嗖比",
+        "啊收比",
+        "啊嗖比",
+        "呀收比",
+        "呀嗖比"
+      ]
     },
     {
       "spoken": [
@@ -1732,7 +2474,11 @@
         "user-list"
       ],
       "category": "材料",
-      "taigi_hanzi": "車輪餅"
+      "taigi_hanzi": "車輪餅",
+      "homophones": [
+        "車輪餅",
+        "甜甜圈"
+      ]
     },
     {
       "spoken": [
@@ -1749,7 +2495,10 @@
         "user-list"
       ],
       "category": "工法",
-      "taigi_hanzi": "封板"
+      "taigi_hanzi": "封板",
+      "homophones": [
+        "封板"
+      ]
     },
     {
       "spoken": [
@@ -1770,7 +2519,12 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "拉整"
+      "taigi_hanzi": "拉整",
+      "homophones": [
+        "拉整",
+        "拉陣",
+        "拉振"
+      ]
     },
     {
       "spoken": [
@@ -1792,7 +2546,14 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "浮濫打"
+      "taigi_hanzi": "浮濫打",
+      "homophones": [
+        "浮濫打",
+        "ㄙㄟ打",
+        "福濫打",
+        "浮爛打",
+        "福爛打"
+      ]
     },
     {
       "spoken": [
@@ -1815,7 +2576,18 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "卡哩卡哩"
+      "taigi_hanzi": "卡哩卡哩",
+      "homophones": [
+        "卡哩卡哩",
+        "卡里卡哩",
+        "卡利卡哩",
+        "卡哩卡里",
+        "卡哩卡利",
+        "卡里卡利",
+        "卡里卡里",
+        "卡利卡里",
+        "卡利卡利"
+      ]
     },
     {
       "spoken": [
@@ -1837,7 +2609,16 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "樓賴爸"
+      "taigi_hanzi": "樓賴爸",
+      "homophones": [
+        "樓賴爸",
+        "漏賴爸",
+        "樓來爸",
+        "樓賴把",
+        "漏賴把",
+        "漏來爸",
+        "樓來把"
+      ]
     },
     {
       "spoken": [
@@ -1858,7 +2639,13 @@
         "asr-variants"
       ],
       "category": "工具",
-      "taigi_hanzi": "片幾"
+      "taigi_hanzi": "片幾",
+      "homophones": [
+        "片幾",
+        "偏幾",
+        "片機",
+        "偏機"
+      ]
     },
     {
       "spoken": [
@@ -1880,7 +2667,15 @@
         "asr-variants"
       ],
       "category": "材料",
-      "taigi_hanzi": "哇夏"
+      "taigi_hanzi": "哇夏",
+      "homophones": [
+        "哇夏",
+        "娃夏",
+        "瓦夏",
+        "哇霞",
+        "娃霞",
+        "瓦霞"
+      ]
     },
     {
       "spoken": [
@@ -1908,7 +2703,39 @@
         "asr-variants"
       ],
       "category": "機具",
-      "taigi_hanzi": "空不累撒"
+      "taigi_hanzi": "空不累撒",
+      "homophones": [
+        "空不累撒",
+        "空布雷薩",
+        "空不類撒",
+        "空不內撒",
+        "空不累薩",
+        "空不雷撒",
+        "空雷雷薩",
+        "空布布薩",
+        "空布雷撒",
+        "空布累撒",
+        "空布內薩",
+        "空不雷薩",
+        "空布累薩",
+        "空布類薩",
+        "空不類薩",
+        "空布類撒",
+        "空布內撒",
+        "空不內薩",
+        "空不布撒",
+        "空雷累薩",
+        "空雷內薩",
+        "空雷布薩",
+        "空雷類薩",
+        "空類雷薩",
+        "空雷雷撒",
+        "空內雷薩",
+        "空累雷薩",
+        "空不布薩",
+        "空布布撒",
+        "空布不薩"
+      ]
     },
     {
       "spoken": [
@@ -1928,7 +2755,11 @@
         "asr-variants"
       ],
       "category": "車輛",
-      "taigi_hanzi": "夏罷"
+      "taigi_hanzi": "夏罷",
+      "homophones": [
+        "夏罷",
+        "霞罷"
+      ]
     },
     {
       "spoken": [
@@ -1952,7 +2783,22 @@
         "asr-variants"
       ],
       "category": "車輛",
-      "taigi_hanzi": "慶阿掐"
+      "taigi_hanzi": "慶阿掐",
+      "homophones": [
+        "慶阿掐",
+        "親阿掐",
+        "慶鴨掐",
+        "慶啊掐",
+        "慶呀掐",
+        "慶阿恰",
+        "親阿恰",
+        "親呀掐",
+        "親啊掐",
+        "親鴨掐",
+        "慶鴨恰",
+        "慶啊恰",
+        "慶呀恰"
+      ]
     },
     {
       "spoken": [
@@ -1977,7 +2823,27 @@
         "asr-variants"
       ],
       "category": "車輛",
-      "taigi_hanzi": "滴溝阿"
+      "taigi_hanzi": "滴溝阿",
+      "homophones": [
+        "滴溝阿",
+        "低溝阿",
+        "滴勾阿",
+        "滴夠阿",
+        "滴溝鴨",
+        "滴溝啊",
+        "滴溝呀",
+        "低勾阿",
+        "低夠阿",
+        "低溝啊",
+        "低溝呀",
+        "低溝鴨",
+        "滴勾啊",
+        "滴勾鴨",
+        "滴勾呀",
+        "滴夠呀",
+        "滴夠鴨",
+        "滴夠啊"
+      ]
     },
     {
       "spoken": [
@@ -1996,7 +2862,11 @@
         "asr-variants"
       ],
       "category": "結構",
-      "taigi_hanzi": "斯囉布"
+      "taigi_hanzi": "斯囉布",
+      "homophones": [
+        "斯囉布",
+        "斯囉雷"
+      ]
     },
     {
       "spoken": [
@@ -2018,7 +2888,14 @@
         "asr-variants"
       ],
       "category": "結構",
-      "taigi_hanzi": "調啊"
+      "taigi_hanzi": "調啊",
+      "homophones": [
+        "調啊",
+        "調",
+        "調鴨",
+        "調阿",
+        "調呀"
+      ]
     },
     {
       "spoken": [
@@ -2034,7 +2911,10 @@
         "videos"
       ],
       "category": "工法",
-      "taigi_hanzi": "疊磚"
+      "taigi_hanzi": "疊磚",
+      "homophones": [
+        "疊磚"
+      ]
     },
     {
       "spoken": [
@@ -2050,7 +2930,10 @@
         "videos"
       ],
       "category": "材料",
-      "taigi_hanzi": "木心板"
+      "taigi_hanzi": "木心板",
+      "homophones": [
+        "木心板"
+      ]
     },
     {
       "spoken": [
@@ -2066,7 +2949,10 @@
         "videos"
       ],
       "category": "工法",
-      "taigi_hanzi": "糕盯"
+      "taigi_hanzi": "糕盯",
+      "homophones": [
+        "糕盯"
+      ]
     },
     {
       "spoken": [
@@ -2082,7 +2968,10 @@
         "videos"
       ],
       "category": "結構",
-      "taigi_hanzi": "吼盯"
+      "taigi_hanzi": "吼盯",
+      "homophones": [
+        "吼盯"
+      ]
     },
     {
       "spoken": [
@@ -2103,7 +2992,13 @@
       "auto": false,
       "category": "單位",
       "tailo": "tshioh",
-      "taigi_hanzi": "尺"
+      "taigi_hanzi": "尺",
+      "homophones": [
+        "尺",
+        "台尺",
+        "tshioh",
+        "tshiorh"
+      ]
     },
     {
       "spoken": [
@@ -2123,7 +3018,12 @@
       "auto": false,
       "category": "單位",
       "tailo": "tshùn",
-      "taigi_hanzi": "寸"
+      "taigi_hanzi": "寸",
+      "homophones": [
+        "寸",
+        "台寸",
+        "tshùn"
+      ]
     },
     {
       "spoken": [
@@ -2142,7 +3042,12 @@
       ],
       "auto": false,
       "category": "單位",
-      "taigi_hanzi": "才"
+      "taigi_hanzi": "才",
+      "homophones": [
+        "才",
+        "一才",
+        "兩才"
+      ]
     },
     {
       "spoken": [
@@ -2159,7 +3064,10 @@
       ],
       "auto": false,
       "category": "單位",
-      "taigi_hanzi": "坪"
+      "taigi_hanzi": "坪",
+      "homophones": [
+        "坪"
+      ]
     },
     {
       "spoken": [
@@ -2179,7 +3087,12 @@
       "auto": false,
       "category": "數字",
       "tailo": "tsi̍t",
-      "taigi_hanzi": "一"
+      "taigi_hanzi": "一",
+      "homophones": [
+        "一",
+        "tsi̍t",
+        "it"
+      ]
     },
     {
       "spoken": [
@@ -2200,7 +3113,13 @@
       "auto": false,
       "category": "數字",
       "tailo": "nn̄g",
-      "taigi_hanzi": "兩"
+      "taigi_hanzi": "兩",
+      "homophones": [
+        "兩",
+        "nn̄g",
+        "二",
+        "jī"
+      ]
     },
     {
       "spoken": [
@@ -2219,7 +3138,11 @@
       "auto": false,
       "category": "數字",
       "tailo": "sann",
-      "taigi_hanzi": "三"
+      "taigi_hanzi": "三",
+      "homophones": [
+        "三",
+        "sann"
+      ]
     },
     {
       "spoken": [
@@ -2238,7 +3161,11 @@
       "auto": false,
       "category": "數字",
       "tailo": "sì",
-      "taigi_hanzi": "四"
+      "taigi_hanzi": "四",
+      "homophones": [
+        "四",
+        "sì"
+      ]
     },
     {
       "spoken": [
@@ -2257,7 +3184,11 @@
       "auto": false,
       "category": "數字",
       "tailo": "gōo",
-      "taigi_hanzi": "五"
+      "taigi_hanzi": "五",
+      "homophones": [
+        "五",
+        "gōo"
+      ]
     },
     {
       "spoken": [
@@ -2276,7 +3207,11 @@
       "auto": false,
       "category": "數字",
       "tailo": "la̍k",
-      "taigi_hanzi": "六"
+      "taigi_hanzi": "六",
+      "homophones": [
+        "六",
+        "la̍k"
+      ]
     },
     {
       "spoken": [
@@ -2295,7 +3230,11 @@
       "auto": false,
       "category": "數字",
       "tailo": "tshit",
-      "taigi_hanzi": "七"
+      "taigi_hanzi": "七",
+      "homophones": [
+        "七",
+        "tshit"
+      ]
     },
     {
       "spoken": [
@@ -2315,7 +3254,12 @@
       "auto": false,
       "category": "數字",
       "tailo": "peh",
-      "taigi_hanzi": "八"
+      "taigi_hanzi": "八",
+      "homophones": [
+        "八",
+        "peh",
+        "peeh"
+      ]
     },
     {
       "spoken": [
@@ -2334,7 +3278,11 @@
       "auto": false,
       "category": "數字",
       "tailo": "káu",
-      "taigi_hanzi": "九"
+      "taigi_hanzi": "九",
+      "homophones": [
+        "九",
+        "káu"
+      ]
     },
     {
       "spoken": [
@@ -2353,7 +3301,11 @@
       "auto": false,
       "category": "數字",
       "tailo": "tsa̍p",
-      "taigi_hanzi": "十"
+      "taigi_hanzi": "十",
+      "homophones": [
+        "十",
+        "tsa̍p"
+      ]
     },
     {
       "spoken": [
@@ -2372,7 +3324,15 @@
       ],
       "auto": false,
       "category": "常用句",
-      "taigi_hanzi": "幾尺幾寸"
+      "taigi_hanzi": "幾尺幾寸",
+      "homophones": [
+        "幾尺幾寸",
+        "X尺Y",
+        "三尺六",
+        "機尺幾寸",
+        "幾尺機寸",
+        "四尺六"
+      ]
     },
     {
       "spoken": [
@@ -2393,7 +3353,42 @@
       ],
       "auto": false,
       "category": "常用句",
-      "taigi_hanzi": "幾尺半"
+      "taigi_hanzi": "幾尺半",
+      "homophones": [
+        "幾尺半",
+        "三尺半",
+        "四尺半",
+        "五尺半",
+        "兩尺半",
+        "機尺半"
+      ]
+    },
+    {
+      "spoken": [
+        "米知",
+        "米突",
+        "米吐",
+        "米嘟"
+      ],
+      "asr_variants": [
+        "米之"
+      ],
+      "homophones": [
+        "米知",
+        "米之",
+        "米突",
+        "米吐",
+        "米兔",
+        "米塗",
+        "米土",
+        "米嘟"
+      ],
+      "standard": "公尺",
+      "code": null,
+      "note": "長度單位 m。估價嗎耶通 v1 已將既有口語「米知／米突／米吐／米嘟」對到公尺；同音變體只由這些寫法做近音字替換（如 知／之、吐／突），不另造工項或單價。",
+      "source": [
+        "maye-quote-v1-extra-aliases"
+      ]
     }
   ]
 }
