@@ -1768,7 +1768,7 @@
     const clr = $("#btn-clear"); if (clr) clr.addEventListener("click", confirmClear);
     const dl = $("#btn-download"); if (dl) dl.addEventListener("click", openDownloadModal);
     const dlM = $("#btn-download-modal"); if (dlM) dlM.addEventListener("click", openDownloadModal);
-    const viewQ = $("#btn-view-quote"); if (viewQ) viewQ.addEventListener("click", () => openQuoteModal());
+    
     const preview = $("#quote-preview");
     if (preview) {
       preview.addEventListener("click", () => openQuoteModal());
