@@ -15,7 +15,7 @@
   ];
   const UNITS = ["平方公尺", "公尺", "公分", "台尺", "坪", "尺", "寸", "分", "處", "口", "迴", "盞", "座", "樘", "式", "工", "個", "組", "只", "台", "屋", "米知", "米突", "米"];
   const CN_D = { "零": 0, "〇": 0, "一": 1, "二": 2, "兩": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9 };
-  const NUM = "([0-9]+(?:\\.[0-9]+)?|[零〇一二兩三四五六七八九十百]+)";
+  const NUM = "([0-9]+(?:\\.[0-9]+)?|[零〇一二兩三四五六七八九十百千萬點]+)";
   const DIG = "([0-9]|[一二兩三四五六七八九])";
   const NOT_AFTER = "(?![0-9零〇一二兩三四五六七八九十百個組盞樘處只座口坪米公顆條])";
   const RE_CHI = new RegExp(`${NUM}台?尺${DIG}寸?(?:${DIG}分)?${NOT_AFTER}`, "g");
@@ -104,6 +104,11 @@
     { from: "瓶數", to: "坪數", priority: 1, note: "使用者確認" },
     { from: "全是", to: "全室", priority: 2, note: "使用者確認" },
     { from: "平定天花", to: "平釘天花", priority: 3, note: "使用者確認" },
+    { from: "平町天花", to: "平釘天花", priority: 3, note: "使用者確認" },
+    { from: "平頂天花", to: "平釘天花", priority: 3, note: "使用者確認" },
+    { from: "瓶釘天花", to: "平釘天花", priority: 3, note: "使用者確認" },
+    { from: "平訂天花", to: "平釘天花", priority: 3, note: "使用者確認" },
+    { from: "平丁天花", to: "平釘天花", priority: 3, note: "使用者確認" },
     { from: "系統高貴", to: "系統高櫃", priority: 4, note: "使用者確認" },
     { from: "回路", to: "迴路", priority: 5, note: "使用者確認" }
   ];
@@ -140,6 +145,198 @@
   }
   function formatCorrectionRules() {
     return correctionList().map((c) => String(c.from) + " → " + String(c.to)).join("\n");
+  }
+  const CEILING_TYPO_RE = /瓶釘天花|平(?:定|頂|町|訂|丁|挺|廳|釘)?天花/g;
+  function fixCeilingTerms(text) {
+    return String(text || "").replace(CEILING_TYPO_RE, "平釘天花");
+  }
+  function fixPingUnit(text) {
+    let s = String(text || "");
+    const num = "([0-9]+(?:\\.[0-9]+)?|[零〇一二兩三四五六七八九十百千萬]+)";
+    s = s.replace(new RegExp(num + "\\s*瓶(?![子裝蓋罐口])", "g"), function (_, n) { return n + "坪"; });
+    s = s.replace(/瓶數/g, "坪數");
+    return s;
+  }
+  const CN_NUM_TOKEN = "[零〇一二兩三四五六七八九十百千萬點]+";
+  function arabicizeSpeechNumbers(text) {
+    let s = String(text || "");
+    const unitPat = UNITS.slice().sort(function (a, b) { return b.length - a.length; })
+      .map(function (u) { return u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|");
+    const afterUnit = new RegExp("((?:每|一|1)\\s*(?:" + unitPat + ")\\s*)(" + CN_NUM_TOKEN + ")", "g");
+    s = s.replace(afterUnit, function (m, pre, n) {
+      const v = parseNumber(n);
+      return v != null && v >= 100 ? (pre + fmtChi(v)) : m;
+    });
+    const priceRe = new RegExp("(" + CN_NUM_TOKEN + ")(?=\\s*(?:元|塊錢|塊))", "g");
+    s = s.replace(priceRe, function (m) {
+      const v = parseNumber(m);
+      return v != null && v >= 100 ? fmtChi(v) : m;
+    });
+    const unitRe = new RegExp("(" + CN_NUM_TOKEN + "|[0-9]+(?:\\.[0-9]+)?)\\s*(" + unitPat + ")", "g");
+    s = s.replace(unitRe, function (m, n, u, offset) {
+      const after = s.slice(offset + m.length, offset + m.length + 16);
+      const rest = after.match(/^\s*([0-9]+(?:\.[0-9]+)?|[零〇一二兩三四五六七八九十百千萬點]+)/);
+      if (rest && parseNumber(rest[1]) >= 100 && /^(一|1|每)$/.test(String(n))) return m;
+      if (/^[0-9]+(?:\.[0-9]+)?$/.test(n)) {
+        return fmtChi(parseFloat(n)) + " " + u;
+      }
+      const v = parseNumber(n);
+      return v != null ? (fmtChi(v) + " " + u) : m;
+    });
+    return s;
+  }
+  function applySpeechCorrections(text) {
+    const user = applyUserCorrections(text);
+    let s = user.text;
+    const hits = user.hits.slice();
+    const afterCeil = fixCeilingTerms(s);
+    if (afterCeil !== s) {
+      hits.push({ from: s, to: afterCeil, rule: "ceiling" });
+      s = afterCeil;
+    }
+    const afterPing = fixPingUnit(s);
+    if (afterPing !== s) {
+      hits.push({ from: s, to: afterPing, rule: "ping" });
+      s = afterPing;
+    }
+    const afterNum = arabicizeSpeechNumbers(s);
+    if (afterNum !== s) {
+      hits.push({ from: s, to: afterNum, rule: "numeral" });
+      s = afterNum;
+    }
+    const spaced = s.replace(/([一-龥])(\d)/g, "$1 $2");
+    if (spaced !== s) s = spaced;
+    return { text: s, hits };
+  }
+  function preferredVocabulary(hits) {
+    const words = ["平釘天花", "坪", "全室", "系統高櫃", "迴路", "水泥", "公尺"];
+    const seen = new Set(words);
+    correctionList().forEach(function (c) {
+      const to = String(c.to || "").trim();
+      if (to && !seen.has(to)) { seen.add(to); words.push(to); }
+    });
+    (hits || []).forEach(function (h) {
+      const to = String(h.to || "").trim();
+      if (to && to.length <= 12 && !seen.has(to)) { seen.add(to); words.push(to); }
+    });
+    return words;
+  }
+  const PRICE_UNITS = "坪|尺|組|式|米|公尺|口|迴|個|盞|處|樘|工|台|只|座|屋";
+  const PRICE_NUM = "([0-9]{1,7}(?:,[0-9]{3})*(?:\\.[0-9]+)?|[零〇一二兩三四五六七八九十百千萬點]+)";
+  function looksLikePhoneOrVoltage(text, index, raw) {
+    const ctx = String(text || "").slice(Math.max(0, index - 10), index + String(raw || "").length + 10);
+    const compact = String(raw || "").replace(/[,\s]/g, "");
+    if (/09\d{2}/.test(ctx) || /(?:聯絡|連絡)?(?:電話|市話)/.test(ctx)) return true;
+    if (/^0\d{6,}$/.test(compact)) return true;
+    if (/(?:220|110)\s*(?:V|v|伏特|伏)|伏特|專用迴路/.test(ctx)) return true;
+    const n = parseNumber(compact);
+    if (n === 110 || n === 220) return true;
+    if (/[路街巷弄號]/.test(ctx) && n != null && n < 10000) return true;
+    return false;
+  }
+  function extractSpokenPrices(text) {
+    const src = String(text || "");
+    const hits = [];
+    function add(index, unitPrice, unit, kind, raw, amount) {
+      if (looksLikePhoneOrVoltage(src, index, raw)) return;
+      const p = Number(unitPrice) || 0;
+      const a = Number(amount) || 0;
+      if (kind === "unit") {
+        if (!(p >= 100 && p <= 1000000)) return;
+      } else if (kind === "total") {
+        if (!(a >= 100 && a <= 10000000)) return;
+      } else return;
+      hits.push({ index: index, unitPrice: p || 0, unit: unit || "", kind: kind, raw: raw, amount: a || 0 });
+    }
+    const rePer = new RegExp("(?:每|一|1)\\s*(" + PRICE_UNITS + ")\\s*(?:單價\\s*)?" + PRICE_NUM + "\\s*(?:元|塊錢|塊)?", "g");
+    const reDan = new RegExp("單價\\s*" + PRICE_NUM + "\\s*(?:元|塊錢|塊)?", "g");
+    const rePost = new RegExp(PRICE_NUM + "\\s*(?:元|塊錢|塊)?\\s*(?:一|每|/|1)\\s*(" + PRICE_UNITS + ")", "g");
+    const reItemTotal = new RegExp("(?:這項|這一項|這個項目|該項|這筆)(?:的)?(?:金額|價錢|價格|單價)?(?:是|為)?(?:總共|一共|合計|總價|小計)?\\s*" + PRICE_NUM + "\\s*(?:元|塊錢|塊)?", "g");
+    const reAfterNameTotal = new RegExp("(?:總共|一共|總價)\\s*" + PRICE_NUM + "\\s*(?:元|塊錢|塊)?", "g");
+    let m;
+    rePer.lastIndex = 0;
+    while ((m = rePer.exec(src))) {
+      add(m.index, parseNumber(m[2]), m[1], "unit", m[0], 0);
+    }
+    reDan.lastIndex = 0;
+    while ((m = reDan.exec(src))) {
+      add(m.index, parseNumber(m[1]), "", "unit", m[0], 0);
+    }
+    rePost.lastIndex = 0;
+    while ((m = rePost.exec(src))) {
+      add(m.index, parseNumber(m[1]), m[2], "unit", m[0], 0);
+    }
+    reItemTotal.lastIndex = 0;
+    while ((m = reItemTotal.exec(src))) {
+      add(m.index, 0, "", "total", m[0], parseNumber(m[1]));
+    }
+    reAfterNameTotal.lastIndex = 0;
+    while ((m = reAfterNameTotal.exec(src))) {
+      if (hits.some(function (h) { return h.kind === "total" && Math.abs(h.index - m.index) < 8; })) continue;
+      const before = src.slice(Math.max(0, m.index - 24), m.index);
+      if (/平釘|天花|迴路|乳膠|隔間|衣櫃|櫃|漆|水泥|打牆|開槽|踢腳|插座|燈/.test(before)) {
+        add(m.index, 0, "", "total", m[0], parseNumber(m[1]));
+      }
+    }
+    hits.sort(function (a, b) { return a.index - b.index; });
+    return hits;
+  }
+  function itemTextIndex(text, row) {
+    const src = String(text || "");
+    const keys = [];
+    const name = String((row && row.name) || "").replace(/[（(].*$/, "").trim();
+    if (name) {
+      keys.push(name);
+      if (name.length >= 4) keys.push(name.slice(0, 4));
+    }
+    if (row && row.code === "W-101") keys.push("平釘天花", "平釘");
+    if (row && row.code === "P-013") keys.push("打牆", "開槽");
+    let best = -1;
+    for (let i = 0; i < keys.length; i++) {
+      const k = keys[i];
+      if (!k) continue;
+      const at = src.indexOf(k);
+      if (at >= 0 && (best < 0 || at < best)) best = at;
+    }
+    return best;
+  }
+  function attachSpokenPrices(items, text) {
+    const list = Array.isArray(items) ? items : [];
+    const prices = extractSpokenPrices(text);
+    if (!list.length || !prices.length) return list;
+    const positions = list.map(function (row) { return itemTextIndex(text, row); });
+    list.forEach(function (row, i) {
+      const start = positions[i];
+      let end = String(text || "").length;
+      for (let j = 0; j < positions.length; j++) {
+        if (j !== i && positions[j] > (start < 0 ? -1 : start) && positions[j] < end) end = positions[j];
+      }
+      const cand = prices.filter(function (p) {
+        if (list.length === 1) return true;
+        if (start < 0) return list.length === 1;
+        return p.index >= start && p.index < end + 2;
+      });
+      if (!cand.length) return;
+      const unitHit = cand.find(function (p) {
+        return p.kind === "unit" && (!p.unit || !row.unit || unitCanon(p.unit) === unitCanon(row.unit));
+      }) || cand.find(function (p) { return p.kind === "unit"; });
+      if (unitHit && unitHit.unitPrice > 0) {
+        row.unitPrice = unitHit.unitPrice;
+        row.spokenPrice = true;
+        row.pending = false;
+        if (!row.note) row.note = "口述單價";
+        return;
+      }
+      const tot = cand.find(function (p) { return p.kind === "total" && p.amount > 0; });
+      const q = Number(row.qty) || 0;
+      if (tot && q > 0) {
+        row.unitPrice = Math.round(tot.amount / q);
+        row.spokenPrice = true;
+        row.pending = false;
+        if (!row.note) row.note = "口述單價";
+      }
+    });
+    return list;
   }
   const STORE_KEY = "maye-quote-state-v3";
   const PREFS_KEY = "maye-ui-prefs";
@@ -803,19 +1000,47 @@
 
 
   function cnNum(x) {
-    x = String(x);
-    if (/^[0-9.]+$/.test(x)) return parseFloat(x);
-    let total = 0, cur = 0;
+    x = String(x == null ? "" : x).trim().replace(/,/g, "").replace(/點/g, ".");
+    if (!x) return NaN;
+    if (/^[0-9]+(?:\.[0-9]+)?$/.test(x)) return parseFloat(x);
+    if (x === "半") return 0.5;
+    let total = 0, n = 0, d = 0, lastUnit = 1;
     for (const ch of x) {
-      if (ch in CN_D) cur = CN_D[ch];
-      else if (ch === "十") { total += (cur || 1) * 10; cur = 0; }
-      else if (ch === "百") { total += (cur || 1) * 100; cur = 0; }
+      if (ch === ".") return NaN;
+      if (ch in CN_D) d = CN_D[ch];
+      else if (ch === "十" || ch === "百" || ch === "千") {
+        const u = ch === "十" ? 10 : ch === "百" ? 100 : 1000;
+        n += (d || 1) * u;
+        lastUnit = u;
+        d = 0;
+      } else if (ch === "萬" || ch === "万") {
+        n = (n + d) || 1;
+        total += n * 10000;
+        lastUnit = 10000;
+        n = 0;
+        d = 0;
+      } else if (ch === "億") {
+        n = (n + d) || 1;
+        total += n * 100000000;
+        lastUnit = 100000000;
+        n = 0;
+        d = 0;
+      } else if (ch === "半") {
+        d = (d || 0) + 0.5;
+      } else {
+        return NaN;
+      }
     }
-    return total + cur;
+    if (d) {
+      if (lastUnit >= 10000 && n === 0) d *= lastUnit / 10;
+      else if (lastUnit === 1000) d *= 100;
+      else if (lastUnit === 100) d *= 10;
+    }
+    return total + n + d;
   }
   const fmtChi = (v) => String(Math.round(v * 100) / 100);
   function parseNumber(text) {
-    const t = String(text || "").trim();
+    const t = String(text || "").trim().replace(/,/g, "");
     if (!t) return null;
     if (/^[0-9]+(?:\.[0-9]+)?$/.test(t)) return parseFloat(t);
     const n = cnNum(t);
@@ -903,14 +1128,15 @@
     const price = midPrice(it);
     return {
       id: uid(), code: it.code, name: it.item, qty: q, unit: u,
-      unitPrice: price, pending: false, note: ""
+      unitPrice: price, pending: false, note: "", spokenPrice: false
     };
   }
   function pendingLine(name, qty, unit, note) {
     return {
       id: uid(), code: null, name: name || "未命名項目",
       qty: qty != null && Number(qty) > 0 ? Number(qty) : 1,
-      unit: unit || "式", unitPrice: 0, pending: true, note: note || "單價庫沒有對應行情"
+      unit: unit || "式", unitPrice: 0, pending: true, note: note || "單價庫沒有對應行情",
+      spokenPrice: false
     };
   }
   function lineAmount(row) {
@@ -958,7 +1184,8 @@
   }
 
   function localParse(text) {
-    const norm = normalizeAnswer(text || "");
+    const corr = applySpeechCorrections(text || "");
+    const norm = normalizeAnswer(corr.text);
     const src = norm.text;
     const used = new Set();
     const items = [];
@@ -987,6 +1214,7 @@
     if (!items.length && src) {
       items.push(pendingLine(src.slice(0, 20), 1, "式", "無法對應目錄，請師傅自行修正"));
     }
+    attachSpokenPrices(items, src);
     return { text: src, hits: norm.hits, items, local: true };
   }
 
@@ -1036,20 +1264,23 @@
     }
     return picked;
   }
-  function buildPrompt(spoken, normalized, original) {
+  function buildPrompt(spoken, normalized, original, hits) {
     const termLines = selectTermsForPrompt((spoken||"")+" "+(normalized||"")).map(formatTermLine);
     const rules = formatCorrectionRules();
+    const vocab = preferredVocabulary(hits).join("、");
     return [
       "你是估價助理。請依師傅口述產生估價單品項，並把台語／同音錯字轉寫成國語工項。",
       "【最高優先】以下是師傅確認的語音修正，必須先套用，不得改回或忽略：",
       rules,
+      "另外請一併套用這些通用規則：平町天花／平定天花／平頂天花／瓶釘天花等近音都是「平釘天花」；數字後面的「瓶」（如六瓶、8瓶）在施工估價裡是「坪」，瓶數是坪數。中文數字請轉成阿拉伯數字（六坪→6 坪、十二坪→12 坪、兩組→2 組、四千五→4500、三萬五→35000）。",
+      "【慣用詞彙】請優先使用以下已修正的專有名詞與單位：" + vocab,
       "本機已先行套用這些規則。下方「師傅口述」是修正後的文字；語音辨識原稿僅供對照。",
       "中文語音辨識常把台語術語聽成同音或近音的錯字，例如把「紅毛土」寫成「洪毛土／紅毛兔／宏毛土」，把「米知」（公尺）寫成「米之／米突／米吐」。請依發音近似度，對照下面的術語表還原成國語標準名稱。術語表沒有的不要臆造新工項或新單價。",
-      "只使用下面「單價目錄」裡的工項與單價（水電、木工、油漆）。不得虛構或改寫單價。",
+      "只使用下面「單價目錄」裡的工項（水電、木工、油漆）。不得虛構工項。",
       "估價單不要列出工種分類。請自行判斷工種並對到目錄。",
-      "數量與單位要從口述解析。「米知」「米突」「米之」當公尺。「紅毛土」「洪毛土」「紅毛兔」是水泥。",
-      "目錄有對應：填 code、name、qty、unit，unitPrice 必須等於目錄中的行情數字。pending=false。",
-      "目錄沒有對應：name 用標準名稱，unitPrice 必須是 0，pending=true（畫面會標「待填」）。",
+      "數量、單位、材料與工法都要從口述解析並正確填入 name、qty、unit。「米知」「米突」「米之」當公尺。「紅毛土」「洪毛土」「紅毛兔」是水泥。",
+      "若師傅有說出單價（例如「一坪四千五」「單價 3800」「每坪三千八百元」「一組二千五」「4500 一坪」），該項目的 unitPrice 必須用口述單價，不要改回目錄行情。若只說某一項的總價（「這項總共三萬」）且能對到該項目，則 unitPrice = 總價÷數量。電話、地址門牌、220V／110V 不是單價。沒有口述單價時，目錄有對應的項目 unitPrice 必須等於目錄行情，pending=false。",
+      "目錄沒有對應：name 用標準名稱，unitPrice 必須是 0，pending=true（畫面會標「待填」）。不得虛構單價。",
       "若口述有提到客戶資料，一併填入 customer。沒有說到的欄位必須留空白字串，不得虛構姓名、電話、地址、區域、建築形式或樓層。",
       "區域只允許「都會」或「偏遠」。建築形式只允許「公寓」「大樓」「透天」「廠辦」「其他」。樓層寫成「3樓」這種形式即可。",
       "只回一個 JSON 物件，格式：",
@@ -1075,7 +1306,7 @@
       const cat = itemByCode(it.code);
       if (cat) {
         const row = lineFromCode(cat.code, it.qty, it.unit || cat.unit);
-        // 即使 AI 帶了單價，也強制改回行情，避免虛構
+        // 先採用目錄行情，口述單價由 attachSpokenPrices 依語音覆寫，避免 AI 虛構單價
         row.unitPrice = midPrice(cat);
         row.pending = false;
         if (it.note) row.note = String(it.note);
@@ -1098,7 +1329,7 @@
   async function generateFromText(text, opts) {
     const original = String(text || "").trim();
     if (!original) throw Object.assign(new Error("empty"), { code: "empty" });
-    const corr = applyUserCorrections(original);
+    const corr = applySpeechCorrections(original);
     const raw = corr.text;
     const norm = normalizeAnswer(raw);
     state.rawOriginal = original;
@@ -1111,8 +1342,9 @@
     const force = opts && opts.forceFallback;
     if (!force) {
       try {
-        const data = await defaultAi(buildPrompt(raw, norm.text, original));
+        const data = await defaultAi(buildPrompt(raw, norm.text, original, corr.hits));
         const items = adoptAiItems(data);
+        attachSpokenPrices(items, raw);
         if (items.length) {
           state.items = items;
           state.source = "ai";
@@ -1278,10 +1510,11 @@
     const meta = visibleMetaLines().map((l) => `<div class="qs-meta-line">${esc(l)}</div>`).join("");
     const rows = state.items.map((row, i) => {
       const pending = !!row.pending;
+      const spoken = !!row.spokenPrice;
       const price = pending && !(Number(row.unitPrice) > 0) ? "待填" : fmt(row.unitPrice);
       return `<tr>
         <td class="num">${i + 1}</td>
-        <td class="name">${esc(row.name)}${pending ? '<span class="qs-pending">待填</span>' : ""}</td>
+        <td class="name">${esc(row.name)}${pending ? '<span class="qs-pending">待填</span>' : ""}${spoken ? '<span class="qs-spoken">口述單價</span>' : ""}</td>
         <td class="num">${esc(row.qty)}</td>
         <td>${esc(row.unit)}</td>
         <td class="num">${price}</td>
@@ -1331,7 +1564,7 @@
     if (meta.length) { lines.push(...meta, ""); }
     lines.push("品名\t數量\t單位\t單價\t複價");
     for (const r of state.items) {
-      const tag = r.pending ? "（待填）" : "";
+      const tag = (r.pending ? "（待填）" : "") + (r.spokenPrice ? "（口述單價）" : "");
       lines.push([r.name + tag, r.qty, r.unit, r.unitPrice, lineAmount(r)].join("\t"));
     }
     lines.push("");
@@ -1368,7 +1601,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=4.3";
+      s.src = "exceljs.min.js?v=4.4";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1405,7 +1638,7 @@
     const firstData = r;
     state.items.forEach((row, i) => {
       ws.getCell(r, 1).value = i + 1;
-      ws.getCell(r, 2).value = row.name + (row.pending ? "（待填）" : "");
+      ws.getCell(r, 2).value = row.name + (row.pending ? "（待填）" : "") + (row.spokenPrice ? "（口述單價）" : "");
       ws.getCell(r, 3).value = Number(row.qty) || 0;
       ws.getCell(r, 4).value = row.unit;
       ws.getCell(r, 5).value = Number(row.unitPrice) || 0;
@@ -1413,7 +1646,7 @@
       ws.getCell(r, 3).numFmt = "0.##";
       ws.getCell(r, 5).numFmt = "#,##0";
       ws.getCell(r, 6).numFmt = "#,##0";
-      ws.getCell(r, 7).value = row.note || "";
+      ws.getCell(r, 7).value = row.note || (row.spokenPrice ? "口述單價" : "");
       r++;
     });
     const lastData = Math.max(firstData, r - 1);
@@ -1561,7 +1794,7 @@
     }
     state.items.forEach((row, i) => {
       if (y > H - 200) { flush(); y = newPage(); }
-      const name = row.name + (row.pending ? "（待填）" : "");
+      const name = row.name + (row.pending ? "（待填）" : "") + (row.spokenPrice ? "（口述單價）" : "");
       ctx.fillText(String(i + 1), cols[0], y);
       ctx.fillText(name.slice(0, 16), cols[1], y);
       ctx.fillText(String(row.qty), cols[2], y);
@@ -1997,9 +2230,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=4.3"),
-        loadJson("taigi_terms.json?v=4.3"),
-        loadJson("user_corrections.json?v=4.3").catch(function () { return null; })
+        loadJson("price_db.json?v=4.4"),
+        loadJson("taigi_terms.json?v=4.4"),
+        loadJson("user_corrections.json?v=4.4").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -2087,6 +2320,11 @@
     extractCustomerLocal,
     adoptCustomer,
     applyUserCorrections,
+    applySpeechCorrections,
+    extractSpokenPrices,
+    attachSpokenPrices,
+    parseNumber,
+    cnNum,
     correctionList,
     buildPrompt,
     mentionedInSpeech,
