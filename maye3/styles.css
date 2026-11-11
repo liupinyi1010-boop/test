@@ -40,9 +40,30 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 h1,h2,h3{margin:0;line-height:1.3;font-weight:600}
 h1,h2{font-family:"Noto Serif TC","Songti TC","Noto Sans TC","PingFang TC","PMingLiU",serif}
 .wrap{max-width:800px;margin:0 auto;padding:20px 18px calc(52px + env(safe-area-inset-bottom))}
-.top{background:transparent;color:var(--ink);padding:28px 16px 8px}
-.top .wrap{padding-bottom:0;padding-top:0}
-.top .eyebrow{margin:0 0 8px;font-size:16px;font-weight:600;letter-spacing:.18em;color:var(--caramel-dark);text-transform:none}
+.top{
+  position:relative;isolation:isolate;overflow:hidden;
+  background-color:#F6F1EA;color:var(--ink);
+  padding:36px 16px 56px;
+}
+.top-scene{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:url("hero-bg.jpg?v=3.8");
+  background-size:cover;
+  background-position:center 28%;
+  background-repeat:no-repeat;
+}
+.top-scene::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(
+    180deg,
+    rgba(246,241,234,.64) 0%,
+    rgba(246,241,234,.58) 38%,
+    rgba(239,232,223,.80) 78%,
+    #F6F1EA 100%
+  );
+}
+.top .wrap{position:relative;z-index:1;padding-bottom:0;padding-top:0}
+.top .eyebrow{margin:0 0 8px;font-size:16px;font-weight:700;letter-spacing:.18em;color:#5C4528;text-transform:none}
 .top h1{font-size:42px;font-weight:500;letter-spacing:.06em;color:var(--ink)}
 .top p{margin:14px 0 0;font-size:20px;color:var(--ink);font-weight:500}
 

@@ -1072,7 +1072,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.7";
+      s.src = "exceljs.min.js?v=3.8";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1678,9 +1678,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=3.7"),
-        loadJson("taigi_terms.json?v=3.7"),
-        loadJson("user_corrections.json?v=3.7").catch(function () { return null; })
+        loadJson("price_db.json?v=3.8"),
+        loadJson("taigi_terms.json?v=3.8"),
+        loadJson("user_corrections.json?v=3.8").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
