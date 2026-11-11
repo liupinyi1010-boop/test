@@ -420,6 +420,28 @@
       tb.innerHTML = "";
     }
   }
+  function updateGuidance(mode) {
+    const mic = $("#mic");
+    const rec = mode === "rec" || (!mode && mic && mic.classList.contains("is-rec"));
+    const busy = mode === "busy" || (!mode && mic && mic.classList.contains("is-busy"));
+    const quoteOn = !!( $("#quote") && $("#quote").classList.contains("on") && state.items && state.items.length );
+    const recBan = $("#rec-banner");
+    const busyBan = $("#busy-banner");
+    const coachMic = $("#coach-mic");
+    const coachLab = $("#coach-mic-lab");
+    const ready = $("#ready-badge");
+    const coachDl = $("#coach-dl");
+    if (recBan) recBan.hidden = !rec;
+    if (busyBan) busyBan.hidden = !busy;
+    if (coachMic) {
+      coachMic.hidden = !!(quoteOn || busy);
+      if (coachLab) coachLab.textContent = rec ? "講完再按一次" : "按這裡";
+    }
+    if (ready) ready.hidden = !quoteOn;
+    if (coachDl) coachDl.hidden = !(quoteOn && !rec && !busy);
+    const hint = $("#mic-hint");
+    if (hint) hint.hidden = !!(rec || busy);
+  }
   function closeModal() {
     const el = $("#modal");
     if (el) el.hidden = true;
@@ -478,8 +500,8 @@
       title: "下載報價單",
       desc: "請選一種檔案。PDF 方便查看和列印；Excel 方便您自己改數字。",
       buttons: [
-        { id: "btn-pdf", label: "下載 PDF（方便查看、列印）", cls: "btn lg tile tile-tan", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg>', fn: () => { closeModal(); exportPdf().catch((e) => { console.error(e); setExportStatus("匯出 PDF 失敗，請再試一次。", true); }); } },
-        { id: "btn-xlsx", label: "下載 Excel（方便自己改數字）", cls: "btn lg tile tile-dark", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M4 10h16M4 15h16M10 5v14"></path></svg>', fn: () => { closeModal(); exportXlsx().catch((e) => { console.error(e); setExportStatus("匯出 Excel 失敗，請再試一次。", true); }); } },
+        { id: "btn-pdf", label: "下載 PDF（方便查看、列印）", cls: "btn lg sheet-row", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg>', fn: () => { closeModal(); exportPdf().catch((e) => { console.error(e); setExportStatus("匯出 PDF 失敗，請再試一次。", true); }); } },
+        { id: "btn-xlsx", label: "下載 Excel（方便自己改數字）", cls: "btn lg sheet-row", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M4 10h16M4 15h16M10 5v14"></path></svg>', fn: () => { closeModal(); exportXlsx().catch((e) => { console.error(e); setExportStatus("匯出 Excel 失敗，請再試一次。", true); }); } },
         { id: "btn-line", label: "用 LINE 分享", cls: "btn sec lg", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v9H8l-4 4V6z"></path></svg>', fn: () => { window.open(lineShareUrl(), "_blank", "noopener"); } },
         { id: "btn-modal-cancel", label: "取消", cls: "btn ghost lg", fn: closeModal }
       ]
@@ -864,6 +886,7 @@
       renderQuote();
       setExportStatus("");
       persist();
+      updateGuidance();
         if (q) q.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
       try {
         if (location.hash !== "#quote") history.pushState({ maye: "quote" }, "", "#quote");
@@ -959,6 +982,7 @@
     const ban = $("#fallback-banner");
     if (ban) ban.classList.toggle("on", state.source === "fallback");
     updateTotalBanner();
+    updateGuidance();
     const note = $("#tax-note");
     if (note) {
       const taxTxt = state.tax ? "已含 5% 營業稅。" : "未加營業稅。";
@@ -1072,7 +1096,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.8";
+      s.src = "exceljs.min.js?v=3.9";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1439,6 +1463,7 @@
       stopRecTimer();
       setLiveSpeech("", false);
     }
+    updateGuidance(mode);
   }
 
   function speechCtor() {
@@ -1678,9 +1703,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=3.8"),
-        loadJson("taigi_terms.json?v=3.8"),
-        loadJson("user_corrections.json?v=3.8").catch(function () { return null; })
+        loadJson("price_db.json?v=3.9"),
+        loadJson("taigi_terms.json?v=3.9"),
+        loadJson("user_corrections.json?v=3.9").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1700,6 +1725,7 @@
     applySpeechSupportUI();
     applyLineBrowserHint();
     restoreState();
+    updateGuidance();
     if ((state.items.length || state.raw) && location.hash === "#quote") {
       const q = $("#quote");
       if (q) q.scrollIntoView({ block: "start" });
@@ -1746,6 +1772,7 @@
     applyLineBrowserHint,
     isLineBrowser,
     setLiveSpeech,
+    updateGuidance,
     selectTermsForPrompt,
     catalogList,
     isZeroNumericInput,

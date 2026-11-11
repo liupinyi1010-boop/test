@@ -3,14 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#1F1F1F">
+  <meta name="theme-color" content="#F2F2F7">
   <title>估價嗎耶通</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.8">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=3.9">
 </head>
 <body>
+  <div class="page-scene" aria-hidden="true"></div>
+
   <header class="top no-print">
     <div class="top-scene" aria-hidden="true"></div>
     <div class="wrap">
@@ -23,7 +25,38 @@
   <main class="wrap">
     <section id="home" aria-label="口述與輸入">
       <div class="card home-card">
+        <div class="howto" role="list" aria-label="使用方式">
+          <div class="howto-step" role="listitem">
+            <span class="howto-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11" rx="3"></rect><path d="M6 11.5a6 6 0 0 0 12 0"></path><path d="M12 17.5v3.2"></path><path d="M8 21h8"></path></svg>
+            </span>
+            <span class="howto-cap">按一下開始講</span>
+          </div>
+          <span class="howto-chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+          </span>
+          <div class="howto-step" role="listitem">
+            <span class="howto-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v9H8l-4 4V6z"></path></svg>
+            </span>
+            <span class="howto-cap">講客戶和工程</span>
+          </div>
+          <span class="howto-chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+          </span>
+          <div class="howto-step" role="listitem">
+            <span class="howto-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg>
+            </span>
+            <span class="howto-cap">估價單自動出來</span>
+          </div>
+        </div>
+
         <div class="mic-wrap">
+          <div class="coach coach-mic" id="coach-mic">
+            <span class="coach-bubble" id="coach-mic-lab">按這裡</span>
+            <span class="coach-arrow" aria-hidden="true"></span>
+          </div>
           <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="按這裡開始講">
             <span class="mic-orb" aria-hidden="true">
               <span class="mic-ring"></span>
@@ -36,6 +69,14 @@
             </span>
             <span id="mic-lab">按這裡開始講</span>
           </button>
+          <div class="rec-banner" id="rec-banner" hidden>
+            <span class="rec-dot" aria-hidden="true"></span>
+            <span>正在聽，講完再按一次</span>
+          </div>
+          <div class="busy-banner" id="busy-banner" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span>正在整理估價單…</span>
+          </div>
           <div class="mic-hint" id="mic-hint">先按一下開始，講完再按一次</div>
           <div id="mic-timer" class="mic-timer" hidden></div>
           <div id="live-speech" class="live-speech" hidden>
@@ -78,7 +119,13 @@
     <section id="quote" class="view quote-panel" aria-label="估價單">
       <div class="card">
         <div class="quote-head">
-          <h2>估價單</h2>
+          <div>
+            <div class="ready-badge" id="ready-badge" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+              <span>估價單好了</span>
+            </div>
+            <h2>估價單</h2>
+          </div>
           <button type="button" id="btn-top" class="btn ghost">回到上面</button>
         </div>
         <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單。若要修改，請下載 Excel 後自己改。</div>
@@ -96,6 +143,10 @@
         <h2>下載報價單</h2>
         <p class="hint">若要改數量、單價或客戶資料，請下載 Excel 後自己改；改完後複價和合計會自動重算。</p>
         <div class="export">
+          <div class="coach coach-dl" id="coach-dl" hidden>
+            <span class="coach-bubble">按這裡下載</span>
+            <span class="coach-arrow" aria-hidden="true"></span>
+          </div>
           <button type="button" id="btn-download" class="btn lg pill-cta">
             <span class="pill-ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -115,6 +166,7 @@
   <div id="modal" class="modal" hidden>
     <div class="modal-backdrop" data-modal-close="1"></div>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="sheet-grabber" aria-hidden="true"></div>
       <h2 id="modal-title">下載報價單</h2>
       <p id="modal-desc" class="hint">請選一種檔案。PDF 方便查看和列印；Excel 方便您自己改數字。</p>
       <div id="modal-actions" class="actions modal-actions"></div>
@@ -123,7 +175,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=3.8"></script>
-  <script src="app.js?v=3.8"></script>
+  <script src="ai-adapter.js?v=3.9"></script>
+  <script src="app.js?v=3.9"></script>
 </body>
 </html>
