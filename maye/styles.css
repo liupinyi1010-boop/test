@@ -115,3 +115,24 @@ label.lbl{display:block;font-weight:700;margin:0 0 8px}
 .spoken .val{font-size:20px}
 .spoken .hint{margin:8px 0 0}
 .mic:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+.btn.danger{background:#fff;color:#b42318;border:2px solid #b42318}
+#btn-clear{flex:1 1 100%}
+#btn-download{flex:1 1 100%}
+.quote-panel{display:none}
+.quote-panel.on{display:block}
+.modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;
+  padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.modal[hidden]{display:none!important}
+.modal-backdrop{position:absolute;inset:0;background:rgba(28,42,40,.45)}
+.modal-box{position:relative;background:#fff;border-radius:22px 22px 16px 16px;padding:24px 18px 18px;
+  width:100%;max-width:520px;box-shadow:0 16px 40px rgba(28,42,40,.2);z-index:1}
+.modal-box h2{font-size:28px;margin-bottom:8px}
+.modal-box .hint{font-size:20px;margin:0 0 16px}
+.modal-actions{flex-direction:column;gap:12px;margin-top:0}
+.modal-actions .btn{flex:1 1 auto;width:100%;min-height:64px;font-size:24px}
+body.modal-open{overflow:hidden}
+@media(min-width:600px){
+  .modal{align-items:center}
+  .modal-box{border-radius:22px}
+}

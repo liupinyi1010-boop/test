@@ -8,19 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <header class="top no-print">
     <div class="wrap">
       <div class="brand">MAYE QUOTE</div>
       <h1>估價嗎耶通</h1>
-      <p>按麥克風說施工內容，說完就出估價單。也可以用下面的格子打字。</p>
+      <p>按麥克風說施工內容，也可以順便說客戶姓名、電話和地址。說完就在下方出現估價單。也可以用下面的格子打字。</p>
     </div>
   </header>
 
   <main class="wrap">
-    <section id="home" class="view on" aria-label="首頁">
+    <section id="home" aria-label="口述與輸入">
       <div class="card home-card">
         <div class="mic-wrap">
           <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="開始錄音">
@@ -37,19 +37,20 @@
 
       <div class="card">
         <label class="lbl" for="speech">或直接打字</label>
-        <textarea id="speech" class="ta" placeholder="例如：平釘天花板 8 坪，新增一迴冷氣迴路，乳膠漆二底三度 20 坪…"></textarea>
+        <textarea id="speech" class="ta" placeholder="例如：客戶王先生，電話 0912-345-678，地址高雄市左營區重立路 12 號，透天 3 樓。平釘天花板 8 坪，新增一迴冷氣迴路，乳膠漆二底三度 20 坪…"></textarea>
         <div class="actions">
           <button type="button" id="btn-make" class="btn lg">產生估價單</button>
+          <button type="button" id="btn-clear" class="btn sec danger">清除全部資料</button>
         </div>
-        <p class="hint">單價只帶市場行情；沒有行情的項目會標「待填」，請再自己改。</p>
+        <p class="hint">單價只帶市場行情；沒有行情的項目會標「待填」，請再自己改。離開頁面再回來，資料會留著，除非重新錄音或按清除。</p>
       </div>
     </section>
 
-    <section id="quote" class="view" aria-label="估價單">
+    <section id="quote" class="view quote-panel" aria-label="估價單">
       <div class="card">
         <div class="quote-head">
           <h2>估價單</h2>
-          <button type="button" id="btn-back" class="btn ghost">回首頁再講一次</button>
+          <button type="button" id="btn-top" class="btn ghost">回到上方</button>
         </div>
         <div class="spoken" id="spoken-box"></div>
         <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單，請再檢查數量與單價。</div>
@@ -67,27 +68,33 @@
       </div>
 
       <div class="card">
-        <h2>估價單資訊（預設不印出）</h2>
-        <p class="hint">這些只在這一頁填，每一項可單獨決定要不要出現在估價單上。</p>
+        <h2>估價單資訊（預設不印出；口述有提到的會自動填上並呈現）</h2>
+        <p class="hint">這些可以再改。每一項可單獨決定要不要出現在估價單上。沒有說到的欄位會留白，不會自己編造。</p>
         <div class="meta" id="meta-fields"></div>
       </div>
 
       <div class="card no-print">
-        <h2>匯出與分享</h2>
+        <h2>下載</h2>
         <div class="export">
-          <button type="button" id="btn-copy" class="btn sec">複製文字</button>
-          <button type="button" id="btn-line" class="btn">用 LINE 分享</button>
-          <button type="button" id="btn-xlsx" class="btn sec">匯出 Excel</button>
-          <button type="button" id="btn-pdf" class="btn sec">匯出 PDF</button>
+          <button type="button" id="btn-download" class="btn lg">下載報價單</button>
         </div>
         <p class="status" id="export-status"></p>
       </div>
     </section>
   </main>
 
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop" data-modal-close="1"></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 id="modal-title">下載報價單</h2>
+      <p id="modal-desc" class="hint">請選擇要下載的檔案格式。</p>
+      <div id="modal-actions" class="actions modal-actions"></div>
+    </div>
+  </div>
+
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=2"></script>
-  <script src="app.js?v=2"></script>
+  <script src="ai-adapter.js?v=3"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

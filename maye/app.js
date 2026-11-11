@@ -24,6 +24,7 @@
   const RE_HALF = new RegExp(`${NUM}台?尺半`, "g");
   const META_FIELDS = [
     { k: "customer", label: "客戶名稱", type: "text", placeholder: "例如 王先生" },
+    { k: "phone", label: "電話", type: "text", placeholder: "例如 0912-345-678", inputmode: "tel" },
     { k: "address", label: "地址", type: "text", placeholder: "例如 高雄市左營區…" },
     { k: "region", label: "區域", type: "select", options: ["", "都會", "偏遠"] },
     { k: "building", label: "建築形式", type: "select", options: ["", "公寓", "大樓", "透天", "廠辦", "其他"] },
@@ -87,14 +88,300 @@
     items: [],
     tax: true,
     source: "idle",
-    meta: { customer: "", address: "", region: "", building: "", floor: "" },
-    show: { customer: false, address: false, region: false, building: false, floor: false },
+    meta: { customer: "", phone: "", address: "", region: "", building: "", floor: "" },
+    show: { customer: false, phone: false, address: false, region: false, building: false, floor: false },
     rewritten: "",
     rec: null,
     aiHandler: null,
     speechCtorOverride: undefined
   };
   let TERM_MAP = null, TERM_RE = null;
+  const STORE_KEY = "maye-quote-state-v3";
+  let persistTimer = null;
+  let sessionBackup = null;
+  let modalMode = null;
+
+  function emptyMeta() {
+    const m = {};
+    META_FIELDS.forEach((f) => { m[f.k] = ""; });
+    return m;
+  }
+  function emptyShow() {
+    const m = {};
+    META_FIELDS.forEach((f) => { m[f.k] = false; });
+    return m;
+  }
+  function snapshotData() {
+    return {
+      v: 3,
+      raw: state.raw,
+      normalized: state.normalized,
+      hits: Array.isArray(state.hits) ? state.hits.slice() : [],
+      items: (state.items || []).map((r) => Object.assign({}, r)),
+      tax: !!state.tax,
+      source: state.source,
+      meta: Object.assign({}, state.meta),
+      show: Object.assign({}, state.show),
+      rewritten: state.rewritten,
+      speech: ($("#speech") && $("#speech").value) || state.raw || "",
+      savedAt: Date.now()
+    };
+  }
+  function persist() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(snapshotData()));
+    } catch (e) {}
+  }
+  function persistSoon() {
+    if (persistTimer) clearTimeout(persistTimer);
+    persistTimer = setTimeout(() => { persistTimer = null; persist(); }, 250);
+  }
+  function applySnapshot(d, opts) {
+    if (!d) return false;
+    if (typeof d.raw === "string") state.raw = d.raw;
+    if (typeof d.normalized === "string") state.normalized = d.normalized;
+    if (Array.isArray(d.hits)) state.hits = d.hits;
+    if (Array.isArray(d.items)) state.items = d.items.map((r) => Object.assign({}, r));
+    if (d.tax != null) state.tax = !!d.tax;
+    if (typeof d.source === "string") state.source = d.source;
+    if (typeof d.rewritten === "string") state.rewritten = d.rewritten;
+    const meta = emptyMeta();
+    if (d.meta && typeof d.meta === "object") {
+      for (const f of META_FIELDS) {
+        if (d.meta[f.k] != null) meta[f.k] = String(d.meta[f.k]);
+      }
+    }
+    state.meta = meta;
+    const show = emptyShow();
+    if (d.show && typeof d.show === "object") {
+      for (const f of META_FIELDS) {
+        if (d.show[f.k] != null) show[f.k] = !!d.show[f.k];
+      }
+    }
+    state.show = show;
+    const ta = $("#speech");
+    if (ta) ta.value = (typeof d.speech === "string" ? d.speech : null) || d.raw || ta.value || "";
+    const has = !!(state.items.length || state.raw || (ta && ta.value.trim()));
+    const q = $("#quote");
+    if (q) q.classList.toggle("on", !!(state.items.length || state.raw));
+    if (!opts || !opts.silent) renderQuote();
+    return has;
+  }
+  function restoreState() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return false;
+      const d = JSON.parse(raw);
+      if (!d || (d.v !== 3 && d.v !== "3")) return false;
+      return applySnapshot(d);
+    } catch (e) {
+      return false;
+    }
+  }
+  function hasSessionData() {
+    const ta = $("#speech");
+    return !!(state.items.length || state.raw || (ta && String(ta.value || "").trim()));
+  }
+  function clearSession(opts) {
+    opts = opts || {};
+    state.raw = "";
+    state.normalized = "";
+    state.hits = [];
+    state.items = [];
+    state.tax = true;
+    state.source = "idle";
+    state.rewritten = "";
+    state.meta = emptyMeta();
+    state.show = emptyShow();
+    const ta = $("#speech");
+    if (ta) ta.value = "";
+    const q = $("#quote");
+    if (q) q.classList.remove("on");
+    renderQuote();
+    renderMeta();
+    const tax = $("#tax");
+    if (tax) tax.checked = true;
+    if (!opts.keepStore) {
+      try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+    }
+    setExportStatus("");
+  }
+
+  function digitsOnly(s) {
+    return String(s || "").replace(/\D/g, "");
+  }
+  function compactText(s) {
+    return String(s || "").replace(/\s+/g, "");
+  }
+  function speechHaystack(text) {
+    return compactText(String(text || "").normalize("NFKC").replace(/臺/g, "台"));
+  }
+  function mentionedInSpeech(value, spoken) {
+    const v = String(value || "").trim();
+    if (!v) return false;
+    const src = speechHaystack(spoken);
+    const compact = compactText(v);
+    if (!src) return false;
+    if (src.includes(compact)) return true;
+    const vd = digitsOnly(compact);
+    const sd = digitsOnly(src);
+    if (vd.length >= 8 && sd.includes(vd)) return true;
+    const floorM = compact.match(/^([0-9]+|[零〇一二兩三四五六七八九十百]+)\s*樓層?$/);
+    if (floorM) {
+      const n = parseNumber(floorM[1]);
+      if (n != null) {
+        const cn = ["零","一","二","三","四","五","六","七","八","九","十"][n] || "";
+        if (src.includes(n + "樓") || (cn && src.includes(cn + "樓"))) return true;
+        if (n === 2 && src.includes("兩樓")) return true;
+      }
+    }
+    return false;
+  }
+  function extractPhones(text) {
+    const s = String(text || "");
+    const mobile = s.match(/09\d{2}[-.\s]?\d{3}[-.\s]?\d{3}/);
+    if (mobile) return mobile[0].replace(/[.\s]/g, "-");
+    const land = s.match(/(?:聯絡|連絡)?(?:電話|市話)\s*(?:是|為|:|：)?\s*(0[2-8][-.\s]?\d{6,8})/);
+    if (land) return land[1].replace(/[.\s]/g, "-");
+    return "";
+  }
+  function extractCustomerLocal(text) {
+    const src = String(text || "").normalize("NFKC").replace(/臺/g, "台");
+    const out = emptyMeta();
+    let m = src.match(/(?:客戶|屋主|業主)(?:姓名|名字)?\s*(?:是|叫|名叫|為|:|：)?\s*([^\s，,。；;的]{2,8}(?:先生|小姐|太太|女士|師傅)?)/);
+    if (m) out.customer = m[1].trim();
+    if (!out.customer) {
+      m = src.match(/([一-龥]{2,4}(?:先生|小姐|太太|女士))/);
+      if (m) out.customer = m[1];
+    }
+    out.phone = extractPhones(src);
+    m = src.match(/地\s*址\s*(?:是|在|為|:|：)?\s*([^，,。；;\n]{4,40})/);
+    if (m) out.address = m[1].replace(/(?:的)?(?:那邊|這裡|這邊|喔|哦|呀|啊)$/, "").trim()
+      .replace(/(?:都會|偏遠|公寓|大樓|透天厝|透天|廠辦)?\s*(?:[0-9一二三四五六七八九十兩]+\s*樓(?:層)?)?$/, "").trim();
+    if (!out.address) {
+      m = src.match(/((?:[一-龥]{2,3}(?:市|縣))[一-龥]{1,3}(?:區|鄉|鎮|市)[^\s，,。；;]{0,24}(?:路|街|大道)\s*\d+\s*號?(?:之\d+)?)/);
+      if (m) out.address = m[1].replace(/\s+/g, "");
+    }
+    m = src.match(/建築形式\s*(?:是|為|:|：)?\s*(公寓|大樓|透天厝|透天|廠辦|其他)/) || src.match(/(公寓|大樓|透天厝|透天|廠辦)/);
+    if (m) out.building = m[1] === "透天厝" ? "透天" : m[1];
+    m = src.match(/(?:樓層|住在)\s*([0-9]+|[一二三四五六七八九十兩]+)\s*樓(?!板)/) ||
+      src.match(/([0-9]+|[一二三四五六七八九十兩]+)\s*樓(?:層)?(?!板|地板)/);
+    if (m) {
+      const n = parseNumber(m[1]);
+      out.floor = (n != null ? n : m[1]) + "樓";
+    }
+    if (/偏遠/.test(src)) out.region = "偏遠";
+    else if (/都會/.test(src)) out.region = "都會";
+    return out;
+  }
+  function adoptCustomer(aiCust, spoken) {
+    const local = extractCustomerLocal(spoken || state.raw);
+    const ai = (aiCust && typeof aiCust === "object") ? aiCust : {};
+    const next = emptyMeta();
+    const show = emptyShow();
+    const allowedBuilding = { "公寓": 1, "大樓": 1, "透天": 1, "廠辦": 1, "其他": 1, "透天厝": 1 };
+    const allowedRegion = { "都會": 1, "偏遠": 1 };
+    for (const f of META_FIELDS) {
+      const k = f.k;
+      let v = String(ai[k] != null ? ai[k] : "").trim();
+      if (v && !mentionedInSpeech(v, spoken || state.raw)) {
+        // AI 正規化後可能與口述略有不同，只在完全對不上時改採本機結果
+        v = "";
+      }
+      if (!v) v = String(local[k] || "").trim();
+      if (k === "building") {
+        if (v === "透天厝") v = "透天";
+        if (v && !allowedBuilding[v]) v = "";
+      }
+      if (k === "region" && v && !allowedRegion[v]) v = "";
+      next[k] = v;
+      show[k] = !!v;
+    }
+    state.meta = next;
+    state.show = show;
+    return next;
+  }
+
+  function closeModal() {
+    const el = $("#modal");
+    if (el) el.hidden = true;
+    document.body.classList.remove("modal-open");
+    modalMode = null;
+    const box = $("#modal-actions");
+    if (box) box.innerHTML = "";
+  }
+  function openModal(cfg) {
+    const el = $("#modal");
+    if (!el) return;
+    modalMode = (cfg && cfg.mode) || "dialog";
+    const title = $("#modal-title");
+    const desc = $("#modal-desc");
+    const box = $("#modal-actions");
+    if (title) title.textContent = (cfg && cfg.title) || "";
+    if (desc) desc.textContent = (cfg && cfg.desc) || "";
+    if (box) {
+      box.innerHTML = "";
+      (cfg.buttons || []).forEach((b) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = b.cls || "btn";
+        if (b.id) btn.id = b.id;
+        btn.textContent = b.label;
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (typeof b.fn === "function") b.fn();
+        });
+        box.appendChild(btn);
+      });
+    }
+    el.hidden = false;
+    document.body.classList.add("modal-open");
+    const first = box && box.querySelector("button");
+    if (first) setTimeout(() => first.focus(), 20);
+  }
+  function openDownloadModal() {
+    if (!state.items.length) {
+      setExportStatus("還沒有估價單可以下載。", true);
+      return;
+    }
+    setExportStatus("");
+    openModal({
+      mode: "download",
+      title: "下載報價單",
+      desc: "請選擇要下載的檔案格式。",
+      buttons: [
+        { id: "btn-pdf", label: "下載 PDF", cls: "btn lg", fn: () => { closeModal(); exportPdf().catch((e) => { console.error(e); setExportStatus("匯出 PDF 失敗。", true); }); } },
+        { id: "btn-xlsx", label: "下載 Excel", cls: "btn lg sec", fn: () => { closeModal(); exportXlsx().catch((e) => { console.error(e); setExportStatus("匯出 Excel 失敗。", true); }); } },
+        { id: "btn-line", label: "用 LINE 分享", cls: "btn sec", fn: () => { window.open(lineShareUrl(), "_blank", "noopener"); } },
+        { id: "btn-modal-cancel", label: "取消", cls: "btn ghost", fn: closeModal }
+      ]
+    });
+  }
+  function confirmClear() {
+    openModal({
+      mode: "confirm",
+      title: "清除全部資料？",
+      desc: "會清除目前的口述內容、客戶資料與估價單，清除後無法復原。",
+      buttons: [
+        { id: "btn-confirm-clear", label: "確定清除", cls: "btn danger lg", fn: () => { closeModal(); clearSession(); setStatus("已清除，可重新錄音或打字。"); } },
+        { id: "btn-cancel-clear", label: "取消", cls: "btn ghost", fn: closeModal }
+      ]
+    });
+  }
+  function confirmNewRecording() {
+    return new Promise((resolve) => {
+      openModal({
+        mode: "confirm",
+        title: "重新錄音？",
+        desc: "重新錄音會取代目前的口述內容與估價單，確定要開始嗎？",
+        buttons: [
+          { id: "btn-confirm-rec", label: "確定重新錄音", cls: "btn lg", fn: () => { closeModal(); resolve(true); } },
+          { id: "btn-cancel-rec", label: "取消", cls: "btn ghost", fn: () => { closeModal(); resolve(false); } }
+        ]
+      });
+    });
+  }
+
 
   function cnNum(x) {
     x = String(x);
@@ -340,8 +627,10 @@
       "數量與單位要從口述解析。「米知」「米突」「米之」當公尺。「紅毛土」「洪毛土」「紅毛兔」是水泥。",
       "目錄有對應：填 code、name、qty、unit，unitPrice 必須等於目錄中的行情數字。pending=false。",
       "目錄沒有對應：name 用標準名稱，unitPrice 必須是 0，pending=true（畫面會標「待填」）。",
+      "若口述有提到客戶資料，一併填入 customer。沒有說到的欄位必須留空白字串，不得虛構姓名、電話、地址、區域、建築形式或樓層。",
+      "區域只允許「都會」或「偏遠」。建築形式只允許「公寓」「大樓」「透天」「廠辦」「其他」。樓層寫成「3樓」這種形式即可。",
       "只回一個 JSON 物件，格式：",
-      '{"rewritten":"水泥補 2 公尺，平釘天花板 8 坪","items":[{"code":"W-101","name":"平釘天花板(矽酸鈣板)","qty":8,"unit":"坪","unitPrice":4400,"pending":false,"note":""}],"note":""}',
+      '{"rewritten":"水泥補 2 公尺，平釘天花板 8 坪","items":[{"code":"W-101","name":"平釘天花板(矽酸鈣板)","qty":8,"unit":"坪","unitPrice":4400,"pending":false,"note":""}],"customer":{"customer":"","phone":"","address":"","region":"","building":"","floor":""},"note":""}',
       "rewritten 是給師傅確認的國語轉寫（不要只重複錯字原文）。",
       "單價目錄（代碼|品名|單位|行情）：",
       catalogForPrompt(),
@@ -398,6 +687,8 @@
           state.source = "ai";
           const rw = data && data.rewritten != null ? String(data.rewritten).trim() : "";
           state.rewritten = rw || norm.text;
+          adoptCustomer(data && data.customer, raw);
+          persist();
           return { ok: true, source: "ai", items };
         }
       } catch (e) {
@@ -408,6 +699,8 @@
     state.items = local.items;
     state.source = "fallback";
     state.rewritten = local.text || norm.text;
+    adoptCustomer(null, raw);
+    persist();
     return { ok: true, source: "fallback", items: local.items };
   }
 
@@ -425,9 +718,20 @@
   }
 
   function showView(name) {
-    $$(".view").forEach((v) => v.classList.toggle("on", v.id === name));
-    if (name === "quote") renderQuote();
-    window.scrollTo(0, 0);
+    const q = $("#quote");
+    if (name === "quote") {
+      if (q) q.classList.add("on");
+      renderQuote();
+      persist();
+      if (q) q.scrollIntoView({ behavior: "smooth", block: "start" });
+      try {
+        if (location.hash !== "#quote") history.pushState({ maye: "quote" }, "", "#quote");
+      } catch (e) {}
+      return;
+    }
+    const top = document.querySelector("header.top") || $("#home");
+    if (top && typeof top.scrollIntoView === "function") top.scrollIntoView({ behavior: "smooth", block: "start" });
+    else window.scrollTo(0, 0);
   }
 
   function isZeroNumericInput(el) {
@@ -502,6 +806,7 @@
     renderTotals();
     const amt = tr.querySelector(".amt");
     if (amt) amt.textContent = fmt(lineAmount(row));
+    persistSoon();
   }
   function renderTotals() {
     const t = totals();
@@ -614,7 +919,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=2";
+      s.src = "exceljs.min.js?v=3";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1032,7 +1337,13 @@
 
   async function finishSpeech(text) {
     const t = String(text || "").trim();
-    if (!t) { setStatus("沒有辨識到文字，請再說一次或改打字。", true); micUI("idle"); return; }
+    if (!t) {
+      if (sessionBackup) { applySnapshot(sessionBackup); sessionBackup = null; persist(); }
+      setStatus("沒有辨識到文字，已保留原來的內容。請再說一次或改打字。", true);
+      micUI("idle");
+      return;
+    }
+    sessionBackup = null;
     const ta = $("#speech");
     if (ta) ta.value = t;
     setStatus("正在產生估價單…");
@@ -1099,10 +1410,21 @@
     try { r.rec.stop(); } catch (e) { finishSpeech($("#speech") && $("#speech").value); }
   }
 
-  function toggleMic() {
+  async function beginRecording(opts) {
+    opts = opts || {};
+    if (state.rec) return;
+    if (hasSessionData() && !opts.force) {
+      const ok = await confirmNewRecording();
+      if (!ok) return;
+      sessionBackup = snapshotData();
+      clearSession({ keepStore: true });
+    }
+    startBrowserAsr();
+  }
+  async function toggleMic() {
     if (!speechSupported()) { applySpeechSupportUI(); return; }
     if (state.rec) { stopBrowserAsr(); return; }
-    startBrowserAsr();
+    await beginRecording();
   }
 
   async function onMake() {
@@ -1120,36 +1442,65 @@
 
   function bind() {
     bindZeroClear(document);
-    $("#mic").addEventListener("click", toggleMic);
-    $("#btn-make").addEventListener("click", onMake);
-    $("#btn-back").addEventListener("click", () => showView("home"));
-    $("#btn-add").addEventListener("click", () => {
+    const mic = $("#mic"); if (mic) mic.addEventListener("click", () => toggleMic());
+    const make = $("#btn-make"); if (make) make.addEventListener("click", onMake);
+    const back = $("#btn-back"); if (back) back.addEventListener("click", () => showView("home"));
+    const top = $("#btn-top"); if (top) top.addEventListener("click", () => showView("home"));
+    const clr = $("#btn-clear"); if (clr) clr.addEventListener("click", confirmClear);
+    const dl = $("#btn-download"); if (dl) dl.addEventListener("click", openDownloadModal);
+    const add = $("#btn-add");
+    if (add) add.addEventListener("click", () => {
       state.items.push(pendingLine("新項目", 1, "式", "手動新增"));
-      renderLines(); renderTotals();
+      renderLines(); renderTotals(); persist();
     });
-    $("#lines").addEventListener("click", (e) => {
-      const id = e.target && e.target.dataset && e.target.dataset.del;
-      if (!id) return;
-      state.items = state.items.filter((r) => r.id !== id);
-      renderLines(); renderTotals();
+    const lines = $("#lines");
+    if (lines) {
+      lines.addEventListener("click", (e) => {
+        const id = e.target && e.target.dataset && e.target.dataset.del;
+        if (!id) return;
+        state.items = state.items.filter((r) => r.id !== id);
+        renderLines(); renderTotals(); persist();
+      });
+      lines.addEventListener("input", (e) => {
+        if (e.target && e.target.dataset && e.target.dataset.sync) syncRowFromInput(e.target);
+      });
+    }
+    const tax = $("#tax");
+    if (tax) tax.addEventListener("change", (e) => { state.tax = !!e.target.checked; renderTotals(); persist(); });
+    const meta = $("#meta-fields");
+    if (meta) {
+      meta.addEventListener("input", (e) => {
+        const el = e.target;
+        if (el.dataset.meta) { state.meta[el.dataset.meta] = el.value; persistSoon(); }
+      });
+      meta.addEventListener("change", (e) => {
+        const el = e.target;
+        if (el.dataset.meta) state.meta[el.dataset.meta] = el.value;
+        if (el.dataset.show) state.show[el.dataset.show] = !!el.checked;
+        persist();
+      });
+    }
+    const speech = $("#speech");
+    if (speech) speech.addEventListener("input", () => persistSoon());
+    const modal = $("#modal");
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target && e.target.dataset && e.target.dataset.modalClose) closeModal();
+      });
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal && !modal.hidden) closeModal();
     });
-    $("#lines").addEventListener("input", (e) => {
-      if (e.target && e.target.dataset && e.target.dataset.sync) syncRowFromInput(e.target);
+    window.addEventListener("pageshow", (ev) => {
+      if (ev.persisted) restoreState();
     });
-    $("#tax").addEventListener("change", (e) => { state.tax = !!e.target.checked; renderTotals(); });
-    $("#meta-fields").addEventListener("input", (e) => {
-      const el = e.target;
-      if (el.dataset.meta) state.meta[el.dataset.meta] = el.value;
+    window.addEventListener("popstate", () => {
+      if (state.items.length || state.raw) {
+        const q = $("#quote");
+        if (q) q.classList.add("on");
+        renderQuote();
+      }
     });
-    $("#meta-fields").addEventListener("change", (e) => {
-      const el = e.target;
-      if (el.dataset.meta) state.meta[el.dataset.meta] = el.value;
-      if (el.dataset.show) state.show[el.dataset.show] = !!el.checked;
-    });
-    $("#btn-copy").addEventListener("click", () => copyText().catch(() => {}));
-    $("#btn-line").addEventListener("click", () => { window.open(lineShareUrl(), "_blank", "noopener"); });
-    $("#btn-xlsx").addEventListener("click", () => exportXlsx().catch((e) => { console.error(e); setExportStatus("匯出 Excel 失敗。", true); }));
-    $("#btn-pdf").addEventListener("click", () => exportPdf().catch((e) => { console.error(e); setExportStatus("匯出 PDF 失敗。", true); }));
   }
 
   async function loadJson(path) {
@@ -1162,8 +1513,8 @@
     renderMeta();
     try {
       const [db, terms] = await Promise.all([
-        loadJson("price_db.json?v=2"),
-        loadJson("taigi_terms.json?v=2")
+        loadJson("price_db.json?v=3"),
+        loadJson("taigi_terms.json?v=3")
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1174,11 +1525,16 @@
       state.catalog = cat;
       state.terms = terms && terms.terms ? terms : { terms: [] };
       TERM_RE = null;
-      state.ready = true;
     } catch (e) {
       setStatus("單價或用語資料載入失敗，請檢查網路後再重新整理。", true);
     }
     applySpeechSupportUI();
+    restoreState();
+    if ((state.items.length || state.raw) && location.hash === "#quote") {
+      const q = $("#quote");
+      if (q) q.scrollIntoView({ block: "start" });
+    }
+    state.ready = true;
   }
 
   window.__MAYE__ = {
@@ -1194,20 +1550,21 @@
     exportXlsx,
     exportPdf,
     copyText,
-    setTax(v) { state.tax = !!v; const el = $("#tax"); if (el) el.checked = state.tax; renderTotals(); },
+    setTax(v) { state.tax = !!v; const el = $("#tax"); if (el) el.checked = state.tax; renderTotals(); persist(); },
     setMeta(k, v, show) {
       if (k in state.meta) state.meta[k] = v;
       if (show != null) state.show[k] = !!show;
       renderMeta();
+      persist();
     },
-    addRow(row) { state.items.push(row); renderLines(); renderTotals(); },
+    addRow(row) { state.items.push(row); renderLines(); renderTotals(); persist(); },
     updateRow(id, patch) {
       const row = state.items.find((r) => r.id === id);
       if (row) Object.assign(row, patch);
-      renderLines(); renderTotals();
+      renderLines(); renderTotals(); persist();
       return row;
     },
-    removeRow(id) { state.items = state.items.filter((r) => r.id !== id); renderLines(); renderTotals(); },
+    removeRow(id) { state.items = state.items.filter((r) => r.id !== id); renderLines(); renderTotals(); persist(); },
     showView,
     setAiHandler(fn) { state.aiHandler = fn; },
     speechSupported,
@@ -1218,6 +1575,17 @@
     catalogList,
     isZeroNumericInput,
     isZeroishValue,
+    extractCustomerLocal,
+    adoptCustomer,
+    mentionedInSpeech,
+    persist,
+    restoreState,
+    clearSession,
+    hasSessionData,
+    openDownloadModal,
+    closeModal,
+    confirmClear,
+    beginRecording,
     ready: () => state.ready
   };
   window.__isZeroNumericInput = isZeroNumericInput;
