@@ -24,10 +24,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.0">
-  <link rel="icon" href="favicon.svg?v=4.0" type="image/svg+xml">
-  <link rel="icon" href="favicon-32.png?v=4.0" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.0" sizes="180x180">
+  <link rel="stylesheet" href="styles.css?v=4.1">
+  <link rel="icon" href="favicon.svg?v=4.1" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=4.1" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.1" sizes="180x180">
 </head>
 <body>
   <div class="page-scene" aria-hidden="true"></div>
@@ -38,8 +38,8 @@
       <p class="eyebrow">語音估價</p>
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">
-          <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.0" alt="" width="112" height="112">
-          <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.0" alt="" width="112" height="112">
+          <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.1" alt="" width="112" height="112">
+          <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.1" alt="" width="112" height="112">
         </div>
         <div class="brand-text">
           <h1>估價嗎耶通</h1>
@@ -102,21 +102,23 @@
             <span class="coach-bubble" id="coach-mic-lab">按這裡</span>
             <span class="coach-arrow" aria-hidden="true"></span>
           </div>
-          <div class="mic-stage" aria-hidden="true">
-            <span class="mic-blob mic-blob-a"></span>
-            <span class="mic-blob mic-blob-b"></span>
-            <span class="mic-blob mic-blob-c"></span>
-          </div>
           <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="按這裡開始講">
-            <span class="mic-orb" aria-hidden="true">
-              <span class="mic-sheen"></span>
-              <span class="mic-ring"></span>
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="2.5" width="6" height="11" rx="3"></rect>
-                <path d="M6 11.5a6 6 0 0 0 12 0"></path>
-                <path d="M12 17.5v3.2"></path>
-                <path d="M8 21h8"></path>
-              </svg>
+            <span class="mic-orb-wrap">
+              <span class="mic-stage" aria-hidden="true">
+                <span class="mic-blob mic-blob-a"></span>
+                <span class="mic-blob mic-blob-b"></span>
+                <span class="mic-blob mic-blob-c"></span>
+              </span>
+              <span class="mic-orb" aria-hidden="true">
+                <span class="mic-sheen"></span>
+                <span class="mic-ring"></span>
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2.5" width="6" height="11" rx="3"></rect>
+                  <path d="M6 11.5a6 6 0 0 0 12 0"></path>
+                  <path d="M12 17.5v3.2"></path>
+                  <path d="M8 21h8"></path>
+                </svg>
+              </span>
             </span>
             <span id="mic-lab">按這裡開始講</span>
           </button>
@@ -168,7 +170,7 @@
     </section>
 
     <section id="quote" class="view quote-panel" aria-label="估價單">
-      <div class="card quote-summary" id="download-card">
+      <div class="card quote-summary">
         <div class="quote-head">
           <div>
             <div class="ready-badge" id="ready-badge" hidden>
@@ -179,10 +181,28 @@
           </div>
           <button type="button" id="btn-top" class="btn ghost">回到上面</button>
         </div>
-        <p class="hint">完整報價單會在彈窗裡用捲動視窗查看。也可以直接下載。</p>
+        <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單。若要修改，請下載 Excel 後自己改。</div>
+        <div class="total-banner" id="total-banner" hidden></div>
+        <h3 class="preview-lab">報價單預覽</h3>
+        <div class="coach coach-view" id="coach-view" hidden>
+          <span class="coach-bubble">按這裡查看</span>
+          <span class="coach-arrow" aria-hidden="true"></span>
+        </div>
+        <div id="quote-preview" class="quote-preview" role="button" tabindex="0" aria-label="點一下看完整報價單">
+          <div class="sheet-wrap sheet-wrap-inline" id="sheet-wrap">
+            <article class="quote-sheet" id="quote-sheet" aria-label="報價單預覽"></article>
+          </div>
+          <div class="preview-fade" aria-hidden="true"></div>
+          <div class="preview-open-hint">點一下看完整報價單</div>
+        </div>
+        <p class="hint" id="tax-note">若要修改，請下載 Excel 後自己改。點預覽可以看完整報價單。</p>
+      </div>
+      <div class="card no-print" id="download-card">
+        <h2>下載報價單</h2>
+        <p class="hint">若要改數量、單價或客戶資料，請下載 Excel 後自己改；改完後複價和合計會自動重算。</p>
         <div class="export">
-          <div class="coach coach-view" id="coach-view" hidden>
-            <span class="coach-bubble">按這裡查看</span>
+          <div class="coach coach-dl" id="coach-dl" hidden>
+            <span class="coach-bubble">按這裡下載</span>
             <span class="coach-arrow" aria-hidden="true"></span>
           </div>
           <button type="button" id="btn-view-quote" class="btn lg pill-cta">
@@ -195,7 +215,7 @@
             </span>
             <span>查看報價單</span>
           </button>
-          <button type="button" id="btn-download-page" class="btn lg pill-cta">
+          <button type="button" id="btn-download" class="btn lg pill-cta">
             <span class="pill-ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3v12"></path>
@@ -222,8 +242,8 @@
           </div>
           <div class="quote-modal-brand">
             <div class="brand-mark brand-mark-sm" aria-hidden="true">
-              <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.0" alt="" width="64" height="64">
-              <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.0" alt="" width="64" height="64">
+              <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.1" alt="" width="64" height="64">
+              <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.1" alt="" width="64" height="64">
             </div>
             <h2 id="quote-modal-title">估價單</h2>
           </div>
@@ -231,20 +251,20 @@
         <button type="button" id="btn-quote-close" class="btn lg">關閉</button>
       </div>
       <div class="quote-modal-scroll" id="quote-modal-scroll">
-        <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單。若要修改，請下載 Excel 後自己改。</div>
-        <div class="total-banner" id="total-banner" hidden></div>
+        <div class="banner" id="fallback-banner-modal">雲端分析沒有成功，已改用本機用語對照產生估價單。若要修改，請下載 Excel 後自己改。</div>
+        <div class="total-banner" id="total-banner-modal" hidden></div>
         <h3 class="preview-lab">報價單預覽</h3>
-        <div class="sheet-wrap" id="sheet-wrap">
-          <article class="quote-sheet" id="quote-sheet" aria-label="報價單預覽"></article>
+        <div class="sheet-wrap" id="sheet-wrap-modal">
+          <article class="quote-sheet" id="quote-sheet-modal" aria-label="報價單預覽"></article>
         </div>
-        <p class="hint" id="tax-note">若要修改，請下載 Excel 後自己改。預覽可以用手指左右滑，或兩指放大。</p>
+        <p class="hint" id="tax-note-modal">若要修改，請下載 Excel 後自己改。預覽可以用手指左右滑，或兩指放大。</p>
       </div>
       <div class="quote-modal-foot">
-        <div class="coach coach-dl" id="coach-dl" hidden>
+        <div class="coach coach-dl" id="coach-dl-modal" hidden>
           <span class="coach-bubble">按這裡下載</span>
           <span class="coach-arrow" aria-hidden="true"></span>
         </div>
-        <button type="button" id="btn-download" class="btn lg pill-cta">
+        <button type="button" id="btn-download-modal" class="btn lg pill-cta">
           <span class="pill-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 3v12"></path>
@@ -270,7 +290,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=4.0"></script>
-  <script src="app.js?v=4.0"></script>
+  <script src="ai-adapter.js?v=4.1"></script>
+  <script src="app.js?v=4.1"></script>
 </body>
 </html>

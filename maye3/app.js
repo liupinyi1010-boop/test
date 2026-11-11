@@ -481,15 +481,10 @@
     }, 250);
   }
   function updateTotalBanner() {
-    const tb = $("#total-banner");
-    if (!tb) return;
-    if (state.items && state.items.length) {
-      tb.hidden = false;
-      tb.innerHTML = '<span class="tb-lab">這張估價單合計</span><span class="tb-amt">' + money(totals().total) + "</span>";
-    } else {
-      tb.hidden = true;
-      tb.innerHTML = "";
-    }
+    const nodes = document.querySelectorAll(".total-banner");
+    const has = !!(state.items && state.items.length);
+    const html = has ? '<span class="tb-lab">這張估價單合計</span><span class="tb-amt">' + money(totals().total) + "</span>" : "";
+    nodes.forEach((tb) => { tb.hidden = !has; tb.innerHTML = html; });
   }
   function updateGuidance(mode) {
     const mic = $("#mic");
@@ -514,7 +509,9 @@
     const qOpen = isQuoteModalOpen();
     const coachView = $("#coach-view");
     if (coachView) coachView.hidden = !(quoteOn && !qOpen && !rec && !busy);
-    if (coachDl) coachDl.hidden = !(quoteOn && qOpen && !rec && !busy);
+    if (coachDl) coachDl.hidden = !(quoteOn && !qOpen && !rec && !busy);
+    const coachDlM = $("#coach-dl-modal");
+    if (coachDlM) coachDlM.hidden = !(quoteOn && qOpen && !rec && !busy);
     const hint = $("#mic-hint");
     if (hint) hint.hidden = !!(rec || busy);
   }
@@ -983,8 +980,8 @@
       renderQuote();
       setExportStatus("");
       persist();
-      openQuoteModal();
       updateGuidance();
+      if (q) q.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
       try {
         if (location.hash !== "#quote") history.pushState({ maye: "quote" }, "", "#quote");
       } catch (e) {}
@@ -1077,15 +1074,17 @@
   function renderQuote() {
     renderSpoken();
     renderSheet();
-    const ban = $("#fallback-banner");
-    if (ban) ban.classList.toggle("on", state.source === "fallback");
+    const isFb = state.source === "fallback";
+    document.querySelectorAll("#fallback-banner, #fallback-banner-modal").forEach((ban) => {
+      ban.classList.toggle("on", isFb);
+    });
     updateTotalBanner();
     updateGuidance();
+    const taxTxt = state.tax ? "已含 5% 營業稅。" : "未加營業稅。";
     const note = $("#tax-note");
-    if (note) {
-      const taxTxt = state.tax ? "已含 5% 營業稅。" : "未加營業稅。";
-      note.textContent = taxTxt + "若要改數量或單價，請下載 Excel 自己改。預覽可以用手指左右滑，或兩指放大。";
-    }
+    if (note) note.textContent = taxTxt + "若要改數量或單價，請下載 Excel 自己改。點預覽可以看完整報價單。";
+    const noteM = $("#tax-note-modal");
+    if (noteM) noteM.textContent = taxTxt + "若要改數量或單價，請下載 Excel 自己改。預覽可以用手指左右滑，或兩指放大。";
   }
 
   function visibleMetaLines() {
@@ -1139,8 +1138,8 @@
       </div>`;
   }
   function renderSheet() {
-    const box = $("#quote-sheet");
-    if (box) box.innerHTML = quoteSheetHtml();
+    const html = quoteSheetHtml();
+    document.querySelectorAll(".quote-sheet").forEach((box) => { box.innerHTML = html; });
   }
   function exportText() {
     const t = totals();
@@ -1194,7 +1193,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=4.0";
+      s.src = "exceljs.min.js?v=4.1";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1655,7 +1654,7 @@
       await generateFromText(t);
       micUI("idle");
       showView("quote");
-      setStatus("估價單做好了，請在彈窗裡查看。也可以按「查看報價單」。若要改數字，請按下載，選 Excel 再改。");
+      setStatus("估價單做好了，請往下看。點預覽可以看完整報價單，或按下載。若要改數字，請選 Excel 再改。");
     } catch (e) {
       micUI("idle");
       setStatus(e && e.code === "empty" ? "請先講內容，或在下面格子打字。" : "這次沒有做成功，請再試一次，或改在下面格子打字。", true);
@@ -1754,7 +1753,7 @@
     try {
       await generateFromText(text);
       showView("quote");
-      setStatus("估價單做好了，請在彈窗裡查看。也可以按「查看報價單」。若要改數字，請按下載，選 Excel 再改。");
+      setStatus("估價單做好了，請往下看。點預覽可以看完整報價單，或按下載。若要改數字，請選 Excel 再改。");
     } catch (e) {
       setStatus(e && e.code === "empty" ? "請先講內容，或在下面格子打字。" : "這次沒有做成功，請再試一次，或改在下面格子打字。", true);
     }
@@ -1768,8 +1767,15 @@
     const top = $("#btn-top"); if (top) top.addEventListener("click", () => showView("home"));
     const clr = $("#btn-clear"); if (clr) clr.addEventListener("click", confirmClear);
     const dl = $("#btn-download"); if (dl) dl.addEventListener("click", openDownloadModal);
-    const dlPage = $("#btn-download-page"); if (dlPage) dlPage.addEventListener("click", openDownloadModal);
+    const dlM = $("#btn-download-modal"); if (dlM) dlM.addEventListener("click", openDownloadModal);
     const viewQ = $("#btn-view-quote"); if (viewQ) viewQ.addEventListener("click", () => openQuoteModal());
+    const preview = $("#quote-preview");
+    if (preview) {
+      preview.addEventListener("click", () => openQuoteModal());
+      preview.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openQuoteModal(); }
+      });
+    }
     const qClose = $("#btn-quote-close"); if (qClose) qClose.addEventListener("click", () => closeQuoteModal());
     const themeBtn = $("#btn-theme"); if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
     document.querySelectorAll("[data-font]").forEach((el) => {
@@ -1816,9 +1822,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=4.0"),
-        loadJson("taigi_terms.json?v=4.0"),
-        loadJson("user_corrections.json?v=4.0").catch(function () { return null; })
+        loadJson("price_db.json?v=4.1"),
+        loadJson("taigi_terms.json?v=4.1"),
+        loadJson("user_corrections.json?v=4.1").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
