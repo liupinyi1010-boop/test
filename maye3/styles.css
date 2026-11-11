@@ -136,3 +136,12 @@ body.modal-open{overflow:hidden}
   .modal{align-items:center}
   .modal-box{border-radius:22px}
 }
+
+.meta-preview{background:#eef3f2;border-radius:12px;padding:14px 16px;margin:12px 0 4px;font-size:20px}
+.meta-preview[hidden]{display:none!important}
+.meta-preview .meta-line{margin:4px 0;font-weight:700}
+.line-card.ro .name-row{font-size:22px;font-weight:800;margin-bottom:8px;align-items:flex-start}
+.line-card.ro .grid{grid-template-columns:1fr 1fr}
+.line-card.ro .cell .val{font-size:22px;font-weight:700;min-height:36px;display:flex;align-items:center}
+.line-card.ro .amt{min-height:36px}
+#tax-note{margin-top:0}

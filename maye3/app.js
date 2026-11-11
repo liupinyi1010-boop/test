@@ -722,6 +722,7 @@
     if (name === "quote") {
       if (q) q.classList.add("on");
       renderQuote();
+      setExportStatus("");
       persist();
       if (q) q.scrollIntoView({ behavior: "smooth", block: "start" });
       try {
@@ -775,17 +776,16 @@
     if (!box) return;
     box.innerHTML = state.items.map((row) => {
       const pend = row.pending ? '<span class="pending">待填</span>' : "";
-      return `<article class="line-card" data-id="${row.id}">
-        <div class="name-row"><input type="text" data-f="name" data-sync="1" value="${esc(row.name)}" aria-label="品名">${pend}</div>
+      return `<article class="line-card ro" data-id="${row.id}">
+        <div class="name-row"><span>${esc(row.name)}</span>${pend}</div>
         <div class="grid">
-          <label class="cell"><span>數量</span><input inputmode="decimal" data-f="qty" data-sync="1" value="${esc(row.qty)}"></label>
-          <label class="cell"><span>單位</span><input type="text" data-f="unit" data-sync="1" value="${esc(row.unit)}"></label>
-          <label class="cell"><span>單價</span><input inputmode="decimal" data-f="unitPrice" data-sync="1" value="${esc(row.unitPrice)}"></label>
+          <div class="cell"><span>數量</span><div class="val">${esc(row.qty)}</div></div>
+          <div class="cell"><span>單位</span><div class="val">${esc(row.unit)}</div></div>
+          <div class="cell"><span>單價</span><div class="val">${row.pending && !(Number(row.unitPrice)>0) ? "待填" : fmt(row.unitPrice)}</div></div>
           <div class="cell"><span>複價</span><div class="amt">${fmt(lineAmount(row))}</div></div>
         </div>
-        <div class="foot"><button type="button" class="btn ghost" data-del="${row.id}">刪除此列</button></div>
       </article>`;
-    }).join("") || '<p class="hint">還沒有項目，請回首頁再說一次，或按「新增一列」。</p>';
+    }).join("") || '<p class="hint">還沒有項目，請回到上方再說一次或打字後產生估價單。</p>';
   }
   function esc(s) {
     return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -818,25 +818,16 @@
       `<div class="grand"><span>合計</span><span>${money(t.total)}</span></div>`;
   }
   function renderMeta() {
-    const box = $("#meta-fields");
+    const box = $("#meta-preview");
     if (!box) return;
-    box.innerHTML = META_FIELDS.map((f) => {
-      const show = state.show[f.k] ? "checked" : "";
-      let ctl = "";
-      if (f.type === "select") {
-        const opts = f.options.map((o) => `<option value="${esc(o)}"${state.meta[f.k] === o ? " selected" : ""}>${o || "請選擇"}</option>`).join("");
-        ctl = `<select data-meta="${f.k}">${opts}</select>`;
-      } else {
-        const im = f.inputmode ? ` inputmode="${f.inputmode}"` : "";
-        ctl = `<input type="text"${im} data-meta="${f.k}" placeholder="${esc(f.placeholder || "")}" value="${esc(state.meta[f.k] || "")}">`;
-      }
-      return `<div class="field">
-        <label class="lbl">${esc(f.label)}</label>
-        <div class="row">${ctl}
-          <label class="vis"><input type="checkbox" data-show="${f.k}" ${show}>呈現在估價單</label>
-        </div>
-      </div>`;
-    }).join("");
+    const lines = visibleMetaLines();
+    if (!lines.length) {
+      box.innerHTML = "";
+      box.hidden = true;
+      return;
+    }
+    box.hidden = false;
+    box.innerHTML = lines.map((l) => `<div class="meta-line">${esc(l)}</div>`).join("");
   }
   function renderSpoken() {
     const el = $("#spoken-box");
@@ -846,7 +837,7 @@
     el.innerHTML =
       '<div class="row"><span class="lab">辨識原文</span><div class="val">「' + esc(state.raw) + '」</div></div>' +
       '<div class="row"><span class="lab">轉寫後的國語工項</span><div class="val">「' + esc(rw) + '」</div></div>' +
-      '<p class="hint">請確認轉寫是否正確；不對可以直接改下面的品名、數量與單價。</p>';
+      '<p class="hint">請確認轉寫是否正確。如需修改，請下載 Excel 後自行調整。</p>';
   }
   function renderQuote() {
     renderSpoken();
@@ -855,8 +846,8 @@
     renderMeta();
     const ban = $("#fallback-banner");
     if (ban) ban.classList.toggle("on", state.source === "fallback");
-    const tax = $("#tax");
-    if (tax) tax.checked = !!state.tax;
+    const note = $("#tax-note");
+    if (note) note.textContent = state.tax ? "已含 5% 營業稅。如需修改，請下載 Excel 後自行調整。" : "未加營業稅。如需修改，請下載 Excel 後自行調整。";
   }
 
   function visibleMetaLines() {
@@ -890,7 +881,7 @@
     if (state.tax) lines.push("營業稅 5%\t" + t.tax);
     lines.push("合計\t" + t.total);
     lines.push("");
-    lines.push("單價依市場行情，可再自行調整。沒有行情者標示待填。");
+    lines.push("單價依市場行情，可再自行調整。沒有行情者標示待填。如需修改，請下載 Excel 後自行調整。");
     return lines.join("\n");
   }
   function lineShareUrl() {
@@ -919,7 +910,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3";
+      s.src = "exceljs.min.js?v=3.1";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -953,20 +944,43 @@
     const headers = ["項次", "品名", "數量", "單位", "單價", "複價", "備註"];
     headers.forEach((h, i) => { const c = ws.getCell(r, i + 1); c.value = h; c.font = { bold: true }; });
     r++;
+    const firstData = r;
     state.items.forEach((row, i) => {
       ws.getCell(r, 1).value = i + 1;
       ws.getCell(r, 2).value = row.name + (row.pending ? "（待填）" : "");
       ws.getCell(r, 3).value = Number(row.qty) || 0;
       ws.getCell(r, 4).value = row.unit;
       ws.getCell(r, 5).value = Number(row.unitPrice) || 0;
-      ws.getCell(r, 6).value = lineAmount(row);
+      ws.getCell(r, 6).value = { formula: "C" + r + "*E" + r, result: lineAmount(row) };
+      ws.getCell(r, 3).numFmt = "0.##";
+      ws.getCell(r, 5).numFmt = "#,##0";
+      ws.getCell(r, 6).numFmt = "#,##0";
       ws.getCell(r, 7).value = row.note || "";
       r++;
     });
+    const lastData = Math.max(firstData, r - 1);
     r++;
-    ws.getCell(r, 5).value = "小計"; ws.getCell(r, 6).value = t.sub; r++;
-    if (state.tax) { ws.getCell(r, 5).value = "營業稅 5%"; ws.getCell(r, 6).value = t.tax; r++; }
-    ws.getCell(r, 5).value = "合計"; ws.getCell(r, 6).value = t.total;
+    const subRow = r;
+    const sumRef = "F" + firstData + ":F" + lastData;
+    ws.getCell(r, 5).value = "小計"; ws.getCell(r, 5).font = { bold: true };
+    ws.getCell(r, 6).value = { formula: "SUM(" + sumRef + ")", result: t.sub };
+    ws.getCell(r, 6).numFmt = "#,##0";
+    r++;
+    let taxRow = 0;
+    if (state.tax) {
+      taxRow = r;
+      ws.getCell(r, 5).value = "營業稅 5%";
+      ws.getCell(r, 6).value = { formula: "ROUND(F" + subRow + "*0.05,0)", result: t.tax };
+      ws.getCell(r, 6).numFmt = "#,##0";
+      r++;
+    }
+    ws.getCell(r, 5).value = "合計"; ws.getCell(r, 5).font = { bold: true };
+    ws.getCell(r, 6).value = { formula: taxRow ? ("F" + subRow + "+F" + taxRow) : ("F" + subRow), result: t.total };
+    ws.getCell(r, 6).numFmt = "#,##0";
+    ws.getCell(r, 6).font = { bold: true, size: 14 };
+    r += 2;
+    ws.getCell(r, 1).value = "單價依市場行情，可再自行調整。沒有行情者標示待填。在 Excel 裡改數量或單價，複價、小計、營業稅與合計會自動重算。";
+    ws.mergeCells(r, 1, r, 7);
     ws.columns = [{ width: 8 }, { width: 28 }, { width: 10 }, { width: 10 }, { width: 12 }, { width: 12 }, { width: 24 }];
     const buf = await wb.xlsx.writeBuffer();
     const blob = new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
@@ -1352,7 +1366,7 @@
       await generateFromText(t);
       micUI("idle");
       showView("quote");
-      setStatus("估價單已產生，請再確認轉寫與單價。");
+      setStatus("估價單已產生。如需修改，請下載 Excel 後自行調整。");
     } catch (e) {
       micUI("idle");
       setStatus(e && e.code === "empty" ? "請先說內容或打字。" : "產生失敗，請再試一次。", true);
@@ -1434,7 +1448,7 @@
     try {
       await generateFromText(text);
       showView("quote");
-      setStatus("估價單已產生，請再檢查數量與單價。");
+      setStatus("估價單已產生。如需修改，請下載 Excel 後自行調整。");
     } catch (e) {
       setStatus("請先說內容或打字。", true);
     }
@@ -1448,38 +1462,6 @@
     const top = $("#btn-top"); if (top) top.addEventListener("click", () => showView("home"));
     const clr = $("#btn-clear"); if (clr) clr.addEventListener("click", confirmClear);
     const dl = $("#btn-download"); if (dl) dl.addEventListener("click", openDownloadModal);
-    const add = $("#btn-add");
-    if (add) add.addEventListener("click", () => {
-      state.items.push(pendingLine("新項目", 1, "式", "手動新增"));
-      renderLines(); renderTotals(); persist();
-    });
-    const lines = $("#lines");
-    if (lines) {
-      lines.addEventListener("click", (e) => {
-        const id = e.target && e.target.dataset && e.target.dataset.del;
-        if (!id) return;
-        state.items = state.items.filter((r) => r.id !== id);
-        renderLines(); renderTotals(); persist();
-      });
-      lines.addEventListener("input", (e) => {
-        if (e.target && e.target.dataset && e.target.dataset.sync) syncRowFromInput(e.target);
-      });
-    }
-    const tax = $("#tax");
-    if (tax) tax.addEventListener("change", (e) => { state.tax = !!e.target.checked; renderTotals(); persist(); });
-    const meta = $("#meta-fields");
-    if (meta) {
-      meta.addEventListener("input", (e) => {
-        const el = e.target;
-        if (el.dataset.meta) { state.meta[el.dataset.meta] = el.value; persistSoon(); }
-      });
-      meta.addEventListener("change", (e) => {
-        const el = e.target;
-        if (el.dataset.meta) state.meta[el.dataset.meta] = el.value;
-        if (el.dataset.show) state.show[el.dataset.show] = !!el.checked;
-        persist();
-      });
-    }
     const speech = $("#speech");
     if (speech) speech.addEventListener("input", () => persistSoon());
     const modal = $("#modal");
@@ -1513,8 +1495,8 @@
     renderMeta();
     try {
       const [db, terms] = await Promise.all([
-        loadJson("price_db.json?v=3"),
-        loadJson("taigi_terms.json?v=3")
+        loadJson("price_db.json?v=3.1"),
+        loadJson("taigi_terms.json?v=3.1")
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1550,7 +1532,7 @@
     exportXlsx,
     exportPdf,
     copyText,
-    setTax(v) { state.tax = !!v; const el = $("#tax"); if (el) el.checked = state.tax; renderTotals(); persist(); },
+    setTax(v) { state.tax = !!v; renderQuote(); persist(); },
     setMeta(k, v, show) {
       if (k in state.meta) state.meta[k] = v;
       if (show != null) state.show[k] = !!show;

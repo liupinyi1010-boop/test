@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=3.1">
 </head>
 <body>
   <header class="top no-print">
@@ -42,7 +42,7 @@
           <button type="button" id="btn-make" class="btn lg">產生估價單</button>
           <button type="button" id="btn-clear" class="btn sec danger">清除全部資料</button>
         </div>
-        <p class="hint">單價只帶市場行情；沒有行情的項目會標「待填」，請再自己改。離開頁面再回來，資料會留著，除非重新錄音或按清除。</p>
+        <p class="hint">單價只帶市場行情；沒有行情的項目會標「待填」。如需修改數量或單價，請下載 Excel 後自行調整。離開頁面再回來，資料會留著，除非重新錄音或按清除。</p>
       </div>
     </section>
 
@@ -52,29 +52,22 @@
           <h2>估價單</h2>
           <button type="button" id="btn-top" class="btn ghost">回到上方</button>
         </div>
+        <div class="meta-preview" id="meta-preview" hidden></div>
         <div class="spoken" id="spoken-box"></div>
-        <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單，請再檢查數量與單價。</div>
+        <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單。如需修改，請下載 Excel 後自行調整。</div>
 
         <h3>工程項目</h3>
         <div class="table-wrap">
           <div class="line-list" id="lines"></div>
         </div>
-        <div class="actions">
-          <button type="button" id="btn-add" class="btn sec">新增一列</button>
-        </div>
 
         <div class="totals" id="totals"></div>
-        <label class="tax-row"><input type="checkbox" id="tax" checked> 加 5% 營業稅</label>
-      </div>
-
-      <div class="card">
-        <h2>估價單資訊（預設不印出；口述有提到的會自動填上並呈現）</h2>
-        <p class="hint">這些可以再改。每一項可單獨決定要不要出現在估價單上。沒有說到的欄位會留白，不會自己編造。</p>
-        <div class="meta" id="meta-fields"></div>
+        <p class="hint" id="tax-note"></p>
       </div>
 
       <div class="card no-print">
         <h2>下載</h2>
+        <p class="hint">如需修改數量、單價或客戶資料，請下載 Excel 後自行調整；改完後複價與合計會自動重算。</p>
         <div class="export">
           <button type="button" id="btn-download" class="btn lg">下載報價單</button>
         </div>
@@ -94,7 +87,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=3"></script>
-  <script src="app.js?v=3"></script>
+  <script src="ai-adapter.js?v=3.1"></script>
+  <script src="app.js?v=3.1"></script>
 </body>
 </html>
