@@ -409,24 +409,6 @@
       el.textContent = formatRecTime(Date.now() - recTimerStart);
     }, 250);
   }
-  function updateSteps() {
-    const quoteOn = !!( $("#quote") && $("#quote").classList.contains("on") );
-    const downloading = !!(modalMode === "download" && $("#modal") && !$("#modal").hidden);
-    $$(".steps [data-step]").forEach((li) => {
-      const n = Number(li.getAttribute("data-step"));
-      li.classList.remove("is-now", "is-done", "is-next");
-      if (!quoteOn) {
-        if (n <= 2) li.classList.add("is-now");
-      } else if (downloading) {
-        if (n <= 3) li.classList.add("is-done");
-        else li.classList.add("is-now");
-      } else {
-        if (n <= 2) li.classList.add("is-done");
-        else if (n === 3) li.classList.add("is-now");
-        else li.classList.add("is-next");
-      }
-    });
-  }
   function updateTotalBanner() {
     const tb = $("#total-banner");
     if (!tb) return;
@@ -445,7 +427,6 @@
     modalMode = null;
     const box = $("#modal-actions");
     if (box) box.innerHTML = "";
-    updateSteps();
   }
   function openModal(cfg) {
     const el = $("#modal");
@@ -475,7 +456,6 @@
     document.body.classList.add("modal-open");
     const first = box && box.querySelector("button");
     if (first) setTimeout(() => first.focus(), 20);
-    updateSteps();
   }
   function openDownloadModal() {
     if (!state.items.length) {
@@ -874,14 +854,12 @@
       renderQuote();
       setExportStatus("");
       persist();
-      updateSteps();
-      if (q) q.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+        if (q) q.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
       try {
         if (location.hash !== "#quote") history.pushState({ maye: "quote" }, "", "#quote");
       } catch (e) {}
       return;
     }
-    updateSteps();
     const top = document.querySelector("header.top") || $("#home");
     if (top && typeof top.scrollIntoView === "function") top.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
     else window.scrollTo(0, 0);
@@ -976,7 +954,6 @@
       const taxTxt = state.tax ? "已含 5% 營業稅。" : "未加營業稅。";
       note.textContent = taxTxt + "若要改數量或單價，請下載 Excel 自己改。預覽可以用手指左右滑，或兩指放大。";
     }
-    updateSteps();
   }
 
   function visibleMetaLines() {
@@ -1085,7 +1062,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.5";
+      s.src = "exceljs.min.js?v=3.6";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1691,9 +1668,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=3.5"),
-        loadJson("taigi_terms.json?v=3.5"),
-        loadJson("user_corrections.json?v=3.5").catch(function () { return null; })
+        loadJson("price_db.json?v=3.6"),
+        loadJson("taigi_terms.json?v=3.6"),
+        loadJson("user_corrections.json?v=3.6").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1713,7 +1690,6 @@
     applySpeechSupportUI();
     applyLineBrowserHint();
     restoreState();
-    updateSteps();
     if ((state.items.length || state.raw) && location.hash === "#quote") {
       const q = $("#quote");
       if (q) q.scrollIntoView({ block: "start" });
@@ -1759,7 +1735,6 @@
     applySpeechSupportUI,
     applyLineBrowserHint,
     isLineBrowser,
-    updateSteps,
     setLiveSpeech,
     selectTermsForPrompt,
     catalogList,
