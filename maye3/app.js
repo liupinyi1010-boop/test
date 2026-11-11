@@ -83,6 +83,9 @@
     terms: { terms: [] },
     ready: false,
     raw: "",
+    rawOriginal: "",
+    correctionHits: [],
+    corrections: [],
     normalized: "",
     hits: [],
     items: [],
@@ -96,6 +99,47 @@
     speechCtorOverride: undefined
   };
   let TERM_MAP = null, TERM_RE = null;
+  const DEFAULT_USER_CORRECTIONS = [
+    { from: "瓶數", to: "坪數", priority: 1, note: "使用者確認" },
+    { from: "全是", to: "全室", priority: 2, note: "使用者確認" },
+    { from: "平定天花", to: "平釘天花", priority: 3, note: "使用者確認" },
+    { from: "系統高貴", to: "系統高櫃", priority: 4, note: "使用者確認" },
+    { from: "回路", to: "迴路", priority: 5, note: "使用者確認" }
+  ];
+  function correctionList() {
+    const list = (state.corrections && state.corrections.length) ? state.corrections : DEFAULT_USER_CORRECTIONS;
+    return list
+      .filter((c) => c && String(c.from || "").trim() && String(c.to || "").trim() && String(c.from) !== String(c.to))
+      .slice()
+      .sort((a, b) => String(b.from).length - String(a.from).length || (Number(a.priority) || 0) - (Number(b.priority) || 0));
+  }
+  function applyUserCorrections(text) {
+    const src = String(text || "");
+    const rules = correctionList();
+    const hits = [];
+    if (!src || !rules.length) return { text: src, hits };
+    const map = new Map();
+    const keys = [];
+    for (const c of rules) {
+      const fr = String(c.from);
+      if (map.has(fr)) continue;
+      map.set(fr, c);
+      keys.push(fr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    }
+    const re = new RegExp(keys.join("|"), "g");
+    const out = src.replace(re, (m) => {
+      const c = map.get(m);
+      if (!c) return m;
+      const to = String(c.to);
+      if (m === to) return m;
+      hits.push({ from: m, to: to });
+      return to;
+    });
+    return { text: out, hits };
+  }
+  function formatCorrectionRules() {
+    return correctionList().map((c) => String(c.from) + " → " + String(c.to)).join("\n");
+  }
   const STORE_KEY = "maye-quote-state-v3";
   let persistTimer = null;
   let sessionBackup = null;
@@ -115,6 +159,8 @@
     return {
       v: 3,
       raw: state.raw,
+      rawOriginal: state.rawOriginal,
+      correctionHits: Array.isArray(state.correctionHits) ? state.correctionHits.slice() : [],
       normalized: state.normalized,
       hits: Array.isArray(state.hits) ? state.hits.slice() : [],
       items: (state.items || []).map((r) => Object.assign({}, r)),
@@ -139,6 +185,9 @@
   function applySnapshot(d, opts) {
     if (!d) return false;
     if (typeof d.raw === "string") state.raw = d.raw;
+    if (typeof d.rawOriginal === "string") state.rawOriginal = d.rawOriginal;
+    else if (typeof d.raw === "string" && !state.rawOriginal) state.rawOriginal = d.raw;
+    if (Array.isArray(d.correctionHits)) state.correctionHits = d.correctionHits;
     if (typeof d.normalized === "string") state.normalized = d.normalized;
     if (Array.isArray(d.hits)) state.hits = d.hits;
     if (Array.isArray(d.items)) state.items = d.items.map((r) => Object.assign({}, r));
@@ -185,6 +234,8 @@
   function clearSession(opts) {
     opts = opts || {};
     state.raw = "";
+    state.rawOriginal = "";
+    state.correctionHits = [];
     state.normalized = "";
     state.hits = [];
     state.items = [];
@@ -617,10 +668,14 @@
     }
     return picked;
   }
-  function buildPrompt(spoken, normalized) {
+  function buildPrompt(spoken, normalized, original) {
     const termLines = selectTermsForPrompt((spoken||"")+" "+(normalized||"")).map(formatTermLine);
+    const rules = formatCorrectionRules();
     return [
       "你是估價助理。請依師傅口述產生估價單品項，並把台語／同音錯字轉寫成國語工項。",
+      "【最高優先】以下是師傅確認的語音修正，必須先套用，不得改回或忽略：",
+      rules,
+      "本機已先行套用這些規則。下方「師傅口述」是修正後的文字；語音辨識原稿僅供對照。",
       "中文語音辨識常把台語術語聽成同音或近音的錯字，例如把「紅毛土」寫成「洪毛土／紅毛兔／宏毛土」，把「米知」（公尺）寫成「米之／米突／米吐」。請依發音近似度，對照下面的術語表還原成國語標準名稱。術語表沒有的不要臆造新工項或新單價。",
       "只使用下面「單價目錄」裡的工項與單價（水電、木工、油漆）。不得虛構或改寫單價。",
       "估價單不要列出工種分類。請自行判斷工種並對到目錄。",
@@ -639,7 +694,9 @@
       "師傅口述（辨識原文，可能含同音錯字）：",
       spoken,
       "本機初步正規化（供參考，仍請依發音判斷）：",
-      normalized
+      normalized,
+      "語音辨識原稿（未修正，僅供對照，解析請以修正後文字為準）：",
+      (original != null && String(original) !== String(spoken) ? String(original) : "（與修正後相同）")
     ].join("\n");
   }
   function adoptAiItems(raw) {
@@ -671,23 +728,29 @@
   }
 
   async function generateFromText(text, opts) {
-    const raw = String(text || "").trim();
-    if (!raw) throw Object.assign(new Error("empty"), { code: "empty" });
+    const original = String(text || "").trim();
+    if (!original) throw Object.assign(new Error("empty"), { code: "empty" });
+    const corr = applyUserCorrections(original);
+    const raw = corr.text;
     const norm = normalizeAnswer(raw);
+    state.rawOriginal = original;
     state.raw = raw;
+    state.correctionHits = corr.hits;
     state.normalized = norm.text;
     state.hits = norm.hits;
+    const ta = $("#speech");
+    if (ta) ta.value = raw;
     const force = opts && opts.forceFallback;
     if (!force) {
       try {
-        const data = await defaultAi(buildPrompt(raw, norm.text));
+        const data = await defaultAi(buildPrompt(raw, norm.text, original));
         const items = adoptAiItems(data);
         if (items.length) {
           state.items = items;
           state.source = "ai";
           const rw = data && data.rewritten != null ? String(data.rewritten).trim() : "";
           state.rewritten = rw || norm.text;
-          adoptCustomer(data && data.customer, raw);
+          adoptCustomer(data && data.customer, raw + " " + original);
           persist();
           return { ok: true, source: "ai", items };
         }
@@ -699,7 +762,7 @@
     state.items = local.items;
     state.source = "fallback";
     state.rewritten = local.text || norm.text;
-    adoptCustomer(null, raw);
+    adoptCustomer(null, raw + " " + original);
     persist();
     return { ok: true, source: "fallback", items: local.items };
   }
@@ -798,12 +861,16 @@
   function renderSpoken() {
     const el = $("#spoken-box");
     if (!el) return;
-    if (!state.raw) { el.innerHTML = ""; return; }
+    if (!state.raw && !state.rawOriginal) { el.innerHTML = ""; return; }
     const rw = state.rewritten || state.normalized || "";
+    const orig = state.rawOriginal || "";
+    const shown = state.raw || orig;
+    const differ = orig && shown && orig !== shown;
     el.innerHTML =
-      '<div class="row"><span class="lab">辨識原文</span><div class="val">「' + esc(state.raw) + '」</div></div>' +
+      '<div class="row"><span class="lab">辨識原文</span><div class="val">「' + esc(shown) + '」</div></div>' +
+      (differ ? '<div class="row"><span class="lab">語音原稿</span><div class="val">「' + esc(orig) + '」</div></div>' : "") +
       '<div class="row"><span class="lab">轉寫後的國語工項</span><div class="val">「' + esc(rw) + '」</div></div>' +
-      '<p class="hint">請確認轉寫是否正確。如需修改，請下載 Excel 後自行調整。</p>';
+      '<p class="hint">' + (differ ? "已依常用聽寫修正。請確認轉寫是否正確。如需修改，請下載 Excel 後自行調整。" : "請確認轉寫是否正確。如需修改，請下載 Excel 後自行調整。") + '</p>';
   }
   function renderQuote() {
     renderSpoken();
@@ -874,8 +941,11 @@
   function exportText() {
     const t = totals();
     const lines = ["估價嗎耶通", ""];
-    if (state.raw) {
-      lines.push("辨識原文：" + state.raw);
+    if (state.raw || state.rawOriginal) {
+      lines.push("辨識原文：" + (state.raw || state.rawOriginal));
+      if (state.rawOriginal && state.raw && state.rawOriginal !== state.raw) {
+        lines.push("語音原稿：" + state.rawOriginal);
+      }
       lines.push("轉寫國語：" + (state.rewritten || state.normalized || ""));
       lines.push("");
     }
@@ -920,7 +990,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.2";
+      s.src = "exceljs.min.js?v=3.3";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1491,9 +1561,10 @@
     bind();
     renderMeta();
     try {
-      const [db, terms] = await Promise.all([
-        loadJson("price_db.json?v=3.2"),
-        loadJson("taigi_terms.json?v=3.2")
+      const [db, terms, corrections] = await Promise.all([
+        loadJson("price_db.json?v=3.3"),
+        loadJson("taigi_terms.json?v=3.3"),
+        loadJson("user_corrections.json?v=3.3").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1503,6 +1574,9 @@
       }
       state.catalog = cat;
       state.terms = terms && terms.terms ? terms : { terms: [] };
+      state.corrections = (corrections && Array.isArray(corrections.corrections) && corrections.corrections.length)
+        ? corrections.corrections
+        : DEFAULT_USER_CORRECTIONS.slice();
       TERM_RE = null;
     } catch (e) {
       setStatus("單價或用語資料載入失敗，請檢查網路後再重新整理。", true);
@@ -1558,6 +1632,9 @@
     isZeroishValue,
     extractCustomerLocal,
     adoptCustomer,
+    applyUserCorrections,
+    correctionList,
+    buildPrompt,
     mentionedInSpeech,
     persist,
     restoreState,
