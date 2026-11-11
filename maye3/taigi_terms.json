@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-11-v2-homophones",
+  "version": "2026-11-11-v3.4-chasing",
   "note": "合併 #terms-default、taigi-db.json、taigi-terms-additions.json、taigi-units.json、site-terms.json、使用者工地閩南語術語，以及國語 ASR 近音寫法。頁面載入此檔，#terms-default 為後備。auto=false 的數字／單位／句型只供參考，由程式用規則轉換尺寸分。 v2 新增 homophones（常見同音字變體）：由同一術語既有 spoken／asr_variants 的單字替換，以及至少在兩條術語出現過的替換關係推導，不虛構新工項。",
   "sources": [
     "embedded:#terms-default",
@@ -3389,6 +3389,23 @@
       "source": [
         "maye-quote-v1-extra-aliases"
       ]
+    },
+    {
+      "spoken": [
+        "打牆",
+        "打壁",
+        "敲牆",
+        "開槽",
+        "鑿壁"
+      ],
+      "asr_variants": [],
+      "standard": "水電打牆開槽埋管",
+      "code": "P-013",
+      "note": "水電開槽埋管一組；僅國語常用說法，未自造台語對照",
+      "source": [
+        "user-request-2026-11-11"
+      ],
+      "category": "水電"
     }
   ]
 }

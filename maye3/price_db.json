@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-10",
+  "updated": "2026-11-11",
   "currency": "TWD",
   "tax_included": false,
   "trades": {
@@ -678,6 +678,17 @@
         "source": "市場行情估算(需在地驗證)"
       },
       {
+        "code": "P-013",
+        "category": "打鑿/復原",
+        "item": "水電打牆開槽埋管（含基本水泥補平）",
+        "unit": "組",
+        "price_low": 2500,
+        "price_high": 5000,
+        "price_mode": "連工帶料",
+        "note": "一組為一處短槽開槽＋基本埋管空間與水泥補平；不含磁磚重貼與油漆面層。RC 牆或距離較長另議。與新增迴路（E-003／E-005）及按尺計價的 P-012 分開。",
+        "source": "潮州工事誌 2026-04-28 開槽打牆 $800–$1,500/米、牆面修補 $400–$700/米、埋管穿線每點 $3,000–$6,000 https://chaochou-works.com/articles/plumbing-rewire-cost ；奇尚室內設計 線槽開槽封補（含水泥）約 $1,200–$2,400/米、舊屋約 $1,200–$3,500/米 https://chisun-design.com/electrical-wiring-cost-budget-new-vs-old-house-renovation-analysis/ ；100室內設計 2026 暗管拉線 $3,500–$4,500/迴（含配線，與本項不同）https://www.100.com.tw/article/11918 ；第一水電 2026 暗管牆內布線 $4,500–$6,000/迴 https://first111.com.tw/plumbingprice/"
+      },
+      {
         "code": "P-901",
         "category": "工資",
         "item": "水電師傅日薪",
@@ -717,22 +728,22 @@
         "category": "牆面",
         "item": "乳膠漆 二底三度(居家常用)",
         "unit": "坪",
-        "price_low": 400,
-        "price_high": 700,
+        "price_low": 500,
+        "price_high": 1000,
         "price_mode": "連工帶料",
-        "note": "漆料品牌、含基本局部批土",
-        "source": "PRO360 價格行情頁"
+        "note": "含基本局部批土；全面批土另計 A-104。漆料品牌會影響單價。",
+        "source": "PRO360 油漆工程價格（最後更新 2025/09/30）乳膠漆 2 道 $500–$1,000/坪、二底三度工法表 $400–$700/坪（不含批土）https://www.pro360.com.tw/price/wall_painting ；100室內設計 2026-05-07 乳膠漆連工帶料約 $600–$2,000/坪 https://www.100.com.tw/article/13700"
       },
       {
         "code": "A-103",
         "category": "牆面",
         "item": "乳膠漆 三底五度",
         "unit": "坪",
-        "price_low": 800,
-        "price_high": 1200,
+        "price_low": 1000,
+        "price_high": 1500,
         "price_mode": "連工帶料",
-        "note": "全面批土、高平整度要求",
-        "source": "PRO360 價格行情頁"
+        "note": "高平整度／較多道數；全面批土若另計見 A-104。",
+        "source": "PRO360 油漆工程價格（最後更新 2025/09/30）乳膠漆 3 道 $1,000–$1,500/坪、三底五度工法表 $800–$1,200/坪 https://www.pro360.com.tw/price/wall_painting"
       },
       {
         "code": "A-104",
@@ -743,18 +754,18 @@
         "price_high": 600,
         "price_mode": "連工帶料",
         "note": "批土次數 2~3 道",
-        "source": "市場行情估算(需在地驗證)"
+        "source": "PRO360 油漆工程價格（最後更新 2025/09/30）批土+研磨約 $100–$300/坪 https://www.pro360.com.tw/price/wall_painting ；howroom 2026 批土約 $200–$500/坪 https://howroom.ai/posts/a/coatings-price 。本項為全面批土 2–3 道，維持 $300–$600/坪。"
       },
       {
         "code": "A-105",
         "category": "牆面",
         "item": "天花板乳膠漆",
         "unit": "坪",
-        "price_low": 400,
-        "price_high": 800,
+        "price_low": 600,
+        "price_high": 1100,
         "price_mode": "連工帶料",
-        "note": "挑高、造型天花板加價",
-        "source": "市場行情估算(需在地驗證)"
+        "note": "挑高、造型天花板加價。天花板通常與牆面同價或略高。",
+        "source": "PRO360 油漆工程價格（最後更新 2025/09/30）粉刷天花板另加約 $100/坪 https://www.pro360.com.tw/price/wall_painting ；100室內設計 2026-05-07 天花板通常與牆面同價或再略高 https://www.100.com.tw/article/13700 ；對照更新後牆面二底三度 $500–$1,000。"
       },
       {
         "code": "A-106",
@@ -765,7 +776,7 @@
         "price_high": 600,
         "price_mode": "工",
         "note": "壁紙層數、殘膠",
-        "source": "市場行情估算(需在地驗證)"
+        "source": "PRO360 壁紙拆除（頁面標 2026，資料 2024–2026，文內最後更新 2023/11/14）拆除約 $300–$500/坪 https://www.pro360.com.tw/price/wallpaper_removal 。本項含簡易底層處理，維持 $300–$600/坪。"
       },
       {
         "code": "A-107",
@@ -776,18 +787,18 @@
         "price_high": 300,
         "price_mode": "連工帶料",
         "note": "結構性裂縫須另評估",
-        "source": "市場行情估算(需在地驗證)"
+        "source": "既有區間 $100–$300/尺；2026-11-11 查無明確「每尺裂縫補強」新行情，維持原價，不臆造。"
       },
       {
         "code": "A-108",
         "category": "牆面",
         "item": "跳色（局部牆面換色）",
         "unit": "坪",
-        "price_low": 440,
-        "price_high": 770,
+        "price_low": 550,
+        "price_high": 1100,
         "price_mode": "連工帶料",
-        "note": "局部牆面換色",
-        "source": "乳膠漆二底三度市場行情 ×1.1"
+        "note": "局部牆面換色；依乳膠漆二底三度行情 ×1.1。",
+        "source": "A-102 更新後 $500–$1,000 ×1.1；來源同 A-102。"
       },
       {
         "code": "A-201",
@@ -797,19 +808,19 @@
         "price_low": 3000,
         "price_high": 8000,
         "price_mode": "連工帶料",
-        "note": "品牌、施工紋路",
-        "source": "市場行情估算(需在地驗證)"
+        "note": "品牌、施工紋路。2026-11-11 公開行情查得較低，經使用者決定維持原價 $3,000–$8,000。",
+        "source": "使用者決定 2026-11-11 維持原價 $3,000–$8,000（中價 5,500），不改用較低區間。查行情：100室內設計 專業施工含材料約 $1,200–$3,000/坪 https://www.100.com.tw/article/3994 ；wachiwi 2026-10-30 珪藻土 $2,000–$3,500/坪 https://wachiwi.com/cost/home-renovation/painting-cost/ ；howroom 珪藻土 $3,500–$5,500/坪 https://howroom.ai/posts/a/coatings-price"
       },
       {
         "code": "A-202",
         "category": "特殊塗料",
         "item": "礦物塗料/灰泥/仿清水模",
         "unit": "坪",
-        "price_low": 2500,
-        "price_high": 6000,
+        "price_low": 2000,
+        "price_high": 8000,
         "price_mode": "連工帶料",
-        "note": "師傅技術差異大",
-        "source": "市場行情估算(需在地驗證)"
+        "note": "灰泥紋理工法較高、礦物塗料區間較低；師傅技術差異大。",
+        "source": "100室內設計 灰泥專業施工 $3,000–$8,000/坪、礦物塗料 $2,000–$4,500/坪 https://www.100.com.tw/article/3994 https://www.100.com.tw/article/8685"
       },
       {
         "code": "A-301",
@@ -817,10 +828,10 @@
         "item": "櫃體噴漆(鋼琴烤漆/平光)",
         "unit": "尺",
         "price_low": 600,
-        "price_high": 1200,
+        "price_high": 2000,
         "price_mode": "連工帶料",
-        "note": "亮光/平光、單色/雙色",
-        "source": "市場行情估算(需在地驗證)"
+        "note": "平光較低、鋼琴烤漆較高；亮光/平光、單色/雙色會影響單價。",
+        "source": "耕芯空間制作 2026-09-28 水性平光約 $400–$800/尺，鋼琴烤漆約 $1,200–$2,000 以上/尺 https://www.gengxin-design.com/blog/spray-painting ；家茂裝潢 2026-02-11 木皮噴透明漆矮櫃 $550–$750/台尺、高櫃 $850–$1,250/台尺 https://jason55ee.pixnet.net/blog/posts/860483425671012948"
       },
       {
         "code": "A-302",
@@ -831,18 +842,18 @@
         "price_high": 5000,
         "price_mode": "連工帶料",
         "note": "雙面、含門框",
-        "source": "市場行情估算(需在地驗證)"
+        "source": "耕芯空間制作 2026-09-28 房門水性噴漆約 $1,500–$3,000/片，烤漆較高 https://www.gengxin-design.com/blog/spray-painting ；家茂裝潢 2026-02-11 門片木皮噴透明漆 $2,200–$2,750/片 https://jason55ee.pixnet.net/blog/posts/860483425671012948 。本項含烤漆可能，維持 $2,500–$5,000/樘。"
       },
       {
         "code": "A-303",
         "category": "木作面",
         "item": "木作天花板/隔間批土上漆",
         "unit": "坪",
-        "price_low": 500,
-        "price_high": 900,
+        "price_low": 600,
+        "price_high": 1100,
         "price_mode": "連工帶料",
-        "note": "矽酸鈣板接縫處理",
-        "source": "市場行情估算(需在地驗證)"
+        "note": "矽酸鈣板接縫處理、批土上漆。",
+        "source": "對照更新後天花板乳膠漆 $600–$1,100（A-105 來源：PRO360 2025/09/30、100室內設計 2026-05-07），本項含接縫批土故取相同區間。"
       },
       {
         "code": "A-401",
@@ -853,7 +864,7 @@
         "price_high": 400,
         "price_mode": "連工帶料",
         "note": "鏽蝕程度、造型",
-        "source": "市場行情估算(需在地驗證)"
+        "source": "既有 $150–$400/尺；2026-11-11 查無可靠的「每尺鐵件除鏽+防鏽漆+面漆」新行情（部分來源以坪計），維持原價，不臆造。"
       },
       {
         "code": "A-402",
@@ -863,8 +874,8 @@
         "price_low": 1500,
         "price_high": 4000,
         "price_mode": "連工帶料",
-        "note": "不含鷹架/吊籠",
-        "source": "市場行情估算(需在地驗證)"
+        "note": "不含鷹架/吊籠。2026-11-11 公開行情查得較低，經使用者決定維持原價 $1,500–$4,000。",
+        "source": "使用者決定 2026-11-11 維持原價 $1,500–$4,000（中價 2,750），不改用較低區間。查行情：PRO360 外牆防水（最後更新 2025/09/05）外牆防水漆 $600–$1,500/坪、PU $1,500–$3,000/坪 https://www.pro360.com.tw/price/exterior_wall_waterproofing ；100室內設計 2026-05-07 外牆專用漆約 $1,500–$3,500 以上/坪 https://www.100.com.tw/article/13700"
       },
       {
         "code": "A-403",
@@ -874,8 +885,8 @@
         "price_low": 1500,
         "price_high": 3500,
         "price_mode": "連工帶料",
-        "note": "層數、是否含試水",
-        "source": "市場行情估算(需在地驗證)"
+        "note": "層數、是否含試水。2026-11-11 公開行情查得較低，經使用者決定維持原價 $1,500–$3,500。",
+        "source": "使用者決定 2026-11-11 維持原價 $1,500–$3,500（中價 2,500），不改用較低區間。查行情：PRO360 防水工程（最後更新 2025/09/24）PU 防水 $1,500–$3,000/坪、浴室防水 $2,000–$3,000/坪 https://www.pro360.com.tw/price/waterproofing"
       },
       {
         "code": "A-404",
@@ -886,7 +897,7 @@
         "price_high": 5000,
         "price_mode": "連工帶料",
         "note": "須先排除漏水源",
-        "source": "市場行情估算(需在地驗證)"
+        "source": "PRO360 壁癌處理（頁面標 2026，平台報價統計 2024–2026）牆面壁癌處理 $2,500–$5,000/坪 https://www.pro360.com.tw/price/wall_mold_removal 。抓漏防水另計。"
       },
       {
         "code": "A-901",
@@ -897,7 +908,7 @@
         "price_high": 3800,
         "price_mode": "工",
         "note": "點工用",
-        "source": "市場行情估算(需在地驗證)"
+        "source": "PRO360 油漆工程價格（最後更新 2025/09/30）學徒約 $1,500–$2,000/天、一般師傅約 $2,000–$2,500/天、資深約 $3,000/天以上 https://www.pro360.com.tw/price/wall_painting 。本項取資深區間，維持 $2,800–$3,800。"
       }
     ],
     "masonry_waterproofing": [
@@ -2006,5 +2017,5 @@
       }
     ]
   },
-  "research_note": "泥作防水、拆除清運為2026-11-10研究參考價區間，來源見各項 source；處理費依縣市官方資料帶入，無資料者不套係數（×1.0）並註明無公開資料。既有木作／水電／油漆單價未改。"
+  "research_note": "泥作防水、拆除清運為2026-11-10研究參考價區間，來源見各項 source；處理費依縣市官方資料帶入，無資料者不套係數（×1.0）並註明無公開資料。既有木作／水電／油漆單價未改。 油漆單價於 2026-11-11 依公開市場行情（PRO360、100室內設計等 2025–2026 資料）重新核對，僅在來源支持處調整，未臆造；並新增水電打牆開槽 P-013（一組）。詳見 price-update-v3.4.md。 A-201、A-402、A-403 於 2026-11-11 經使用者決定維持原價（公開行情偏低者未下修）。"
 }

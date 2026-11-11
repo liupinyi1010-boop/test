@@ -75,7 +75,8 @@
     { re: /熱水.{0,4}給水|熱水管/, code: "P-002" },
     { re: /冷水.{0,4}給水|給水管/, code: "P-001" },
     { re: /設備移位/, code: "P-004" },
-    { re: /全室水電/, code: "P-011" }
+    { re: /全室水電/, code: "P-011" },
+    { re: /打牆|打壁|敲牆|開槽|鑿壁/, code: "P-013" }
   ];
 
   const state = {
@@ -858,19 +859,23 @@
   }
   function renderTotals() { renderSheet(); }
   function renderMeta() { renderSheet(); }
+  function setLiveSpeech(text, show) {
+    const box = $("#live-speech");
+    const lab = $("#live-speech-text");
+    if (!box) return;
+    if (show) {
+      box.hidden = false;
+      if (lab) lab.textContent = text ? String(text) : "正在聽…";
+    } else {
+      box.hidden = true;
+      if (lab) lab.textContent = "";
+    }
+  }
   function renderSpoken() {
     const el = $("#spoken-box");
-    if (!el) return;
-    if (!state.raw && !state.rawOriginal) { el.innerHTML = ""; return; }
-    const rw = state.rewritten || state.normalized || "";
-    const orig = state.rawOriginal || "";
-    const shown = state.raw || orig;
-    const differ = orig && shown && orig !== shown;
-    el.innerHTML =
-      '<div class="row"><span class="lab">辨識原文</span><div class="val">「' + esc(shown) + '」</div></div>' +
-      (differ ? '<div class="row"><span class="lab">語音原稿</span><div class="val">「' + esc(orig) + '」</div></div>' : "") +
-      '<div class="row"><span class="lab">轉寫後的國語工項</span><div class="val">「' + esc(rw) + '」</div></div>' +
-      '<p class="hint">' + (differ ? "已依常用聽寫修正。請確認轉寫是否正確。如需修改，請下載 Excel 後自行調整。" : "請確認轉寫是否正確。如需修改，請下載 Excel 後自行調整。") + '</p>';
+    if (el) { el.innerHTML = ""; el.hidden = true; }
+    const q = $("#quote");
+    if (q && q.classList.contains("on")) setLiveSpeech("", false);
   }
   function renderQuote() {
     renderSpoken();
@@ -990,7 +995,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.3";
+      s.src = "exceljs.min.js?v=3.4";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1338,9 +1343,19 @@
     btn.classList.toggle("is-rec", mode === "rec");
     btn.classList.toggle("is-busy", mode === "busy");
     btn.setAttribute("aria-pressed", mode === "rec" ? "true" : "false");
-    if (mode === "rec") { lab.textContent = "停止"; hint.textContent = "文字會即時出現在下方，說完再點一下就出估價單"; }
-    else if (mode === "busy") { lab.textContent = "產生中"; hint.textContent = "正在產生估價單，請稍候…"; }
-    else { lab.textContent = "開始說"; hint.textContent = "點一下開始，再說一次結束"; }
+    if (mode === "rec") {
+      lab.textContent = "停止";
+      hint.textContent = "文字會即時出現在麥克風下方，說完再點一下就出估價單";
+      setLiveSpeech(($("#speech") && $("#speech").value) || "正在聽…", true);
+    } else if (mode === "busy") {
+      lab.textContent = "產生中";
+      hint.textContent = "正在產生估價單，請稍候…";
+      setLiveSpeech("", false);
+    } else {
+      lab.textContent = "開始說";
+      hint.textContent = "點一下開始，再說一次結束";
+      setLiveSpeech("", false);
+    }
   }
 
   function speechCtor() {
@@ -1459,7 +1474,9 @@
         else interim += t;
       }
       const ta = $("#speech");
-      if (ta) ta.value = (finalText + " " + interim).trim();
+      const shown = (finalText + " " + interim).trim();
+      if (ta) ta.value = shown;
+      setLiveSpeech(shown || "正在聽…", true);
     };
     rec.onerror = (e) => {
       if (state.rec && state.rec._keep && e && (e.error === "no-speech" || e.error === "aborted")) return;
@@ -1481,7 +1498,7 @@
     state.rec = { kind: "browser", rec, _keep: true };
     rec.start();
     micUI("rec");
-    setStatus("正在聽…文字會即時出現，說完請再點麥克風。");
+    setStatus("正在聽…文字會即時出現在麥克風下方，說完請再點麥克風。");
   }
 
   function stopBrowserAsr() {
@@ -1562,9 +1579,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=3.3"),
-        loadJson("taigi_terms.json?v=3.3"),
-        loadJson("user_corrections.json?v=3.3").catch(function () { return null; })
+        loadJson("price_db.json?v=3.4"),
+        loadJson("taigi_terms.json?v=3.4"),
+        loadJson("user_corrections.json?v=3.4").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1626,6 +1643,7 @@
     setSpeechSupported,
     installSpeechMock,
     applySpeechSupportUI,
+    setLiveSpeech,
     selectTermsForPrompt,
     catalogList,
     isZeroNumericInput,
