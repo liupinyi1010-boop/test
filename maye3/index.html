@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.1">
+  <link rel="stylesheet" href="styles.css?v=3.2">
 </head>
 <body>
   <header class="top no-print">
@@ -52,17 +52,14 @@
           <h2>估價單</h2>
           <button type="button" id="btn-top" class="btn ghost">回到上方</button>
         </div>
-        <div class="meta-preview" id="meta-preview" hidden></div>
         <div class="spoken" id="spoken-box"></div>
         <div class="banner" id="fallback-banner">雲端分析沒有成功，已改用本機用語對照產生估價單。如需修改，請下載 Excel 後自行調整。</div>
 
-        <h3>工程項目</h3>
-        <div class="table-wrap">
-          <div class="line-list" id="lines"></div>
+        <h3 class="preview-lab">報價單預覽</h3>
+        <div class="sheet-wrap" id="sheet-wrap">
+          <article class="quote-sheet" id="quote-sheet" aria-label="報價單預覽"></article>
         </div>
-
-        <div class="totals" id="totals"></div>
-        <p class="hint" id="tax-note"></p>
+        <p class="hint" id="tax-note">如需修改，請下載 Excel 後自行調整。預覽可捲動或雙指放大查看。</p>
       </div>
 
       <div class="card no-print">
@@ -87,7 +84,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=3.1"></script>
-  <script src="app.js?v=3.1"></script>
+  <script src="ai-adapter.js?v=3.2"></script>
+  <script src="app.js?v=3.2"></script>
 </body>
 </html>

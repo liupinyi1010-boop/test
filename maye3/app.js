@@ -771,22 +771,7 @@
     });
   }
 
-  function renderLines() {
-    const box = $("#lines");
-    if (!box) return;
-    box.innerHTML = state.items.map((row) => {
-      const pend = row.pending ? '<span class="pending">待填</span>' : "";
-      return `<article class="line-card ro" data-id="${row.id}">
-        <div class="name-row"><span>${esc(row.name)}</span>${pend}</div>
-        <div class="grid">
-          <div class="cell"><span>數量</span><div class="val">${esc(row.qty)}</div></div>
-          <div class="cell"><span>單位</span><div class="val">${esc(row.unit)}</div></div>
-          <div class="cell"><span>單價</span><div class="val">${row.pending && !(Number(row.unitPrice)>0) ? "待填" : fmt(row.unitPrice)}</div></div>
-          <div class="cell"><span>複價</span><div class="amt">${fmt(lineAmount(row))}</div></div>
-        </div>
-      </article>`;
-    }).join("") || '<p class="hint">還沒有項目，請回到上方再說一次或打字後產生估價單。</p>';
-  }
+  function renderLines() { renderSheet(); }
   function esc(s) {
     return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
@@ -808,27 +793,8 @@
     if (amt) amt.textContent = fmt(lineAmount(row));
     persistSoon();
   }
-  function renderTotals() {
-    const t = totals();
-    const box = $("#totals");
-    if (!box) return;
-    box.innerHTML =
-      `<div><span>小計</span><span>${money(t.sub)}</span></div>` +
-      (state.tax ? `<div><span>營業稅 5%</span><span>${money(t.tax)}</span></div>` : `<div><span>營業稅</span><span>未加</span></div>`) +
-      `<div class="grand"><span>合計</span><span>${money(t.total)}</span></div>`;
-  }
-  function renderMeta() {
-    const box = $("#meta-preview");
-    if (!box) return;
-    const lines = visibleMetaLines();
-    if (!lines.length) {
-      box.innerHTML = "";
-      box.hidden = true;
-      return;
-    }
-    box.hidden = false;
-    box.innerHTML = lines.map((l) => `<div class="meta-line">${esc(l)}</div>`).join("");
-  }
+  function renderTotals() { renderSheet(); }
+  function renderMeta() { renderSheet(); }
   function renderSpoken() {
     const el = $("#spoken-box");
     if (!el) return;
@@ -841,13 +807,14 @@
   }
   function renderQuote() {
     renderSpoken();
-    renderLines();
-    renderTotals();
-    renderMeta();
+    renderSheet();
     const ban = $("#fallback-banner");
     if (ban) ban.classList.toggle("on", state.source === "fallback");
     const note = $("#tax-note");
-    if (note) note.textContent = state.tax ? "已含 5% 營業稅。如需修改，請下載 Excel 後自行調整。" : "未加營業稅。如需修改，請下載 Excel 後自行調整。";
+    if (note) {
+      const taxTxt = state.tax ? "已含 5% 營業稅。" : "未加營業稅。";
+      note.textContent = taxTxt + "如需修改，請下載 Excel 後自行調整。預覽可捲動或雙指放大查看。";
+    }
   }
 
   function visibleMetaLines() {
@@ -860,6 +827,49 @@
       lines.push(labels[f.k] + "：" + v);
     }
     return lines;
+  }
+  function quoteSheetHtml() {
+    const t = totals();
+    const meta = visibleMetaLines().map((l) => `<div class="qs-meta-line">${esc(l)}</div>`).join("");
+    const rows = state.items.map((row, i) => {
+      const pending = !!row.pending;
+      const price = pending && !(Number(row.unitPrice) > 0) ? "待填" : fmt(row.unitPrice);
+      return `<tr>
+        <td class="num">${i + 1}</td>
+        <td class="name">${esc(row.name)}${pending ? '<span class="qs-pending">待填</span>' : ""}</td>
+        <td class="num">${esc(row.qty)}</td>
+        <td>${esc(row.unit)}</td>
+        <td class="num">${price}</td>
+        <td class="num">${fmt(lineAmount(row))}</td>
+      </tr>`;
+    }).join("");
+    return `<header class="qs-head">估價嗎耶通</header>
+      <div class="qs-body">
+        ${meta ? `<div class="qs-meta">${meta}</div>` : ""}
+        <table class="qs-table">
+          <thead>
+            <tr>
+              <th class="num">項次</th>
+              <th>項目</th>
+              <th class="num">數量</th>
+              <th>單位</th>
+              <th class="num">單價</th>
+              <th class="num">複價</th>
+            </tr>
+          </thead>
+          <tbody>${rows || '<tr><td colspan="6">還沒有項目，請回到上方再說一次或打字後產生估價單。</td></tr>'}</tbody>
+        </table>
+        <div class="qs-totals">
+          <div><span>小計</span><span>${fmt(t.sub)}</span></div>
+          ${state.tax ? `<div><span>營業稅 5%</span><span>${fmt(t.tax)}</span></div>` : `<div><span>營業稅</span><span>未加</span></div>`}
+          <div class="grand"><span>合計</span><span>${fmt(t.total)}</span></div>
+        </div>
+        <p class="qs-foot">單價依市場行情，可再自行調整。沒有行情者標示待填。</p>
+      </div>`;
+  }
+  function renderSheet() {
+    const box = $("#quote-sheet");
+    if (box) box.innerHTML = quoteSheetHtml();
   }
   function exportText() {
     const t = totals();
@@ -910,7 +920,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=3.1";
+      s.src = "exceljs.min.js?v=3.2";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -989,20 +999,7 @@
     return blob;
   }
 
-  function printHtml() {
-    const t = totals();
-    const meta = visibleMetaLines().map((l) => `<div>${esc(l)}</div>`).join("");
-    const rows = state.items.map((row, i) =>
-      `<tr><td>${i + 1}</td><td>${esc(row.name)}${row.pending ? "（待填）" : ""}</td><td style="text-align:right">${esc(row.qty)}</td><td>${esc(row.unit)}</td><td style="text-align:right">${fmt(row.unitPrice)}</td><td style="text-align:right">${fmt(lineAmount(row))}</td></tr>`
-    ).join("");
-    return `<h1>估價嗎耶通</h1>${meta}
-      <table width="100%" cellspacing="0" cellpadding="6" style="border-collapse:collapse;margin-top:12px">
-        <thead><tr><th>項次</th><th>品名</th><th>數量</th><th>單位</th><th>單價</th><th>複價</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-      <p style="text-align:right">小計 ${fmt(t.sub)}${state.tax ? "<br>營業稅 5% " + fmt(t.tax) : ""}<br><b>合計 ${fmt(t.total)}</b></p>
-      <p>單價依市場行情，可再自行調整。沒有行情者標示待填。</p>`;
-  }
+  function printHtml() { return quoteSheetHtml(); }
   function crc32(buf) {
     let c = ~0;
     const tbl = crc32.tbl || (crc32.tbl = (function () {
@@ -1495,8 +1492,8 @@
     renderMeta();
     try {
       const [db, terms] = await Promise.all([
-        loadJson("price_db.json?v=3.1"),
-        loadJson("taigi_terms.json?v=3.1")
+        loadJson("price_db.json?v=3.2"),
+        loadJson("taigi_terms.json?v=3.2")
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -1528,6 +1525,8 @@
     getState: () => state,
     totals,
     exportText,
+    quoteSheetHtml,
+    renderSheet,
     lineShareUrl,
     exportXlsx,
     exportPdf,
