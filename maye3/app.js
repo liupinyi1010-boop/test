@@ -1,4 +1,4 @@
-/* 估價嗎耶通 — 語音直出估價單 */
+/* 師傅說 ShifuSay — 語音直出估價單 */
 (function () {
   "use strict";
 
@@ -8,6 +8,7 @@
   const money = (n) => "NT$ " + fmt(n);
   const uid = () => "r" + Math.random().toString(36).slice(2, 9);
   const TAX_RATE = 0.05;
+  const BRAND_ZH = "師傅說";
   const TRADES = ["carpentry", "plumbing_electrical", "painting"];
   const EXTRA_ALIASES = [
     { spoken: ["米知", "米突", "米吐", "米嘟"], standard: "公尺", code: null, note: "長度單位 m" },
@@ -1870,7 +1871,7 @@
         <td class="num">${fmt(lineAmount(row))}</td>
       </tr>`;
     }).join("");
-    return `<header class="qs-head">估價嗎耶通</header>
+    return `<header class="qs-head">${BRAND_ZH}</header>
       <div class="qs-body">
         ${meta ? `<div class="qs-meta">${meta}</div>` : ""}
         <table class="qs-table">
@@ -1900,7 +1901,7 @@
   }
   function exportText() {
     const t = totals();
-    const lines = ["估價嗎耶通", ""];
+    const lines = [BRAND_ZH, ""];
     if (state.raw || state.rawOriginal) {
       lines.push("辨識原文：" + (state.raw || state.rawOriginal));
       if (state.rawOriginal && state.raw && state.rawOriginal !== state.raw) {
@@ -1950,7 +1951,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=4.5";
+      s.src = "exceljs.min.js?v=4.6";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -1970,7 +1971,7 @@
     const n = (state.meta.customer || "未命名").replace(/[\\/:*?"<>|\s]+/g, "").slice(0, 20) || "未命名";
     const d = new Date();
     const ds = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
-    return `估價嗎耶通_${n}_${ds}.${ext}`;
+    return `${BRAND_ZH}_${n}_${ds}.${ext}`;
   }
   async function exportXlsx() {
     const ExcelJS = await loadExcelJS();
@@ -1978,7 +1979,7 @@
     const ws = wb.addWorksheet("估價單");
     const t = totals();
     let r = 1;
-    ws.getCell(r, 1).value = "估價嗎耶通"; ws.getCell(r, 1).font = { bold: true, size: 16 }; r++;
+    ws.getCell(r, 1).value = BRAND_ZH; ws.getCell(r, 1).font = { bold: true, size: 16 }; r++;
     for (const line of visibleMetaLines()) { ws.getCell(r, 1).value = line; r++; }
     r++;
     const headers = ["項次", "品名", "數量", "單位", "單價", "複價", "備註"];
@@ -2117,7 +2118,7 @@
       ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = "#638280"; ctx.fillRect(0, 0, W, 90);
       ctx.fillStyle = "#fff"; ctx.font = "700 44px 'Noto Sans TC', sans-serif";
-      ctx.fillText("估價嗎耶通", 56, 62);
+      ctx.fillText(BRAND_ZH, 56, 62);
       return 130;
     }
     let y = newPage();
@@ -2579,9 +2580,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=4.5"),
-        loadJson("taigi_terms.json?v=4.5"),
-        loadJson("user_corrections.json?v=4.5").catch(function () { return null; })
+        loadJson("price_db.json?v=4.6"),
+        loadJson("taigi_terms.json?v=4.6"),
+        loadJson("user_corrections.json?v=4.6").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {

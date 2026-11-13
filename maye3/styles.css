@@ -127,7 +127,7 @@ h1,h2,h3{margin:0;line-height:1.25;font-weight:700;letter-spacing:-.02em}
 
 .page-scene{
   position:absolute;top:0;left:0;right:0;height:38rem;z-index:0;pointer-events:none;
-  background-image:url("hero-bg.jpg?v=4.5");
+  background-image:url("hero-bg.jpg?v=4.6");
   background-size:cover;background-position:center 28%;background-repeat:no-repeat;
   opacity:var(--scene-opacity);
   -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 42%,transparent 100%);
@@ -145,7 +145,7 @@ h1,h2,h3{margin:0;line-height:1.25;font-weight:700;letter-spacing:-.02em}
 }
 .top-scene{
   position:absolute;inset:0;z-index:0;pointer-events:none;
-  background-image:url("hero-bg.jpg?v=4.5");
+  background-image:url("hero-bg.jpg?v=4.6");
   background-size:cover;background-position:center 28%;background-repeat:no-repeat;
 }
 .top-scene::after{
