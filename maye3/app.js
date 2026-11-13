@@ -200,7 +200,49 @@
     });
     return s;
   }
+  const L1_TERMS = [
+    "平釘天花", "平釘天花板", "嵌燈", "側邊櫃", "跳色", "系統高櫃", "系統櫃", "迴路",
+    "窗簾盒", "木作隔間", "木作輕隔間", "輕隔間", "水電打牆", "全室油漆", "乳膠漆",
+    "新增插座", "插座", "踢腳", "天花嵌燈", "全室水電", "全室電線重拉"
+  ];
+  function l1TermList() {
+    const extras = correctionList().map((c) => String(c.to || "").trim()).filter(Boolean);
+    const all = L1_TERMS.concat(extras, ["坪", "尺", "組", "迴", "口", "盞", "顆"]);
+    const seen = new Set();
+    const out = [];
+    all.forEach((w) => {
+      if (w && !seen.has(w)) { seen.add(w); out.push(w); }
+    });
+    return out.sort((a, b) => b.length - a.length);
+  }
+  function collectLockedSpans(text, extraPhrases) {
+    const src = String(text || "");
+    const phrases = (extraPhrases || []).concat(l1TermList());
+    const spans = [];
+    const used = [];
+    phrases.forEach((ph) => {
+      const p = String(ph || "").trim();
+      if (p.length < 2) return;
+      let from = 0;
+      while (from < src.length) {
+        const at = src.indexOf(p, from);
+        if (at < 0) break;
+        const end = at + p.length;
+        if (!used.some((u) => !(end <= u.start || at >= u.end))) {
+          spans.push({ start: at, end: end, text: p });
+          used.push({ start: at, end: end });
+        }
+        from = at + p.length;
+      }
+    });
+    spans.sort((a, b) => a.start - b.start);
+    return spans;
+  }
+  function spanLocked(spans, start, end) {
+    return (spans || []).some((sp) => !(end <= sp.start || start >= sp.end));
+  }
   function applySpeechCorrections(text) {
+    // L0 使用者校正（最長優先）＞ L1 工程標準詞與單位 ＞ L3 數字／單位。L2 台語同音在 normalizeAnswer。
     const user = applyUserCorrections(text);
     let s = user.text;
     const hits = user.hits.slice();
@@ -214,19 +256,19 @@
       hits.push({ from: s, to: afterPing, rule: "ping" });
       s = afterPing;
     }
-    const afterNum = arabicizeSpeechNumbers(s);
-    if (afterNum !== s) {
-      hits.push({ from: s, to: afterNum, rule: "numeral" });
-      s = afterNum;
-    }
     const afterAsr = fixAsrTradeTerms(s);
     if (afterAsr !== s) {
       hits.push({ from: s, to: afterAsr, rule: "asr-trade" });
       s = afterAsr;
     }
+    const afterNum = arabicizeSpeechNumbers(s);
+    if (afterNum !== s) {
+      hits.push({ from: s, to: afterNum, rule: "numeral" });
+      s = afterNum;
+    }
     const spaced = s.replace(/([一-龥])(\d)/g, "$1 $2");
     if (spaced !== s) s = spaced;
-    return { text: s, hits };
+    return { text: s, hits, locked: collectLockedSpans(s, hits.map((h) => String(h.to || "")).filter(Boolean)) };
   }
   function preferredVocabulary(hits) {
     const words = ["平釘天花", "坪", "全室", "系統高櫃", "迴路", "水泥", "公尺"];
@@ -309,8 +351,17 @@
       keys.push(name);
       if (name.length >= 4) keys.push(name.slice(0, 4));
     }
-    if (row && row.code === "W-101") keys.push("平釘天花", "平釘");
+    if (row && row.code === "W-101") keys.push("平釘天花", "平釘天花板", "平釘");
     if (row && row.code === "P-013") keys.push("打牆", "開槽");
+    if (row && row.code === "A-102") keys.push("全室油漆", "乳膠漆", "油漆");
+    if (row && row.code === "A-108") keys.push("跳色");
+    if (row && (row.code === "E-001" || row.code === "E-002")) keys.push("新增插座", "加插座", "插座");
+    if (row && row.code === "E-009") keys.push("天花嵌燈", "嵌燈");
+    if (row && row.name) {
+      ["側邊櫃", "窗簾盒", "木作隔間", "系統高櫃", "迴路"].forEach((k) => {
+        if (String(row.name).indexOf(k) >= 0 || String(row.note || "").indexOf(k) >= 0) keys.push(k);
+      });
+    }
     let best = -1;
     for (let i = 0; i < keys.length; i++) {
       const k = keys[i];
@@ -361,54 +412,39 @@
   const STORE_KEY = "maye-quote-state-v3";
   const PREFS_KEY = "maye-ui-prefs";
   function systemTheme() {
-    try {
-      return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-    } catch (e) { return "light"; }
+    return "dark";
   }
   function readPrefs() {
     try {
       const p = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
-      const themeLocked = p.theme === "light" || p.theme === "dark";
       return {
-        theme: themeLocked ? p.theme : systemTheme(),
+        theme: "dark",
         font: (p.font === "s" || p.font === "m" || p.font === "l") ? p.font : "m",
-        themeLocked
+        themeLocked: true
       };
     } catch (e) {
-      return { theme: systemTheme(), font: "m", themeLocked: false };
+      return { theme: "dark", font: "m", themeLocked: true };
     }
   }
   function applyUiPrefs(next, opts) {
     opts = opts || {};
     const cur = readPrefs();
-    const theme = (next && (next.theme === "light" || next.theme === "dark")) ? next.theme : cur.theme;
+    const theme = "dark";
     const font = (next && (next.font === "s" || next.font === "m" || next.font === "l")) ? next.font : cur.font;
-    const lockTheme = !!(opts.lockTheme || cur.themeLocked || (next && (next.theme === "light" || next.theme === "dark") && opts.save));
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-font", font);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#0E0E0E" : "#EFE8DF");
-    const lab = $("#theme-lab");
-    if (lab) lab.textContent = theme === "dark" ? "深色" : "明亮";
-    const btn = $("#btn-theme");
-    if (btn) {
-      btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-      btn.setAttribute("aria-label", theme === "dark"
-        ? "目前是深色模式，按下去改成明亮模式"
-        : "目前是明亮模式，按下去改成深色模式");
-    }
+    if (meta) meta.setAttribute("content", "#0B0D10");
     document.querySelectorAll("[data-font]").forEach((el) => {
       el.setAttribute("aria-pressed", el.getAttribute("data-font") === font ? "true" : "false");
     });
     if (opts.save) {
       try {
-        const o = { font };
-        if (lockTheme) o.theme = theme;
-        localStorage.setItem(PREFS_KEY, JSON.stringify(o));
+        localStorage.setItem(PREFS_KEY, JSON.stringify({ font, theme: "dark" }));
       } catch (e) {}
     }
     scheduleFitBrand();
-    return { theme, font, themeLocked: lockTheme };
+    return { theme, font, themeLocked: true };
   }
   function scheduleFitBrand() {
     if (scheduleFitBrand._t) cancelAnimationFrame(scheduleFitBrand._t);
@@ -585,13 +621,11 @@
     });
   }
   function toggleTheme() {
-    const cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
     const font = document.documentElement.getAttribute("data-font") || "m";
-    applyUiPrefs({ theme: cur === "dark" ? "light" : "dark", font }, { save: true, lockTheme: true });
+    applyUiPrefs({ theme: "dark", font }, { save: true });
   }
   function setFontSize(font) {
-    const theme = document.documentElement.getAttribute("data-theme") || systemTheme();
-    applyUiPrefs({ theme, font }, { save: true });
+    applyUiPrefs({ theme: "dark", font }, { save: true });
   }
   function isQuoteModalOpen() {
     const el = $("#quote-modal");
@@ -1076,7 +1110,9 @@
   }
   function normSrc(text) {
     let s = String(text || "").normalize("NFKC").replace(/臺/g, "台");
-    s = s.replace(/[，,。．、；;：:！!？?「」『』“”‘’（）()【】\[\]…—–]/g, " ");
+    s = s.replace(/[．.]/g, "。").replace(/!/g, "！").replace(/\?/g, "？").replace(/;/g, "；").replace(/,/g, "，");
+    s = s.replace(/[「」『』“”‘’（）()【】\[\]…—–：:]/g, " ");
+    s = s.replace(/\r\n|\r/g, "\n");
     return s.replace(/[ \t\u3000]+/g, " ").trim();
   }
   function termWords(t) {
@@ -1090,6 +1126,15 @@
   function allTermEntries() {
     return (state.terms.terms || []).concat(EXTRA_ALIASES);
   }
+  function termRank(t) {
+    if (!t) return 0;
+    if (t.code && itemByCode(t.code)) return 4;
+    if (t.code) return 3;
+    const std = String(t.standard || "");
+    if (L1_TERMS.some((w) => std === w || std.indexOf(w) >= 0 || w.indexOf(std) >= 0)) return 3;
+    if (termUnsure(t)) return 0;
+    return 1;
+  }
   function termTable() {
     if (TERM_RE) return;
     TERM_MAP = new Map();
@@ -1099,7 +1144,9 @@
         const k = String(w || "").trim();
         if (k.length < 2) continue;
         if (/^[a-z]{1,3}$/i.test(k) && !/^cm$/i.test(k)) continue;
-        if (!TERM_MAP.has(k)) TERM_MAP.set(k, t);
+        if (L1_TERMS.indexOf(k) >= 0 && String(t.standard || "") !== k && !String(t.standard || "").startsWith(k)) continue;
+        const prev = TERM_MAP.get(k);
+        if (!prev || termRank(t) > termRank(prev)) TERM_MAP.set(k, t);
       }
     }
     const keys = [...TERM_MAP.keys()].sort((a, b) => b.length - a.length)
@@ -1110,9 +1157,12 @@
     termTable();
     const hits = [];
     let out = normSrc(text);
-    if (TERM_RE) out = out.replace(TERM_RE, (m) => {
+    const locked = collectLockedSpans(out);
+    if (TERM_RE) out = out.replace(TERM_RE, (m, offset) => {
       const t = TERM_MAP.get(m); if (!t) return m;
       const unsure = termUnsure(t), std = String(t.standard || ""), code = t.code || null;
+      if (spanLocked(locked, offset, offset + m.length)) return m;
+      if (L1_TERMS.indexOf(m) >= 0) { hits.push({ from: m, to: m, unsure: false, code: code || null, locked: true }); return m; }
       if (std === m) { hits.push({ from: m, to: std, unsure, code }); return m; }
       if (std.startsWith(m)) { if (unsure) hits.push({ from: m, to: std, unsure: true, code }); return m; }
       hits.push({ from: m, to: std, unsure, code }); return std;
@@ -1338,7 +1388,54 @@
     }
     return out;
   }
-  function segmentSpeech(text) {
+  const CLAUSE_CONNECT_RE = /(?=然後|還要|另外|再加|還有|接著|加上)/;
+  const PUNCT_SPLIT_RE = /[。！？；\n]+/;
+  function protectPriceTotalJoins(text) {
+    return String(text || "").replace(/(元|塊錢|塊)\s*[，、]?\s*(總共|一共|合計|共)/g, "$1 $2");
+  }
+  function splitClauses(text) {
+    const src = protectPriceTotalJoins(text);
+    const out = [];
+    String(src || "").split(PUNCT_SPLIT_RE).forEach((chunk) => {
+      const piece = String(chunk || "").trim();
+      if (!piece) return;
+      piece.split(CLAUSE_CONNECT_RE).forEach((sub) => {
+        const t = String(sub || "").trim();
+        if (t) out.push(t);
+      });
+    });
+    return out.length ? out : (String(src || "").trim() ? [String(src).trim()] : []);
+  }
+  function extractPricedTotals(text) {
+    const src = String(text || "");
+    const unitPat = UNITS.slice().sort((a, b) => b.length - a.length)
+      .map((u) => u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+    const re = new RegExp(
+      "(.+?)(?:一|1|每)\\s*(" + unitPat + ")\\s*" + PRICE_NUM + "\\s*(?:元|塊錢|塊)?\\s*(?:總共|一共|合計|共)\\s*" + NUM + "\\s*(\\2|" + unitPat + ")",
+      "g"
+    );
+    const out = [];
+    let m;
+    while ((m = re.exec(src))) {
+      const name = cleanName(String(m[1] || "").replace(/^(?:然後|還要|另外|再加|還有|接著|加上)\s*/, ""));
+      const unit = unitCanon(m[5] || m[2]);
+      const qty = parseNumber(m[4]);
+      const price = parseNumber(m[3]);
+      if (!name || qty == null || qty <= 0) continue;
+      out.push({
+        start: m.index,
+        end: m.index + m[0].length,
+        name,
+        qty,
+        unit,
+        unitPrice: price,
+        raw: m[0]
+      });
+    }
+    return out;
+  }
+  function segmentSpeechByQty(text) {
+
     const src = String(text || "");
     const qtys = findQtys(src);
     const specs = findQtys(src, { includeSpec: true }).filter((q) => q.spec);
@@ -1403,6 +1500,53 @@
     }
     if (roomArea) segs.roomArea = roomArea;
     return segs;
+
+  }
+  function mergeSpeechSegs(target, incoming, roomRef) {
+    for (const seg of incoming) {
+      if (!seg) continue;
+      if (seg.kind === "context" && incoming.roomArea && !roomRef.roomArea) {
+        roomRef.roomArea = incoming.roomArea;
+      }
+      target.push(seg);
+    }
+    if (incoming.roomArea && !roomRef.roomArea) roomRef.roomArea = incoming.roomArea;
+  }
+  function segmentSpeech(text) {
+    const src = String(text || "");
+    const clauses = splitClauses(src);
+    const segs = [];
+    const roomRef = { roomArea: null };
+    for (const clause of clauses) {
+      const priced = extractPricedTotals(clause);
+      if (priced.length) {
+        let cursor = 0;
+        for (const p of priced) {
+          if (p.start > cursor) {
+            mergeSpeechSegs(segs, segmentSpeechByQty(clause.slice(cursor, p.start)), roomRef);
+          }
+          segs.push({ kind: "item", name: p.name, qty: p.qty, unit: p.unit, spec: "", index: p.start, spokenUnitPrice: p.unitPrice });
+          cursor = p.end;
+        }
+        if (cursor < clause.length) {
+          mergeSpeechSegs(segs, segmentSpeechByQty(clause.slice(cursor)), roomRef);
+        }
+      } else {
+        mergeSpeechSegs(segs, segmentSpeechByQty(clause), roomRef);
+      }
+    }
+    if (roomRef.roomArea) segs.roomArea = roomRef.roomArea;
+    return segs;
+  }
+
+  function applySpokenUnitPrice(row, price) {
+    const p = Number(price) || 0;
+    if (!row || !(p >= 100 && p <= 1000000)) return row;
+    row.unitPrice = p;
+    row.spokenPrice = true;
+    row.pending = false;
+    if (!row.note) row.note = "口述單價";
+    return row;
   }
   function emitParts(parts, items, usedKeys) {
     for (const p of parts) {
@@ -1414,6 +1558,7 @@
       } else {
         row = pendingLine(p.name || "未命名項目", p.qty, p.unit, p.note || "單價庫沒有對應行情");
       }
+      if (p.spokenUnitPrice) applySpokenUnitPrice(row, p.spokenUnitPrice);
       const key = (row.code || "") + "|" + row.name + "|" + row.qty + "|" + row.unit;
       if (usedKeys.has(key)) continue;
       usedKeys.add(key);
@@ -1437,6 +1582,7 @@
       let unit = seg.unit;
       // 全室油漆若沒帶到數量，用開頭的全室坪數
       const parts = partsFromName(name, qty, unit, seg.spec ? ("規格 " + seg.spec) : "");
+      if (seg.spokenUnitPrice) parts.forEach((pt) => { pt.spokenUnitPrice = seg.spokenUnitPrice; });
       if (parts.length > 1) {
         const allCabinets = parts.every((p) => /櫃|窗簾/.test(p.name || ""));
         const bare = String(name || "").match(/(?:^|[^0-9])([0-9]+(?:\.[0-9]+)?)(?!\s*(?:坪|尺|呎|組|口|迴|盞|顆|式|個|處|公尺|公分))/);
@@ -1951,7 +2097,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=4.6";
+      s.src = "exceljs.min.js?v=4.7";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -2419,6 +2565,14 @@
     }
   }
 
+  function appendFinalTranscript(acc, chunk) {
+    const piece = String(chunk || "").trim();
+    if (!piece) return String(acc || "");
+    const cur = String(acc || "").replace(/\s+$/, "");
+    if (!cur) return piece;
+    if (/[。．.！!？?；;，,、]$/.test(cur) || /^[。．.！!？?；;，,、]/.test(piece)) return cur + piece;
+    return cur + "。" + piece;
+  }
   function startBrowserAsr() {
     const Rec = speechCtor();
     if (!Rec) {
@@ -2434,7 +2588,7 @@
       let interim = "";
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
         const t = ev.results[i][0].transcript;
-        if (ev.results[i].isFinal) finalText += t;
+        if (ev.results[i].isFinal) finalText = appendFinalTranscript(finalText, t);
         else interim += t;
       }
       const ta = $("#speech");
@@ -2535,7 +2689,6 @@
       });
     }
     const qClose = $("#btn-quote-close"); if (qClose) qClose.addEventListener("click", () => closeQuoteModal());
-    const themeBtn = $("#btn-theme"); if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
     document.querySelectorAll("[data-font]").forEach((el) => {
       el.addEventListener("click", () => setFontSize(el.getAttribute("data-font")));
     });
@@ -2580,9 +2733,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=4.6"),
-        loadJson("taigi_terms.json?v=4.6"),
-        loadJson("user_corrections.json?v=4.6").catch(function () { return null; })
+        loadJson("price_db.json?v=4.7"),
+        loadJson("taigi_terms.json?v=4.7"),
+        loadJson("user_corrections.json?v=4.7").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {
@@ -2673,6 +2826,9 @@
     applySpeechCorrections,
     fallbackBannerText,
     segmentSpeech,
+    splitClauses,
+    extractPricedTotals,
+    appendFinalTranscript,
     extractSpokenPrices,
     attachSpokenPrices,
     parseNumber,

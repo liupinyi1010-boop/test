@@ -3,20 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#EFE8DF">
+  <meta name="theme-color" content="#0B0D10">
   <title>師傅說 · ShifuSay</title>
   <script>
   (function(){
     try{
       var p=JSON.parse(localStorage.getItem("maye-ui-prefs")||"{}");
-      var theme=(p.theme==="light"||p.theme==="dark")?p.theme:((window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light");
       var font=(p.font==="s"||p.font==="m"||p.font==="l")?p.font:"m";
-      document.documentElement.setAttribute("data-theme",theme);
+      document.documentElement.setAttribute("data-theme","dark");
       document.documentElement.setAttribute("data-font",font);
       var m=document.querySelector('meta[name="theme-color"]');
-      if(m)m.setAttribute("content",theme==="dark"?"#0E0E0E":"#EFE8DF");
+      if(m)m.setAttribute("content","#0B0D10");
     }catch(e){
-      document.documentElement.setAttribute("data-theme","light");
+      document.documentElement.setAttribute("data-theme","dark");
       document.documentElement.setAttribute("data-font","m");
     }
   })();
@@ -24,10 +23,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.6">
-  <link rel="icon" href="favicon.svg?v=4.6" type="image/svg+xml">
-  <link rel="icon" href="favicon-32.png?v=4.6" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.6" sizes="180x180">
+  <link rel="stylesheet" href="styles.css?v=4.7">
+  <link rel="icon" href="favicon.svg?v=4.7" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=4.7" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.7" sizes="180x180">
 </head>
 <body>
   <div class="page-scene" aria-hidden="true"></div>
@@ -37,8 +36,7 @@
     <div class="wrap">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">
-          <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.6" alt="" width="112" height="112">
-          <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.6" alt="" width="112" height="112">
+          <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.7" alt="" width="112" height="112">
         </div>
         <div class="brand-text">
           <h1>師傅說</h1>
@@ -47,15 +45,6 @@
       </div>
       <p class="lede">按下面的大按鈕，用講話做估價單。客戶姓名、電話、地址和施工項目，一次講完就好。</p>
       <div class="prefs" role="group" aria-label="畫面設定">
-        <button type="button" id="btn-theme" class="pref-btn" aria-pressed="false" aria-label="目前是明亮模式，按下去改成深色模式">
-          <span class="pref-ico theme-sun" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1L6 18M18 6l1.1-1.1"></path></svg>
-          </span>
-          <span class="pref-ico theme-moon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5z"></path></svg>
-          </span>
-          <span id="theme-lab">明亮</span>
-        </button>
         <div class="font-seg" role="radiogroup" aria-label="字體大小">
           <span class="font-seg-lab">字體</span>
           <button type="button" data-font="s" aria-pressed="false">小</button>
@@ -114,13 +103,16 @@
         <p class="status" id="status">準備好了。請按下面的大按鈕，開始講客戶和施工內容。</p>
         <div class="example" id="say-example">
           <div class="example-lab">可以這樣說：</div>
-          <p>「客戶王先生，電話 0912-345-678，地址高雄市左營區重立路 12 號。平釘天花板 8 坪，新增一迴冷氣迴路。」</p>
+          <p class="example-text">客戶王先生，電話 0912-345-678，地址台北市信義區***路**號
+油漆一坪***元，總共**坪
+平釘天花一坪***元，總共**坪
+新增插座一組***元，總共**組</p>
         </div>
       </div>
 
       <div class="card type-card">
         <label class="lbl" for="speech">也可以在這裡打字</label>
-        <textarea id="speech" class="ta" placeholder="例如：客戶王先生，電話 0912-345-678，地址高雄市左營區重立路 12 號，透天 3 樓。平釘天花板 8 坪，新增一迴冷氣迴路，乳膠漆二底三度 20 坪…"></textarea>
+        <textarea id="speech" class="ta" placeholder="例如：客戶王先生，電話 0912-345-678，地址台北市信義區***路**號。油漆一坪***元，總共**坪。平釘天花一坪***元，總共**坪。新增插座一組***元，總共**組。"></textarea>
         <div class="actions">
           <button type="button" id="btn-make" class="btn lg pill-cta">
             <span class="pill-ico" aria-hidden="true">
@@ -200,8 +192,7 @@
           </div>
           <div class="quote-modal-brand">
             <div class="brand-mark brand-mark-sm" aria-hidden="true">
-              <img class="brand-mark-img brand-mark-light" src="logo-light.png?v=4.6" alt="" width="64" height="64">
-              <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.6" alt="" width="64" height="64">
+              <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.7" alt="" width="64" height="64">
             </div>
             <h2 id="quote-modal-title">估價單</h2>
           </div>
@@ -248,7 +239,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=4.6"></script>
-  <script src="app.js?v=4.6"></script>
+  <script src="ai-adapter.js?v=4.7"></script>
+  <script src="app.js?v=4.7"></script>
 </body>
 </html>

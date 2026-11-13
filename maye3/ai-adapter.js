@@ -366,100 +366,6 @@
     throw lastErr || makeErr("upstream_error", "雲端服務連線或回應錯誤，請稍後再試。");
   }
 
-  function asrHeaders() {
-    const h = { "X-Device-Id": deviceId(), "X-Shifu-Plan": currentPlan() };
-    const acct = accountId();
-    if (acct) h["X-Account-Id"] = acct;
-    return h;
-  }
-
-  async function getAsrQuota(opts) {
-    if (!proxyConfigured()) throw makeErr("unavailable", "尚未設定雲端語音代理。");
-    const plan = (opts && opts.plan) || currentPlan();
-    let res;
-    try {
-      const headers = asrHeaders();
-      headers["X-Shifu-Plan"] = plan;
-      res = await fetch(proxyEndpoint("/v1/asr/quota"), { headers, signal: opts && opts.signal });
-    } catch (e) {
-      throw makeErr("upstream_error", "無法查詢台語辨識剩餘次數，請稍後再試。");
-    }
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.ok === false) {
-      const err = mapProxyError(data, res.status);
-      if (data && data.remaining != null) err.remaining = data.remaining;
-      if (data && data.limit != null) err.limit = data.limit;
-      throw err;
-    }
-    return data;
-  }
-
-  async function transcribe(blob, opts) {
-    if (!proxyConfigured()) throw makeErr("unavailable", "尚未設定雲端語音代理。");
-    if (!blob || !blob.size) throw makeErr("invalid_json", "沒有錄音可以辨識。");
-    const fd = new FormData();
-    const type = (blob.type || "application/octet-stream").split(";")[0];
-    const ext = /mp4|m4a|aac|quicktime/i.test(type) ? "m4a" : /mpeg|mp3/i.test(type) ? "mp3" : /wav/i.test(type) ? "wav" : /webm/i.test(type) ? "webm" : "dat";
-    const file = blob instanceof File ? blob : new File([blob], "clip." + ext, { type: blob.type || type });
-    fd.append("file", file, file.name || ("clip." + ext));
-    fd.append("plan", (opts && opts.plan) || currentPlan());
-    const headers = asrHeaders();
-    if (opts && opts.plan) headers["X-Shifu-Plan"] = opts.plan;
-    if (opts && opts.duration) headers["X-Audio-Duration"] = String(opts.duration);
-    let res;
-    try {
-      res = await fetch(proxyEndpoint("/v1/asr"), {
-        method: "POST",
-        headers,
-        body: fd,
-        signal: opts && opts.signal,
-      });
-    } catch (e) {
-      if (opts && opts.signal && opts.signal.aborted) throw makeErr("cancelled", "已取消辨識。");
-      throw makeErr("upstream_error", "無法連線到台語辨識代理，請改用瀏覽器辨識。");
-    }
-    const data = await res.json().catch(() => ({}));
-    if ((!res.ok && res.status !== 202) || data.ok === false) {
-      const err = mapProxyError(data, res.status);
-      if (data && data.remaining != null) err.remaining = data.remaining;
-      if (data && data.limit != null) err.limit = data.limit;
-      throw err;
-    }
-    if (data && data.pending && data.uid) {
-      return await waitAsrJob(data, headers, opts);
-    }
-    return data;
-  }
-
-  async function waitAsrJob(first, headers, opts) {
-    const uid = first.uid;
-    const t0 = Date.now();
-    let last = first;
-    while (Date.now() - t0 < 45000) {
-      if (opts && opts.signal && opts.signal.aborted) throw makeErr("cancelled", "已取消辨識。");
-      await new Promise((r) => setTimeout(r, 1000));
-      let res;
-      try {
-        res = await fetch(proxyEndpoint("/v1/asr/jobs/" + encodeURIComponent(uid)), { headers, signal: opts && opts.signal });
-      } catch (e) {
-        if (opts && opts.signal && opts.signal.aborted) throw makeErr("cancelled", "已取消辨識。");
-        continue;
-      }
-      const data = await res.json().catch(() => ({}));
-      if ((!res.ok && res.status !== 202) || data.ok === false) {
-        const err = mapProxyError(data, res.status);
-        if (data && data.remaining != null) err.remaining = data.remaining;
-        if (data && data.limit != null) err.limit = data.limit;
-        throw err;
-      }
-      last = data;
-      if (!data.pending && (data.text != null || data.status === "completed")) return data;
-    }
-    const err = makeErr("timeout", "台語辨識逾時，請再試一次或改用瀏覽器辨識。");
-    if (last && last.remaining != null) err.remaining = last.remaining;
-    throw err;
-  }
-
   function createSample() {
     return {
       async limits() {
@@ -544,8 +450,6 @@
     setProxyUrl,
     getProxyUrl,
     deviceId,
-    getAsrQuota,
-    transcribe,
   };
   Object.defineProperty(api, "PROXY_URL", {
     configurable: true,
