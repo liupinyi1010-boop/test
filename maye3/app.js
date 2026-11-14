@@ -434,7 +434,7 @@
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-font", font);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", "#0B0D10");
+    if (meta) meta.setAttribute("content", "#FFC928");
     document.querySelectorAll("[data-font]").forEach((el) => {
       el.setAttribute("aria-pressed", el.getAttribute("data-font") === font ? "true" : "false");
     });
@@ -625,7 +625,19 @@
     applyUiPrefs({ theme: "dark", font }, { save: true });
   }
   function setFontSize(font) {
-    applyUiPrefs({ theme: "dark", font }, { save: true });
+    let done = false;
+    const run = () => { if (done) return; done = true; applyUiPrefs({ theme: "dark", font }, { save: true }); };
+    // 字體大小切換時整頁交叉淡化，不要瞬間跳動；若瀏覽器沒有在繪製畫面，250 毫秒後直接套用
+    // 轉場若因視窗尺寸改變被中止，忽略 rejected promise，避免未捕捉錯誤，並立刻套用字體
+    if (typeof document.startViewTransition === "function" && !prefersReducedMotion() && document.visibilityState === "visible") {
+      try {
+        const vt = document.startViewTransition(run);
+        const swallow = (p) => { if (p && typeof p.then === "function") p.then(function () {}, function () { run(); }); };
+        swallow(vt && vt.ready);
+        swallow(vt && vt.finished);
+      } catch (e) { run(); }
+      setTimeout(run, 250);
+    } else run();
   }
   function isQuoteModalOpen() {
     const el = $("#quote-modal");
@@ -946,7 +958,8 @@
     if (el) el.hidden = true;
     modalMode = null;
     const box = $("#modal-actions");
-    if (box) box.innerHTML = "";
+    // 等面板滑下去之後才清空按鈕，避免退場動畫中面板先變空
+    if (box) setTimeout(() => { if (!el || el.hidden) box.innerHTML = ""; }, 320);
     syncBodyLock();
   }
   function openQuoteModal() {
@@ -2097,7 +2110,7 @@
     if (window.ExcelJS) return window.ExcelJS;
     await new Promise((res, rej) => {
       const s = document.createElement("script");
-      s.src = "exceljs.min.js?v=4.7";
+      s.src = "exceljs.min.js?v=4.9";
       s.onload = res; s.onerror = () => rej(new Error("exceljs"));
       document.head.appendChild(s);
     });
@@ -2262,13 +2275,13 @@
     const t = totals();
     function newPage() {
       ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = "#638280"; ctx.fillRect(0, 0, W, 90);
-      ctx.fillStyle = "#fff"; ctx.font = "700 44px 'Noto Sans TC', sans-serif";
+      ctx.fillStyle = "#141414"; ctx.fillRect(0, 0, W, 90);
+      ctx.fillStyle = "#FFC928"; ctx.font = "900 44px 'Noto Sans TC', sans-serif";
       ctx.fillText(BRAND_ZH, 56, 62);
       return 130;
     }
     let y = newPage();
-    ctx.fillStyle = "#1c2a28";
+    ctx.fillStyle = "#141414";
     ctx.font = "400 28px 'Noto Sans TC', sans-serif";
     for (const line of visibleMetaLines()) {
       ctx.fillText(line, 56, y); y += 40;
@@ -2277,11 +2290,11 @@
     const cols = [56, 130, 620, 760, 900, 1040];
     const heads = ["項次", "品名", "數量", "單位", "單價", "複價"];
     ctx.font = "700 24px 'Noto Sans TC', sans-serif";
-    ctx.fillStyle = "#4a5c59";
+    ctx.fillStyle = "#5C574B";
     heads.forEach((h, i) => ctx.fillText(h, cols[i], y));
-    y += 16; ctx.strokeStyle = "#d5dedc"; ctx.beginPath(); ctx.moveTo(56, y); ctx.lineTo(1184, y); ctx.stroke();
+    y += 16; ctx.strokeStyle = "#141414"; ctx.beginPath(); ctx.moveTo(56, y); ctx.lineTo(1184, y); ctx.stroke();
     y += 36;
-    ctx.fillStyle = "#1c2a28"; ctx.font = "400 26px 'Noto Sans TC', sans-serif";
+    ctx.fillStyle = "#141414"; ctx.font = "400 26px 'Noto Sans TC', sans-serif";
     function flush() {
       const c = document.createElement("canvas");
       c.width = W; c.height = H;
@@ -2304,7 +2317,7 @@
     ctx.fillText("小計  " + fmt(t.sub), 800, y); y += 40;
     if (state.tax) { ctx.fillText("營業稅 5%  " + fmt(t.tax), 800, y); y += 40; }
     ctx.font = "800 34px 'Noto Sans TC', sans-serif";
-    ctx.fillStyle = "#2f4543";
+    ctx.fillStyle = "#141414";
     ctx.fillText("合計  " + fmt(t.total), 800, y);
     flush();
     return pages;
@@ -2689,7 +2702,7 @@
       });
     }
     const qClose = $("#btn-quote-close"); if (qClose) qClose.addEventListener("click", () => closeQuoteModal());
-    document.querySelectorAll("[data-font]").forEach((el) => {
+    document.querySelectorAll("button[data-font]").forEach((el) => {
       el.addEventListener("click", () => setFontSize(el.getAttribute("data-font")));
     });
     const speech = $("#speech");
@@ -2733,9 +2746,9 @@
     renderMeta();
     try {
       const [db, terms, corrections] = await Promise.all([
-        loadJson("price_db.json?v=4.7"),
-        loadJson("taigi_terms.json?v=4.7"),
-        loadJson("user_corrections.json?v=4.7").catch(function () { return null; })
+        loadJson("price_db.json?v=4.9"),
+        loadJson("taigi_terms.json?v=4.9"),
+        loadJson("user_corrections.json?v=4.9").catch(function () { return null; })
       ]);
       const cat = {};
       for (const k of TRADES) {

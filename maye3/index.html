@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0B0D10">
+  <meta name="theme-color" content="#FFC928">
   <title>師傅說 · ShifuSay</title>
   <script>
   (function(){
@@ -13,30 +13,39 @@
       document.documentElement.setAttribute("data-theme","dark");
       document.documentElement.setAttribute("data-font",font);
       var m=document.querySelector('meta[name="theme-color"]');
-      if(m)m.setAttribute("content","#0B0D10");
+      if(m)m.setAttribute("content","#FFC928");
     }catch(e){
       document.documentElement.setAttribute("data-theme","dark");
       document.documentElement.setAttribute("data-font","m");
     }
+    // 讓 iOS Safari 的按壓（:active）樣式即時生效
+    document.addEventListener("touchstart",function(){},{passive:true});
   })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.7">
-  <link rel="icon" href="favicon.svg?v=4.7" type="image/svg+xml">
-  <link rel="icon" href="favicon-32.png?v=4.7" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.7" sizes="180x180">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=4.9">
+  <link rel="icon" href="favicon.svg?v=4.9" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=4.9" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.9" sizes="180x180">
 </head>
 <body>
-  <div class="page-scene" aria-hidden="true"></div>
+  <!--
+  THESIS: 一顆巨大的錄音鍵就是整個 app；不做深色玻璃質感的工具頁，改成工地安全黃的整片色面。
+  OWN-WORLD: 安全黃 #FFC928 鋪滿頁面，內容放在大圓角白卡上，墨黑 #141414 做按鈕、圖示與反白色塊；扁平色塊、無漸層、無玻璃。
+  STORY: 師傅一眼看到黑圈黃心的錄音鍵，按下去講，講完看到黃色合計數字，再按黑底卡片上的黃色按鈕下載。
+  FIRST VIEWPORT: 黃底上是黑色泡泡標誌、粗黑「師傅說」與字體切換；右上角一個淡色的大「說」字；下方白卡正中是直徑 10rem 的錄音鍵。
+  FORM: 使用者以五張參考圖指定（黃／黑／白大圓角色塊），不經抽選。
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+  -->
 
   <header class="top no-print">
-    <div class="top-scene" aria-hidden="true"></div>
+    <span class="top-ghost" aria-hidden="true">說</span>
     <div class="wrap">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">
-          <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.7" alt="" width="112" height="112">
+          <img class="brand-mark-img" src="logo-ink.svg?v=4.9" alt="" width="84" height="120">
         </div>
         <div class="brand-text">
           <h1>師傅說</h1>
@@ -101,13 +110,15 @@
           您現在是用 LINE 裡面的視窗。若不能用麥克風，請點右上角「⋯」，選擇用外部瀏覽器（Safari 或 Chrome）開啟這一頁。
         </div>
         <p class="status" id="status">準備好了。請按下面的大按鈕，開始講客戶和施工內容。</p>
-        <div class="example" id="say-example">
-          <div class="example-lab">可以這樣說：</div>
-          <p class="example-text">客戶王先生，電話 0912-345-678，地址台北市信義區***路**號
+      </div>
+
+      <div class="example" id="say-example">
+        <img class="example-art" src="shifu-speaking.webp?v=4.9" alt="" width="520" height="516" decoding="async">
+        <h2 class="example-lab">可以這樣說</h2>
+        <p class="example-text">客戶王先生，電話 0912-345-678，地址台北市信義區***路**號
 油漆一坪***元，總共**坪
 平釘天花一坪***元，總共**坪
 新增插座一組***元，總共**組</p>
-        </div>
       </div>
 
       <div class="card type-card">
@@ -157,7 +168,7 @@
         </div>
         <p class="hint" id="tax-note">若要修改，請下載 Excel 後自己改。點預覽可以看完整報價單。</p>
       </div>
-      <div class="card no-print" id="download-card">
+      <div class="card card-ink no-print" id="download-card">
         <h2>下載報價單</h2>
         <p class="hint">若要改數量、單價或客戶資料，請下載 Excel 後自己改；改完後複價和合計會自動重算。</p>
         <div class="export">
@@ -192,7 +203,7 @@
           </div>
           <div class="quote-modal-brand">
             <div class="brand-mark brand-mark-sm" aria-hidden="true">
-              <img class="brand-mark-img brand-mark-dark" src="logo-dark.png?v=4.7" alt="" width="64" height="64">
+              <img class="brand-mark-img" src="logo-ink.svg?v=4.9" alt="" width="42" height="60">
             </div>
             <h2 id="quote-modal-title">估價單</h2>
           </div>
@@ -239,7 +250,7 @@
 
   <div id="print-sheet" aria-hidden="true"></div>
 
-  <script src="ai-adapter.js?v=4.7"></script>
-  <script src="app.js?v=4.7"></script>
+  <script src="ai-adapter.js?v=4.9"></script>
+  <script src="app.js?v=4.9"></script>
 </body>
 </html>
