@@ -1041,11 +1041,12 @@
     openModal({
       mode: "download",
       title: "下載報價單",
-      desc: "請選一種檔案。PDF 方便查看和列印；Excel 方便您自己改數字。",
+      desc: "請選一種方式。PDF 方便查看和列印；Excel 方便您自己改數字；LINE 可以傳圖片或文字給客戶。",
       buttons: [
         { id: "btn-pdf", label: "下載 PDF（方便查看、列印）", cls: "btn lg sheet-row", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg>', fn: () => { closeModal(); exportPdf().catch((e) => { console.error(e); setExportStatus("匯出 PDF 失敗，請再試一次。", true); }); } },
         { id: "btn-xlsx", label: "下載 Excel（方便自己改數字）", cls: "btn lg sheet-row", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M4 10h16M4 15h16M10 5v14"></path></svg>', fn: () => { closeModal(); exportXlsx().catch((e) => { console.error(e); setExportStatus("匯出 Excel 失敗，請再試一次。", true); }); } },
-        { id: "btn-line", label: "用 LINE 分享", cls: "btn sec lg", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v9H8l-4 4V6z"></path></svg>', fn: () => { window.open(lineShareUrl(), "_blank", "noopener"); } },
+        { id: "btn-line-jpg", label: "匯出到LINE-圖片JPG", cls: "btn sec lg", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="M21 16l-5-5-8 8"></path></svg>', fn: () => { closeModal(); exportLineJpg().catch((e) => { console.error(e); lineNotice("報價單圖片產生失敗，請再試一次，或改用文字檔。", true); }); } },
+        { id: "btn-line-text", label: "匯出到LINE-文字檔", cls: "btn sec lg", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v9H8l-4 4V6z"></path><path d="M8 9.5h8M8 12h5"></path></svg>', fn: () => { closeModal(); exportLineText().catch((e) => { console.error(e); lineNotice("LINE 分享失敗，請再試一次。", true); }); } },
         { id: "btn-modal-cancel", label: "取消", cls: "btn ghost lg", fn: closeModal }
       ]
     });
@@ -2250,8 +2251,219 @@
     lines.push("單價依市場行情，可再自行調整。沒有行情者標示待填。如需修改，請下載 Excel 後自行調整。");
     return lines.join("\n");
   }
+  // v4.9.3：匯出到 LINE 分成「圖片 JPG」與「文字檔」兩種
+  function lineDateText() {
+    const d = new Date();
+    return d.getFullYear() + "/" + String(d.getMonth() + 1).padStart(2, "0") + "/" + String(d.getDate()).padStart(2, "0");
+  }
+  function itemPriceText(row) {
+    return (row.pending && !(Number(row.unitPrice) > 0)) ? "待填" : "NT$" + fmt(row.unitPrice);
+  }
+  function itemTags(row) {
+    return (row.pending ? "（待填）" : "") + (row.spokenPrice ? "（口述單價）" : "");
+  }
+  function lineText() {
+    // 文字檔格式：各段依報價單順序，段與段之間空一行
+    const t = totals();
+    const sections = [];
+    sections.push([quoteTitleText(), "日期：" + lineDateText()]);
+    const cust = [];
+    [["customer", "姓名"], ["phone", "電話"], ["address", "地址"]].forEach(([k, lab]) => {
+      if (!state.show[k]) return;
+      const v = String(state.meta[k] || "").trim();
+      if (v) cust.push(lab + "：" + v);
+    });
+    if (cust.length) sections.push(cust);
+    state.items.forEach((r, i) => {
+      const sec = [(i + 1) + ". " + r.name + itemTags(r)];
+      sec.push(r.qty + " " + r.unit + " × " + itemPriceText(r) + " = NT$" + fmt(lineAmount(r)));
+      const note = String(r.note || "").trim();
+      if (note) sec.push(note);
+      sections.push(sec);
+    });
+    sections.push([
+      "小計：NT$" + fmt(t.sub),
+      state.tax ? "營業稅 5%：NT$" + fmt(t.tax) : "營業稅 5%：未加",
+      "總計：NT$" + fmt(t.total)
+    ]);
+    const extra = [];
+    const qn = String(state.quoteNote || "").trim();
+    const ct = String(state.contact || "").trim();
+    if (qn) extra.push("備註：" + qn);
+    if (ct) extra.push("師傅聯絡資訊：" + ct);
+    if (extra.length) sections.push(extra);
+    return sections.map((sec) => sec.join("\n")).join("\n\n");
+  }
   function lineShareUrl() {
-    return "https://line.me/R/share?text=" + encodeURIComponent(exportText());
+    return "https://line.me/R/share?text=" + encodeURIComponent(lineText());
+  }
+  function showToast(msg, isErr) {
+    let el = document.getElementById("app-toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "app-toast";
+      el.className = "app-toast";
+      el.setAttribute("role", "status");
+      el.setAttribute("aria-live", "polite");
+      document.body.appendChild(el);
+    }
+    el.textContent = msg || "";
+    el.classList.toggle("err", !!isErr);
+    el.hidden = !msg;
+    clearTimeout(showToast._t);
+    if (msg) showToast._t = setTimeout(() => { el.hidden = true; }, 7000);
+  }
+  function lineNotice(msg, isErr) { setExportStatus(msg, isErr); showToast(msg, isErr); }
+  const JPG_FONT = "'PingFang TC','Heiti TC','Microsoft JhengHei','Noto Sans CJK TC','Noto Sans TC',sans-serif";
+  function wrapText(ctx, text, maxW) {
+    const out = [];
+    let cur = "";
+    for (const ch of Array.from(String(text || ""))) {
+      if (ch === "\n") { out.push(cur); cur = ""; continue; }
+      if (cur && ctx.measureText(cur + ch).width > maxW) { out.push(cur); cur = ch.trim() ? ch : ""; }
+      else cur += ch;
+    }
+    if (cur || !out.length) out.push(cur);
+    return out;
+  }
+  function drawQuoteJpg(ctx, W, draw) {
+    // draw=false：只量高度；draw=true：真的畫
+    const P = 64, R = W - P, CW = W - P * 2;
+    const t = totals();
+    let y = 0;
+    const font = (w, s) => { ctx.font = w + " " + s + "px " + JPG_FONT; };
+    const text = (s, x, yy, color, align) => {
+      if (!draw) return;
+      ctx.fillStyle = color || "#141414"; ctx.textAlign = align || "left"; ctx.fillText(s, x, yy);
+    };
+    const rule = (yy, color, lw) => {
+      if (!draw) return;
+      ctx.strokeStyle = color || "#141414"; ctx.lineWidth = lw || 2;
+      ctx.beginPath(); ctx.moveTo(P, yy); ctx.lineTo(R, yy); ctx.stroke();
+    };
+    ctx.textBaseline = "alphabetic";
+    // 標題列
+    font("900", 76);
+    const titleLines = wrapText(ctx, quoteTitleText(), CW);
+    const headH = 70 + titleLines.length * 92 + 20;
+    if (draw) { ctx.fillStyle = "#141414"; ctx.fillRect(0, 0, W, headH); ctx.fillStyle = "#FFC928"; ctx.fillRect(0, headH, W, 10); }
+    y = 70;
+    titleLines.forEach((s) => { y += 76; text(s, P, y, "#FFC928"); y += 16; });
+    y = headH + 10 + 64;
+    font("400", 34);
+    text("日期：" + lineDateText(), P, y, "#5C574B");
+    const meta = visibleMetaLines();
+    if (meta.length) {
+      y += 92;
+      font("700", 40);
+      text("客戶資料", P, y, "#141414");
+      y += 18; rule(y, "#141414", 4); y += 4;
+      font("400", 40);
+      meta.forEach((m) => {
+        wrapText(ctx, m, CW).forEach((s) => { y += 60; text(s, P, y); });
+      });
+      y += 8;
+    }
+    y += 92;
+    font("700", 40);
+    text("施工項目", P, y, "#141414");
+    y += 18; rule(y, "#141414", 4); y += 10;
+    state.items.forEach((row, i) => {
+      font("700", 44);
+      const nameLines = wrapText(ctx, (i + 1) + ". " + row.name + itemTags(row), CW);
+      nameLines.forEach((s) => { y += 62; text(s, P, y); });
+      font("400", 38);
+      const detail = "數量 " + row.qty + " " + row.unit + " × 單價 " + itemPriceText(row);
+      const amt = "NT$" + fmt(lineAmount(row));
+      ctx.font = "800 44px " + JPG_FONT;
+      const amtW = ctx.measureText(amt).width;
+      font("400", 38);
+      const dLines = wrapText(ctx, detail, CW - amtW - 32);
+      dLines.forEach((s, k) => {
+        y += 56;
+        text(s, P, y, "#3A372F");
+        if (k === dLines.length - 1) { ctx.font = "800 44px " + JPG_FONT; text(amt, R, y, "#141414", "right"); font("400", 38); }
+      });
+      const note = String(row.note || "").trim();
+      if (note) {
+        font("400", 34);
+        wrapText(ctx, "備註：" + note, CW).forEach((s) => { y += 50; text(s, P, y, "#5C574B"); });
+      }
+      y += 28; rule(y, "#D9D3C3", 2); y += 4;
+    });
+    if (!state.items.length) { font("400", 38); y += 60; text("還沒有項目", P, y, "#5C574B"); y += 30; }
+    // 合計
+    y += 30;
+    const tot = [["小計", "NT$" + fmt(t.sub)], ["營業稅 5%", state.tax ? "NT$" + fmt(t.tax) : "未加"]];
+    font("400", 40);
+    tot.forEach(([k, v]) => { y += 60; text(k, P, y, "#3A372F"); text(v, R, y, "#141414", "right"); });
+    y += 34;
+    const boxH = 110;
+    if (draw) { ctx.fillStyle = "#FFC928"; ctx.fillRect(P - 16, y, CW + 32, boxH); }
+    font("900", 52);
+    text("總計", P + 8, y + 74, "#141414");
+    text("NT$" + fmt(t.total), R - 8, y + 74, "#141414", "right");
+    y += boxH + 50;
+    font("400", 30);
+    wrapText(ctx, "單價依市場行情，可再自行調整。沒有行情者標示待填。", CW).forEach((s) => { y += 44; text(s, P, y, "#5C574B"); });
+    y += 64;
+    return Math.ceil(y);
+  }
+  async function quoteJpegCanvas() {
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+    const W = 1080;
+    const m = document.createElement("canvas");
+    m.width = W; m.height = 10;
+    const H = Math.min(16000, Math.max(800, drawQuoteJpg(m.getContext("2d"), W, false)));
+    const c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+    drawQuoteJpg(ctx, W, true);
+    return c;
+  }
+  async function quoteJpegBlob() {
+    const c = await quoteJpegCanvas();
+    const blob = await new Promise((res) => c.toBlob(res, "image/jpeg", 0.92));
+    if (!blob) throw new Error("jpeg");
+    return blob;
+  }
+  async function exportLineJpg() {
+    const blob = await quoteJpegBlob();
+    const name = exportName("jpg");
+    let file = null;
+    try { file = new File([blob], name, { type: "image/jpeg" }); } catch (e) { file = null; }
+    let canFiles = false;
+    try { canFiles = !!(file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })); } catch (e) { canFiles = false; }
+    if (canFiles) {
+      try {
+        await navigator.share({ files: [file], title: quoteTitleText() });
+        lineNotice("已開啟分享，請選 LINE 把報價單圖片傳給客戶。");
+        return { mode: "share", type: blob.type, size: blob.size, name };
+      } catch (e) {
+        if (e && e.name === "AbortError") { lineNotice("已取消分享。"); return { mode: "cancel", type: blob.type, size: blob.size, name }; }
+      }
+    }
+    saveBlob(name, blob);
+    lineNotice("已下載報價單圖片（JPG）。請打開 LINE 聊天室，按「＋」或相片圖示，選這張圖片傳給客戶。");
+    return { mode: "download", type: blob.type, size: blob.size, name };
+  }
+  async function exportLineText() {
+    const text = lineText();
+    if (navigator.share) {
+      try {
+        await navigator.share({ text });
+        lineNotice("已開啟分享，請選 LINE 把報價單文字傳給客戶。");
+        return { mode: "share", text };
+      } catch (e) {
+        if (e && e.name === "AbortError") { lineNotice("已取消分享。"); return { mode: "cancel", text }; }
+      }
+    }
+    const url = "https://line.me/R/share?text=" + encodeURIComponent(text);
+    const w = window.open(url, "_blank", "noopener");
+    if (!w) { try { location.href = url; } catch (e) {} }
+    lineNotice("已開啟 LINE，請選要傳給哪位客戶。");
+    return { mode: "line-url", url, text };
   }
 
   async function copyText() {
@@ -2983,6 +3195,11 @@
     quoteSheetHtml,
     renderSheet,
     lineShareUrl,
+    lineText,
+    quoteJpegBlob,
+    exportLineJpg,
+    exportLineText,
+    showToast,
     exportXlsx,
     exportPdf,
     exportName,
