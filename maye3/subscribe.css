@@ -206,6 +206,28 @@
   color:var(--on-ink-2);
   letter-spacing:.06em;
 }
+.price-was{
+  font-size:1.15rem;
+  font-weight:700;
+  color:var(--on-ink-2);
+  letter-spacing:.02em;
+}
+.price-was s{
+  font-family:var(--num);
+  text-decoration-thickness:2px;
+  text-decoration-color:currentColor;
+}
+.price-now-lab{
+  display:inline-block;
+  margin-top:.35rem;
+  padding:.15rem .7rem;
+  border-radius:999px;
+  background:var(--yellow);
+  color:var(--ink);
+  font-size:1.05rem;
+  font-weight:900;
+  letter-spacing:.04em;
+}
 .price-row{
   display:flex;
   align-items:baseline;
