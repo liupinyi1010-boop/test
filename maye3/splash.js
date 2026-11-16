@@ -2,7 +2,7 @@
    音效全部用 Web Audio API 即時合成，不載入任何外部音檔。 */
 (function () {
   "use strict";
-  var VER = "4.9.6";
+  var VER = "4.9.7";
   var SUB_KEY = "maye-sub-v1";        // 訂閱狀態（之後由綠界／後端寫入）
   var PREFS_KEY = "maye-ui-prefs";    // 介面偏好（字體、靜音）
   var SEEN_KEY = "maye-splash-v1";    // sessionStorage：這次開啟已看過開場
