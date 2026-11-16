@@ -36,8 +36,7 @@
   </header>
 
   <main class="wrap">
-    <section id="intro-video-section" class="video-card" aria-labelledby="intro-video-title">
-      <h2 id="intro-video-title" class="section-kicker">介紹影片</h2>
+    <section id="intro-video-section" class="video-card">
       <div class="video-stage is-placeholder" id="video-stage">
         <div class="video-placeholder" id="video-placeholder">
           <span class="play-badge" aria-hidden="true">
@@ -47,7 +46,8 @@
           </span>
           <p>介紹影片製作中</p>
         </div>
-        <video id="intro-video" controls playsinline preload="none" hidden></video>
+        <video id="intro-video" controls autoplay muted playsinline webkit-playsinline preload="auto" hidden></video>
+        <button type="button" class="unmute-btn" id="btn-unmute" hidden aria-label="開聲音">開聲音</button>
       </div>
     </section>
 
@@ -190,14 +190,24 @@
     var video = document.getElementById("intro-video");
     var placeholder = document.getElementById("video-placeholder");
     var stage = document.getElementById("video-stage");
+    var unmuteBtn = document.getElementById("btn-unmute");
+
+    function hideUnmute() {
+      if (unmuteBtn) unmuteBtn.hidden = true;
+    }
+    function showUnmute() {
+      if (unmuteBtn) unmuteBtn.hidden = false;
+    }
 
     function showPlaceholder() {
       if (video) {
         video.hidden = true;
+        try { video.pause(); } catch (e) {}
         video.removeAttribute("src");
         video.removeAttribute("poster");
         try { video.load(); } catch (e) {}
       }
+      hideUnmute();
       if (placeholder) placeholder.hidden = false;
       if (stage) stage.classList.add("is-placeholder");
     }
@@ -206,6 +216,35 @@
       if (video) video.hidden = false;
       if (placeholder) placeholder.hidden = true;
       if (stage) stage.classList.remove("is-placeholder");
+    }
+
+    function syncUnmuteBtn() {
+      if (!video || video.hidden) {
+        hideUnmute();
+        return;
+      }
+      if (video.muted || video.volume === 0) showUnmute();
+      else hideUnmute();
+    }
+
+    function tryAutoplay() {
+      if (!video) return;
+      video.muted = true;
+      video.setAttribute("muted", "");
+      var p;
+      try { p = video.play(); } catch (e) { p = Promise.reject(e); }
+      if (p && typeof p.then === "function") {
+        p.then(function () {
+          showVideo();
+          syncUnmuteBtn();
+        }).catch(function () {
+          showVideo();
+          syncUnmuteBtn();
+        });
+      } else {
+        showVideo();
+        syncUnmuteBtn();
+      }
     }
 
     function exists(url) {
@@ -232,11 +271,38 @@
           showPlaceholder();
           return;
         }
+        video.muted = true;
+        video.defaultMuted = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.setAttribute("autoplay", "");
+        video.setAttribute("muted", "");
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
         video.src = VIDEO_SRC;
         video.addEventListener("error", showPlaceholder);
-        video.addEventListener("loadeddata", showVideo);
-        video.addEventListener("canplay", showVideo);
+        video.addEventListener("loadeddata", function () {
+          showVideo();
+          tryAutoplay();
+        });
+        video.addEventListener("canplay", function () {
+          showVideo();
+          tryAutoplay();
+        });
+        video.addEventListener("volumechange", syncUnmuteBtn);
+        video.addEventListener("play", syncUnmuteBtn);
+        if (unmuteBtn) {
+          unmuteBtn.addEventListener("click", function () {
+            video.muted = false;
+            video.volume = 1;
+            hideUnmute();
+            var p;
+            try { p = video.play(); } catch (e) { p = Promise.reject(e); }
+            if (p && typeof p.catch === "function") p.catch(function () {});
+          });
+        }
         try { video.load(); } catch (e) {}
+        tryAutoplay();
       });
     }
 

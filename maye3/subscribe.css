@@ -24,13 +24,9 @@
   text-wrap:balance;
 }
 
-/* 介紹影片：沒有檔案時只顯示佔位卡，不露出損壞的播放器 */
+/* 介紹影片區塊：沒有檔案時只顯示佔位卡，不露出損壞的播放器 */
 .video-card{
   margin:1.2rem 0 1.4rem;
-}
-.section-kicker{
-  font-size:1.3rem;
-  margin:0 0 .7rem;
 }
 .video-stage{
   position:relative;
@@ -49,6 +45,35 @@
   vertical-align:middle;
 }
 .video-stage video[hidden]{display:none!important}
+.unmute-btn{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:2;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:3.6rem;
+  min-width:8.5rem;
+  padding:.75rem 1.6rem;
+  border:0;
+  border-radius:999px;
+  background-color:var(--yellow);
+  color:var(--ink);
+  font-family:var(--display);
+  font-weight:900;
+  font-size:1.45rem;
+  line-height:1.2;
+  letter-spacing:.04em;
+  box-shadow:0 .5rem 1.2rem -.4rem rgba(0,0,0,.55), 0 0 0 3px rgba(20,20,20,.35);
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  cursor:pointer;
+}
+.unmute-btn:active{transform:translate(-50%,-50%) scale(.96)}
+.unmute-btn[hidden],
+.video-stage.is-placeholder .unmute-btn{display:none!important}
 .video-placeholder{
   display:flex;
   flex-direction:column;
