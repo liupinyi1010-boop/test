@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.9" sizes="180x180">
 </head>
 <body class="subscribe-page">
-  <!-- 介紹影片：把 shifusay-intro.mp4 放到同一資料夾即可自動顯示；可另放 shifusay-intro-poster.jpg 當封面。 -->
+  <!-- 示範影片：把 shifusay-intro.mp4 放到同一資料夾即可顯示播放封面；可另放 shifusay-intro-poster.jpg 當底圖。 -->
 
   <header class="top" id="hero">
     <span class="top-ghost" aria-hidden="true">說</span>
@@ -38,16 +38,15 @@
   <main class="wrap">
     <section id="intro-video-section" class="video-card">
       <div class="video-stage is-placeholder" id="video-stage">
-        <div class="video-placeholder" id="video-placeholder">
-          <span class="play-badge" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+        <video id="intro-video" playsinline webkit-playsinline preload="metadata" hidden></video>
+        <button type="button" class="video-cover" id="video-cover" hidden aria-label="了解如何使用語音報價單">
+          <span class="video-cover-text">了解如何使用語音報價單</span>
+          <span class="video-cover-play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
               <path d="M8 5.5v13l11-6.5L8 5.5z"></path>
             </svg>
           </span>
-          <p>介紹影片製作中</p>
-        </div>
-        <video id="intro-video" controls autoplay muted playsinline webkit-playsinline preload="auto" hidden></video>
-        <button type="button" class="unmute-btn" id="btn-unmute" hidden aria-label="開聲音">開聲音</button>
+        </button>
       </div>
     </section>
 
@@ -188,15 +187,15 @@
     var VIDEO_SRC = "shifusay-intro.mp4?v=4.9";
     var POSTER_SRC = "shifusay-intro-poster.jpg?v=4.9";
     var video = document.getElementById("intro-video");
-    var placeholder = document.getElementById("video-placeholder");
     var stage = document.getElementById("video-stage");
-    var unmuteBtn = document.getElementById("btn-unmute");
+    var cover = document.getElementById("video-cover");
+    var playbackStarted = false;
 
-    function hideUnmute() {
-      if (unmuteBtn) unmuteBtn.hidden = true;
+    function hideCover() {
+      if (cover) cover.hidden = true;
     }
-    function showUnmute() {
-      if (unmuteBtn) unmuteBtn.hidden = false;
+    function showCover() {
+      if (cover) cover.hidden = false;
     }
 
     function showPlaceholder() {
@@ -207,44 +206,14 @@
         video.removeAttribute("poster");
         try { video.load(); } catch (e) {}
       }
-      hideUnmute();
-      if (placeholder) placeholder.hidden = false;
+      hideCover();
       if (stage) stage.classList.add("is-placeholder");
     }
 
     function showVideo() {
       if (video) video.hidden = false;
-      if (placeholder) placeholder.hidden = true;
       if (stage) stage.classList.remove("is-placeholder");
-    }
-
-    function syncUnmuteBtn() {
-      if (!video || video.hidden) {
-        hideUnmute();
-        return;
-      }
-      if (video.muted || video.volume === 0) showUnmute();
-      else hideUnmute();
-    }
-
-    function tryAutoplay() {
-      if (!video) return;
-      video.muted = true;
-      video.setAttribute("muted", "");
-      var p;
-      try { p = video.play(); } catch (e) { p = Promise.reject(e); }
-      if (p && typeof p.then === "function") {
-        p.then(function () {
-          showVideo();
-          syncUnmuteBtn();
-        }).catch(function () {
-          showVideo();
-          syncUnmuteBtn();
-        });
-      } else {
-        showVideo();
-        syncUnmuteBtn();
-      }
+      if (!playbackStarted) showCover();
     }
 
     function exists(url) {
@@ -271,38 +240,37 @@
           showPlaceholder();
           return;
         }
-        video.muted = true;
-        video.defaultMuted = true;
-        video.autoplay = true;
+        video.autoplay = false;
+        video.muted = false;
+        video.defaultMuted = false;
         video.playsInline = true;
-        video.setAttribute("autoplay", "");
-        video.setAttribute("muted", "");
+        video.removeAttribute("autoplay");
+        video.removeAttribute("muted");
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
         video.src = VIDEO_SRC;
         video.addEventListener("error", showPlaceholder);
-        video.addEventListener("loadeddata", function () {
-          showVideo();
-          tryAutoplay();
-        });
-        video.addEventListener("canplay", function () {
-          showVideo();
-          tryAutoplay();
-        });
-        video.addEventListener("volumechange", syncUnmuteBtn);
-        video.addEventListener("play", syncUnmuteBtn);
-        if (unmuteBtn) {
-          unmuteBtn.addEventListener("click", function () {
+        video.addEventListener("loadedmetadata", showVideo);
+        video.addEventListener("loadeddata", showVideo);
+        video.addEventListener("canplay", showVideo);
+        if (cover) {
+          cover.addEventListener("click", function () {
+            playbackStarted = true;
+            hideCover();
+            video.controls = true;
             video.muted = false;
             video.volume = 1;
-            hideUnmute();
             var p;
             try { p = video.play(); } catch (e) { p = Promise.reject(e); }
-            if (p && typeof p.catch === "function") p.catch(function () {});
+            if (p && typeof p.catch === "function") {
+              p.catch(function () {
+                hideCover();
+                video.controls = true;
+              });
+            }
           });
         }
         try { video.load(); } catch (e) {}
-        tryAutoplay();
       });
     }
 
