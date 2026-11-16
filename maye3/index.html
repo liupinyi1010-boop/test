@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.9">
+  <link rel="stylesheet" href="styles.css?v=4.9.1">
   <link rel="icon" href="favicon.svg?v=4.9" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png?v=4.9" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.9" sizes="180x180">
@@ -159,18 +159,21 @@
           <span class="coach-bubble">按這裡查看</span>
           <span class="coach-arrow" aria-hidden="true"></span>
         </div>
-        <div id="quote-preview" class="quote-preview">
-          <div class="sheet-wrap sheet-wrap-inline" id="sheet-wrap">
-            <article class="quote-sheet" id="quote-sheet" aria-label="報價單預覽"></article>
+        <div id="quote-preview" class="quote-preview" role="button" tabindex="0" aria-label="報價單預覽，點一下打開完整報價單編輯">
+          <div class="sheet-wrap sheet-wrap-inline" id="sheet-wrap" aria-hidden="true">
+            <article class="quote-sheet quote-sheet-thumb" id="quote-sheet"></article>
           </div>
           <div class="preview-fade" aria-hidden="true"></div>
-          <button type="button" class="preview-open-hint" id="preview-open-hint">點一下看完整報價單</button>
+          <span class="preview-tap-label" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+            點一下編輯
+          </span>
         </div>
-        <p class="hint" id="tax-note">點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。點下面按鈕可以看完整報價單。</p>
+        <p class="hint" id="tax-note">點一下報價單就能打開完整報價單，在裡面點標題、項目、單價或客戶資料直接改，小計和稅金會自動重算。</p>
       </div>
       <div class="card card-ink no-print" id="download-card">
         <h2>下載報價單</h2>
-        <p class="hint">點報價單就可以直接改數量、單價或客戶資料；也可以下載 Excel 再改，複價和合計會自動重算。</p>
+        <p class="hint">點上面的報價單就可以打開來改數量、單價或客戶資料；也可以下載 Excel 再改，複價和合計會自動重算。</p>
         <div class="export">
           <div class="coach coach-dl" id="coach-dl" hidden>
             <span class="coach-bubble">按這裡下載</span>
@@ -213,9 +216,9 @@
       <div class="quote-modal-scroll" id="quote-modal-scroll">
         <div class="banner" id="fallback-banner-modal">雲端分析沒有成功，已改用本機用語對照產生估價單。若要修改，請下載 Excel 後自己改。</div>
         <div class="total-banner" id="total-banner-modal" hidden></div>
-        <h3 class="preview-lab">報價單預覽</h3>
+        <h3 class="preview-lab">完整報價單（點欄位直接改）</h3>
         <div class="sheet-wrap" id="sheet-wrap-modal">
-          <article class="quote-sheet" id="quote-sheet-modal" aria-label="報價單預覽"></article>
+          <article class="quote-sheet" id="quote-sheet-modal" aria-label="完整報價單"></article>
         </div>
         <p class="hint" id="tax-note-modal">點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。預覽可以用手指左右滑，或兩指放大。</p>
       </div>
@@ -251,6 +254,6 @@
   <div id="print-sheet" aria-hidden="true"></div>
 
   <script src="ai-adapter.js?v=4.9"></script>
-  <script src="app.js?v=4.9"></script>
+  <script src="app.js?v=4.9.1"></script>
 </body>
 </html>

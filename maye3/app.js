@@ -2008,7 +2008,7 @@
     updateGuidance();
     const taxTxt = state.tax ? "已含 5% 營業稅。" : "未加營業稅。";
     const note = $("#tax-note");
-    if (note) note.textContent = taxTxt + "點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。點下面按鈕可以看完整報價單。";
+    if (note) note.textContent = taxTxt + "點一下報價單就能打開完整報價單，在裡面點標題、項目、單價或客戶資料直接改，小計和稅金會自動重算。";
     const noteM = $("#tax-note-modal");
     if (noteM) noteM.textContent = taxTxt + "點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。預覽可以用手指左右滑，或兩指放大。";
   }
@@ -2024,14 +2024,18 @@
     }
     return lines;
   }
-  function quoteSheetHtml() {
+  function quoteSheetHtml(editable) {
+    // editable=false：主畫面縮圖預覽，純顯示不可編輯；editable=true：完整報價單頁，點欄位直接改
+    const ed = (label, field, extraCls, extraAttr) => editable
+      ? `class="qs-edit${extraCls ? " " + extraCls : ""}" contenteditable="true" role="textbox"${extraAttr || ""} aria-label="${esc(label)}" data-edit="${field}"`
+      : `class="qs-ro${extraCls ? " " + extraCls : ""}"`;
     const t = totals();
     const title = quoteTitleText();
     const meta = META_FIELDS.map((f) => {
       if (!state.show[f.k]) return "";
       const v = String(state.meta[f.k] || "").trim();
       if (!v) return "";
-      return `<div class="qs-meta-line"><span class="qs-meta-lab">${esc(f.label)}：</span><span class="qs-edit qs-meta-val" contenteditable="true" role="textbox" aria-label="${esc(f.label)}" data-edit="meta" data-k="${esc(f.k)}">${esc(v)}</span></div>`;
+      return `<div class="qs-meta-line"><span class="qs-meta-lab">${esc(f.label)}：</span><span ${ed(f.label, "meta", "qs-meta-val")}${editable ? ` data-k="${esc(f.k)}"` : ""}>${esc(v)}</span></div>`;
     }).join("");
     const rows = state.items.map((row, i) => {
       const pending = !!row.pending;
@@ -2040,14 +2044,14 @@
       const note = String(row.note || "");
       return `<tr data-id="${esc(row.id)}">
         <td class="num">${i + 1}</td>
-        <td class="name"><span class="qs-edit qs-name" contenteditable="true" role="textbox" aria-label="項目" data-edit="name">${esc(row.name)}</span>${pending ? '<span class="qs-pending">待填</span>' : ""}${spoken ? '<span class="qs-spoken">口述單價</span>' : ""}<span class="qs-edit qs-note" contenteditable="true" role="textbox" aria-label="備註" data-edit="note" data-placeholder="備註">${esc(note)}</span></td>
-        <td class="num"><span class="qs-edit" contenteditable="true" role="textbox" inputmode="decimal" aria-label="數量" data-edit="qty">${esc(row.qty)}</span></td>
-        <td><span class="qs-edit" contenteditable="true" role="textbox" aria-label="單位" data-edit="unit">${esc(row.unit)}</span></td>
-        <td class="num"><span class="qs-edit" contenteditable="true" role="textbox" inputmode="decimal" aria-label="單價" data-edit="unitPrice">${price}</span></td>
+        <td class="name"><span ${ed("項目", "name", "qs-name")}>${esc(row.name)}</span>${pending ? '<span class="qs-pending">待填</span>' : ""}${spoken ? '<span class="qs-spoken">口述單價</span>' : ""}${editable ? `<span ${ed("備註", "note", "qs-note")} data-placeholder="備註">${esc(note)}</span>` : (note ? `<span class="qs-ro qs-note">${esc(note)}</span>` : "")}</td>
+        <td class="num"><span ${ed("數量", "qty", "", ' inputmode="decimal"')}>${esc(row.qty)}</span></td>
+        <td><span ${ed("單位", "unit")}>${esc(row.unit)}</span></td>
+        <td class="num"><span ${ed("單價", "unitPrice", "", ' inputmode="decimal"')}>${price}</span></td>
         <td class="num amt" data-amt>${fmt(lineAmount(row))}</td>
       </tr>`;
     }).join("");
-    return `<header class="qs-head" contenteditable="true" role="textbox" aria-label="報價單標題" data-edit="title">${esc(title)}</header>
+    return `${editable ? `<header class="qs-head" contenteditable="true" role="textbox" aria-label="報價單標題" data-edit="title">` : `<header class="qs-head">`}${esc(title)}</header>
       <div class="qs-body">
         ${meta ? `<div class="qs-meta">${meta}</div>` : ""}
         <table class="qs-table">
@@ -2071,9 +2075,34 @@
         <p class="qs-foot">單價依市場行情，可再自行調整。沒有行情者標示待填。</p>
       </div>`;
   }
+  function updatePreviewClip() {
+    const wrap = $("#sheet-wrap");
+    const pv = $("#quote-preview");
+    if (!wrap || !pv) return;
+    const box = $("#quote-sheet");
+    if (!box || !wrap.clientHeight) return;
+    // 報價單本身高度超過預覽框（扣掉底部「點一下編輯」標籤的空間）才淡出，避免短報價單被遮住
+    const max = parseFloat(getComputedStyle(wrap).maxHeight) || wrap.clientHeight;
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    pv.classList.toggle("is-clipped", box.offsetHeight > max - 3.6 * rem);
+  }
+  function renderPreviewSheet() {
+    const box = $("#quote-sheet");
+    if (box) box.innerHTML = quoteSheetHtml(false);
+    updatePreviewClip();
+    if (!renderPreviewSheet._ro && typeof ResizeObserver === "function") {
+      const wrap = $("#sheet-wrap");
+      if (wrap) {
+        renderPreviewSheet._ro = new ResizeObserver(() => updatePreviewClip());
+        renderPreviewSheet._ro.observe(wrap);
+        if (box) renderPreviewSheet._ro.observe(box);
+      }
+    }
+  }
   function renderSheet() {
-    const html = quoteSheetHtml();
-    document.querySelectorAll(".quote-sheet").forEach((box) => { box.innerHTML = html; });
+    renderPreviewSheet();
+    const m = $("#quote-sheet-modal");
+    if (m) m.innerHTML = quoteSheetHtml(true);
   }
   function parseEditNumber(s) {
     const t = String(s || "").replace(/,/g, "").replace(/[NT$\s元]/gi, "").trim();
@@ -2165,6 +2194,7 @@
     }
     if (field === "qty" || field === "unitPrice") refreshSheetFigures(el);
     if (opts.commit) syncEditsToOthers(el);
+    renderPreviewSheet();
     persistSoon();
   }
   function bindSheetEdits() {
@@ -2845,8 +2875,13 @@
     const dl = $("#btn-download"); if (dl) dl.addEventListener("click", openDownloadModal);
     const dlM = $("#btn-download-modal"); if (dlM) dlM.addEventListener("click", openDownloadModal);
     
-    const previewHint = $("#preview-open-hint");
-    if (previewHint) previewHint.addEventListener("click", () => openQuoteModal());
+    const preview = $("#quote-preview");
+    if (preview) {
+      preview.addEventListener("click", () => openQuoteModal());
+      preview.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); openQuoteModal(); }
+      });
+    }
     bindSheetEdits();
     const qClose = $("#btn-quote-close"); if (qClose) qClose.addEventListener("click", () => closeQuoteModal());
     document.querySelectorAll("button[data-font]").forEach((el) => {
