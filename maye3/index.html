@@ -159,18 +159,18 @@
           <span class="coach-bubble">按這裡查看</span>
           <span class="coach-arrow" aria-hidden="true"></span>
         </div>
-        <div id="quote-preview" class="quote-preview" role="button" tabindex="0" aria-label="點一下看完整報價單">
+        <div id="quote-preview" class="quote-preview">
           <div class="sheet-wrap sheet-wrap-inline" id="sheet-wrap">
             <article class="quote-sheet" id="quote-sheet" aria-label="報價單預覽"></article>
           </div>
           <div class="preview-fade" aria-hidden="true"></div>
-          <div class="preview-open-hint">點一下看完整報價單</div>
+          <button type="button" class="preview-open-hint" id="preview-open-hint">點一下看完整報價單</button>
         </div>
-        <p class="hint" id="tax-note">若要修改，請下載 Excel 後自己改。點預覽可以看完整報價單。</p>
+        <p class="hint" id="tax-note">點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。點下面按鈕可以看完整報價單。</p>
       </div>
       <div class="card card-ink no-print" id="download-card">
         <h2>下載報價單</h2>
-        <p class="hint">若要改數量、單價或客戶資料，請下載 Excel 後自己改；改完後複價和合計會自動重算。</p>
+        <p class="hint">點報價單就可以直接改數量、單價或客戶資料；也可以下載 Excel 再改，複價和合計會自動重算。</p>
         <div class="export">
           <div class="coach coach-dl" id="coach-dl" hidden>
             <span class="coach-bubble">按這裡下載</span>
@@ -217,7 +217,7 @@
         <div class="sheet-wrap" id="sheet-wrap-modal">
           <article class="quote-sheet" id="quote-sheet-modal" aria-label="報價單預覽"></article>
         </div>
-        <p class="hint" id="tax-note-modal">若要修改，請下載 Excel 後自己改。預覽可以用手指左右滑，或兩指放大。</p>
+        <p class="hint" id="tax-note-modal">點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。預覽可以用手指左右滑，或兩指放大。</p>
       </div>
       <div class="quote-modal-foot">
         <div class="coach coach-dl" id="coach-dl-modal" hidden>

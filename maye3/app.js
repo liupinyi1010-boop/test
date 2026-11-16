@@ -9,6 +9,7 @@
   const uid = () => "r" + Math.random().toString(36).slice(2, 9);
   const TAX_RATE = 0.05;
   const BRAND_ZH = "師傅說";
+  const QUOTE_TITLE = "報價單";
   const TRADES = ["carpentry", "plumbing_electrical", "painting"];
   const EXTRA_ALIASES = [
     { spoken: ["米知", "米突", "米吐", "米嘟"], standard: "公尺", code: null, note: "長度單位 m" },
@@ -94,6 +95,7 @@
     items: [],
     tax: true,
     source: "idle",
+    quoteTitle: "報價單",
     meta: { customer: "", phone: "", address: "", region: "", building: "", floor: "" },
     show: { customer: false, phone: false, address: false, region: false, building: false, floor: false },
     rewritten: "",
@@ -666,9 +668,14 @@
     META_FIELDS.forEach((f) => { m[f.k] = false; });
     return m;
   }
+  function quoteTitleText() {
+    const t = String(state.quoteTitle == null ? QUOTE_TITLE : state.quoteTitle).trim();
+    return t || QUOTE_TITLE;
+  }
   function snapshotData() {
     return {
       v: 3,
+      quoteTitle: quoteTitleText(),
       raw: state.raw,
       rawOriginal: state.rawOriginal,
       correctionHits: Array.isArray(state.correctionHits) ? state.correctionHits.slice() : [],
@@ -695,6 +702,8 @@
   }
   function applySnapshot(d, opts) {
     if (!d) return false;
+    if (typeof d.quoteTitle === "string") state.quoteTitle = d.quoteTitle;
+    else if (state.quoteTitle == null || state.quoteTitle === "") state.quoteTitle = QUOTE_TITLE;
     if (typeof d.raw === "string") state.raw = d.raw;
     if (typeof d.rawOriginal === "string") state.rawOriginal = d.rawOriginal;
     else if (typeof d.raw === "string" && !state.rawOriginal) state.rawOriginal = d.raw;
@@ -753,6 +762,7 @@
     state.tax = true;
     state.source = "idle";
     state.rewritten = "";
+    state.quoteTitle = QUOTE_TITLE;
     state.meta = emptyMeta();
     state.show = emptyShow();
     const ta = $("#speech");
@@ -1825,7 +1835,7 @@
     };
     const why = code && reasons[code];
     const head = why ? ("雲端分析沒有成功（" + why + "），") : "雲端分析沒有成功，";
-    return head + "已改用本機用語對照產生估價單。還沒對到行情的會標待填。若要修改，請下載 Excel 後自己改。";
+    return head + "已改用本機用語對照產生估價單。還沒對到行情的會標待填。點報價單就可以直接改。";
   }
 
   async function generateFromText(text, opts) {
@@ -1998,9 +2008,9 @@
     updateGuidance();
     const taxTxt = state.tax ? "已含 5% 營業稅。" : "未加營業稅。";
     const note = $("#tax-note");
-    if (note) note.textContent = taxTxt + "若要改數量或單價，請下載 Excel 自己改。點預覽可以看完整報價單。";
+    if (note) note.textContent = taxTxt + "點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。點下面按鈕可以看完整報價單。";
     const noteM = $("#tax-note-modal");
-    if (noteM) noteM.textContent = taxTxt + "若要改數量或單價，請下載 Excel 自己改。預覽可以用手指左右滑，或兩指放大。";
+    if (noteM) noteM.textContent = taxTxt + "點項目、單價或客戶資料就可以直接改，小計和稅金會自動重算。預覽可以用手指左右滑，或兩指放大。";
   }
 
   function visibleMetaLines() {
@@ -2016,21 +2026,28 @@
   }
   function quoteSheetHtml() {
     const t = totals();
-    const meta = visibleMetaLines().map((l) => `<div class="qs-meta-line">${esc(l)}</div>`).join("");
+    const title = quoteTitleText();
+    const meta = META_FIELDS.map((f) => {
+      if (!state.show[f.k]) return "";
+      const v = String(state.meta[f.k] || "").trim();
+      if (!v) return "";
+      return `<div class="qs-meta-line"><span class="qs-meta-lab">${esc(f.label)}：</span><span class="qs-edit qs-meta-val" contenteditable="true" role="textbox" aria-label="${esc(f.label)}" data-edit="meta" data-k="${esc(f.k)}">${esc(v)}</span></div>`;
+    }).join("");
     const rows = state.items.map((row, i) => {
       const pending = !!row.pending;
       const spoken = !!row.spokenPrice;
       const price = pending && !(Number(row.unitPrice) > 0) ? "待填" : fmt(row.unitPrice);
-      return `<tr>
+      const note = String(row.note || "");
+      return `<tr data-id="${esc(row.id)}">
         <td class="num">${i + 1}</td>
-        <td class="name">${esc(row.name)}${pending ? '<span class="qs-pending">待填</span>' : ""}${spoken ? '<span class="qs-spoken">口述單價</span>' : ""}</td>
-        <td class="num">${esc(row.qty)}</td>
-        <td>${esc(row.unit)}</td>
-        <td class="num">${price}</td>
-        <td class="num">${fmt(lineAmount(row))}</td>
+        <td class="name"><span class="qs-edit qs-name" contenteditable="true" role="textbox" aria-label="項目" data-edit="name">${esc(row.name)}</span>${pending ? '<span class="qs-pending">待填</span>' : ""}${spoken ? '<span class="qs-spoken">口述單價</span>' : ""}<span class="qs-edit qs-note" contenteditable="true" role="textbox" aria-label="備註" data-edit="note" data-placeholder="備註">${esc(note)}</span></td>
+        <td class="num"><span class="qs-edit" contenteditable="true" role="textbox" inputmode="decimal" aria-label="數量" data-edit="qty">${esc(row.qty)}</span></td>
+        <td><span class="qs-edit" contenteditable="true" role="textbox" aria-label="單位" data-edit="unit">${esc(row.unit)}</span></td>
+        <td class="num"><span class="qs-edit" contenteditable="true" role="textbox" inputmode="decimal" aria-label="單價" data-edit="unitPrice">${price}</span></td>
+        <td class="num amt" data-amt>${fmt(lineAmount(row))}</td>
       </tr>`;
     }).join("");
-    return `<header class="qs-head">${BRAND_ZH}</header>
+    return `<header class="qs-head" contenteditable="true" role="textbox" aria-label="報價單標題" data-edit="title">${esc(title)}</header>
       <div class="qs-body">
         ${meta ? `<div class="qs-meta">${meta}</div>` : ""}
         <table class="qs-table">
@@ -2047,9 +2064,9 @@
           <tbody>${rows || '<tr><td colspan="6">還沒有項目，請回到上方再說一次或打字後產生估價單。</td></tr>'}</tbody>
         </table>
         <div class="qs-totals">
-          <div><span>小計</span><span>${fmt(t.sub)}</span></div>
-          ${state.tax ? `<div><span>營業稅 5%</span><span>${fmt(t.tax)}</span></div>` : `<div><span>營業稅</span><span>未加</span></div>`}
-          <div class="grand"><span>合計</span><span>${fmt(t.total)}</span></div>
+          <div><span>小計</span><span data-total="sub">${fmt(t.sub)}</span></div>
+          ${state.tax ? `<div><span>營業稅 5%</span><span data-total="tax">${fmt(t.tax)}</span></div>` : `<div><span>營業稅</span><span>未加</span></div>`}
+          <div class="grand"><span>合計</span><span data-total="total">${fmt(t.total)}</span></div>
         </div>
         <p class="qs-foot">單價依市場行情，可再自行調整。沒有行情者標示待填。</p>
       </div>`;
@@ -2058,9 +2075,128 @@
     const html = quoteSheetHtml();
     document.querySelectorAll(".quote-sheet").forEach((box) => { box.innerHTML = html; });
   }
+  function parseEditNumber(s) {
+    const t = String(s || "").replace(/,/g, "").replace(/[NT$\s元]/gi, "").trim();
+    if (t === "" || t === "待填") return null;
+    const n = parseFloat(t);
+    return Number.isFinite(n) ? n : null;
+  }
+  function editPlain(el) {
+    if (!el) return "";
+    return String(el.innerText != null ? el.innerText : el.textContent || "").replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function refreshSheetFigures(exceptEl) {
+    const t = totals();
+    document.querySelectorAll(".quote-sheet").forEach((box) => {
+      box.querySelectorAll("tr[data-id]").forEach((tr) => {
+        const row = state.items.find((r) => r.id === tr.dataset.id);
+        if (!row) return;
+        const amt = tr.querySelector("[data-amt]");
+        if (amt) amt.textContent = fmt(lineAmount(row));
+        const priceEl = tr.querySelector('[data-edit="unitPrice"]');
+        if (priceEl && priceEl !== exceptEl && document.activeElement !== priceEl) {
+          const pending = !!row.pending && !(Number(row.unitPrice) > 0);
+          priceEl.textContent = pending ? "待填" : fmt(row.unitPrice);
+        }
+        const qtyEl = tr.querySelector('[data-edit="qty"]');
+        if (qtyEl && qtyEl !== exceptEl && document.activeElement !== qtyEl) qtyEl.textContent = String(row.qty);
+      });
+      const sub = box.querySelector('[data-total="sub"]');
+      const tax = box.querySelector('[data-total="tax"]');
+      const tot = box.querySelector('[data-total="total"]');
+      if (sub) sub.textContent = fmt(t.sub);
+      if (tax) tax.textContent = fmt(t.tax);
+      if (tot) tot.textContent = fmt(t.total);
+    });
+    updateTotalBanner();
+  }
+  function syncEditsToOthers(el) {
+    if (!el || !el.getAttribute) return;
+    const field = el.getAttribute("data-edit");
+    const text = el.textContent;
+    document.querySelectorAll('.quote-sheet [data-edit]').forEach((other) => {
+      if (other === el) return;
+      if (other.getAttribute("data-edit") !== field) return;
+      if (field === "meta" && other.getAttribute("data-k") !== el.getAttribute("data-k")) return;
+      if (field === "name" || field === "unit" || field === "qty" || field === "unitPrice" || field === "note") {
+        const a = el.closest("[data-id]");
+        const b = other.closest("[data-id]");
+        if (!a || !b || a.dataset.id !== b.dataset.id) return;
+      }
+      if (document.activeElement !== other) other.textContent = text;
+    });
+  }
+  function applySheetEdit(el, opts) {
+    opts = opts || {};
+    if (!el || !el.getAttribute || !el.closest || !el.closest(".quote-sheet")) return;
+    const field = el.getAttribute("data-edit");
+    if (!field) return;
+    const raw = opts.trim === false ? String(el.innerText != null ? el.innerText : el.textContent || "").replace(/\u00a0/g, " ") : editPlain(el);
+    if (field === "title") {
+      state.quoteTitle = raw || QUOTE_TITLE;
+      if (opts.commit && !raw) el.textContent = QUOTE_TITLE;
+    } else if (field === "meta") {
+      const k = el.getAttribute("data-k");
+      if (k && k in state.meta) state.meta[k] = raw;
+    } else {
+      const tr = el.closest("[data-id]");
+      if (!tr) return;
+      const row = state.items.find((r) => r.id === tr.dataset.id);
+      if (!row) return;
+      if (field === "name" || field === "unit" || field === "note") {
+        row[field] = raw;
+      } else if (field === "qty" || field === "unitPrice") {
+        const n = parseEditNumber(raw);
+        if (n == null) {
+          if (opts.commit) {
+            if (raw === "" || raw === "待填") {
+              if (field === "unitPrice") { row.unitPrice = 0; row.pending = true; el.textContent = "待填"; }
+              else { row.qty = 0; el.textContent = "0"; }
+            } else {
+              el.textContent = field === "unitPrice" ? (row.pending && !(Number(row.unitPrice) > 0) ? "待填" : fmt(row.unitPrice)) : String(row.qty);
+            }
+          }
+        } else {
+          row[field] = n;
+          if (field === "unitPrice" && n > 0) row.pending = false;
+          if (opts.commit) el.textContent = field === "unitPrice" ? fmt(n) : String(n);
+        }
+      }
+    }
+    if (field === "qty" || field === "unitPrice") refreshSheetFigures(el);
+    if (opts.commit) syncEditsToOthers(el);
+    persistSoon();
+  }
+  function bindSheetEdits() {
+    if (bindSheetEdits._on) return;
+    bindSheetEdits._on = true;
+    document.addEventListener("input", (e) => {
+      const el = e.target && e.target.closest && e.target.closest(".quote-sheet [data-edit]");
+      if (!el) return;
+      applySheetEdit(el, { trim: false });
+    });
+    document.addEventListener("focusout", (e) => {
+      const el = e.target && e.target.closest && e.target.closest(".quote-sheet [data-edit]");
+      if (!el) return;
+      applySheetEdit(el, { commit: true });
+    });
+    document.addEventListener("keydown", (e) => {
+      const el = e.target && e.target.closest && e.target.closest(".quote-sheet [data-edit]");
+      if (!el) return;
+      if (e.key === "Enter") { e.preventDefault(); el.blur(); }
+    });
+    document.addEventListener("paste", (e) => {
+      const el = e.target && e.target.closest && e.target.closest(".quote-sheet [data-edit]");
+      if (!el) return;
+      e.preventDefault();
+      const text = (e.clipboardData && e.clipboardData.getData("text/plain")) || "";
+      try { document.execCommand("insertText", false, text.replace(/\s+/g, " ")); } catch (err) { el.textContent = text; }
+      applySheetEdit(el, { trim: false });
+    });
+  }
   function exportText() {
     const t = totals();
-    const lines = [BRAND_ZH, ""];
+    const lines = [quoteTitleText(), ""];
     if (state.raw || state.rawOriginal) {
       lines.push("辨識原文：" + (state.raw || state.rawOriginal));
       if (state.rawOriginal && state.raw && state.rawOriginal !== state.raw) {
@@ -2130,15 +2266,19 @@
     const n = (state.meta.customer || "未命名").replace(/[\\/:*?"<>|\s]+/g, "").slice(0, 20) || "未命名";
     const d = new Date();
     const ds = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
-    return `${BRAND_ZH}_${n}_${ds}.${ext}`;
+    const title = quoteTitleText().replace(/[\\/:*?"<>|\s]+/g, "").slice(0, 20) || QUOTE_TITLE;
+    return `${title}_${n}_${ds}.${ext}`;
   }
   async function exportXlsx() {
     const ExcelJS = await loadExcelJS();
     const wb = new ExcelJS.Workbook();
-    const ws = wb.addWorksheet("估價單");
+    const title = quoteTitleText();
+    wb.title = title;
+    const safeSheet = title.replace(/[:\\/?*\[\]]+/g, "").slice(0, 31) || QUOTE_TITLE;
+    const ws = wb.addWorksheet(safeSheet);
     const t = totals();
     let r = 1;
-    ws.getCell(r, 1).value = BRAND_ZH; ws.getCell(r, 1).font = { bold: true, size: 16 }; r++;
+    ws.getCell(r, 1).value = title; ws.getCell(r, 1).font = { bold: true, size: 16 }; r++;
     for (const line of visibleMetaLines()) { ws.getCell(r, 1).value = line; r++; }
     r++;
     const headers = ["項次", "品名", "數量", "單位", "單價", "複價", "備註"];
@@ -2277,7 +2417,7 @@
       ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = "#141414"; ctx.fillRect(0, 0, W, 90);
       ctx.fillStyle = "#FFC928"; ctx.font = "900 44px 'Noto Sans TC', sans-serif";
-      ctx.fillText(BRAND_ZH, 56, 62);
+      ctx.fillText(quoteTitleText(), 56, 62);
       return 130;
     }
     let y = newPage();
@@ -2373,7 +2513,7 @@
     function rec(str, raw) {
       bins.push({ str, raw: raw || null });
     }
-    rec(objStr(catalogId, `<< /Type /Catalog /Pages ${pagesId} 0 R >>`));
+    rec(objStr(catalogId, `<< /Type /Catalog /Pages ${pagesId} 0 R /Lang (zh-TW) >>`));
     rec(objStr(pagesId, `<< /Type /Pages /Count ${jpegs.length} /Kids [${pageIds.map((id) => id + " 0 R").join(" ")}] >>`));
     jpegs.forEach((jpg, i) => {
       const iid = imageIds[i], cid = contentIds[i], pid = pageIds[i];
@@ -2405,8 +2545,19 @@
     const x = [0];
     function objBegin() { x.push(p); }
     // obj 1 catalog
+    const infoId = nextId++;
+    function pdfUnicode(str) {
+      const units = [0xFE, 0xFF];
+      const t = String(str || "");
+      for (let i = 0; i < t.length; i++) {
+        const c = t.charCodeAt(i);
+        units.push((c >> 8) & 0xFF, c & 0xFF);
+      }
+      return "<" + units.map((b) => b.toString(16).toUpperCase().padStart(2, "0")).join("") + ">";
+    }
     objBegin(); writeStr(objStr(1, `<< /Type /Catalog /Pages 2 0 R >>`));
     objBegin(); writeStr(objStr(2, `<< /Type /Pages /Count ${jpegs.length} /Kids [${pageIds.map((id) => id + " 0 R").join(" ")}] >>`));
+    objBegin(); writeStr(objStr(infoId, `<< /Title ${pdfUnicode(quoteTitleText())} /Author ${pdfUnicode(BRAND_ZH)} >>`));
     jpegs.forEach((jpg, i) => {
       const iid = imageIds[i], cid = contentIds[i], pid = pageIds[i];
       objBegin();
@@ -2421,7 +2572,7 @@
     let xt = `xref\n0 ${x.length + 1}\n`;
     xt += "0000000000 65535 f \n";
     for (const off of x) xt += String(off).padStart(10, "0") + " 00000 n \n";
-    xt += `trailer\n<< /Size ${x.length + 1} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF\n`;
+    xt += `trailer\n<< /Size ${x.length + 1} /Root 1 0 R /Info ${infoId} 0 R >>\nstartxref\n${xrefPos}\n%%EOF\n`;
     writeStr(xt);
     const total = outChunks.reduce((s, c) => s + c.length, 0);
     const out = new Uint8Array(total);
@@ -2571,7 +2722,7 @@
       await generateFromText(t);
       micUI("idle");
       showView("quote");
-      setStatus("估價單做好了，請往下看。點預覽可以看完整報價單，或按下載。若要改數字，請選 Excel 再改。");
+      setStatus("估價單做好了，請往下看。點項目或單價就可以直接改，也可以按下載。");
     } catch (e) {
       micUI("idle");
       setStatus(e && e.code === "empty" ? "請先講內容，或在下面格子打字。" : "這次沒有做成功，請再試一次，或改在下面格子打字。", true);
@@ -2678,7 +2829,7 @@
     try {
       await generateFromText(text);
       showView("quote");
-      setStatus("估價單做好了，請往下看。點預覽可以看完整報價單，或按下載。若要改數字，請選 Excel 再改。");
+      setStatus("估價單做好了，請往下看。點項目或單價就可以直接改，也可以按下載。");
     } catch (e) {
       setStatus(e && e.code === "empty" ? "請先講內容，或在下面格子打字。" : "這次沒有做成功，請再試一次，或改在下面格子打字。", true);
     }
@@ -2694,13 +2845,9 @@
     const dl = $("#btn-download"); if (dl) dl.addEventListener("click", openDownloadModal);
     const dlM = $("#btn-download-modal"); if (dlM) dlM.addEventListener("click", openDownloadModal);
     
-    const preview = $("#quote-preview");
-    if (preview) {
-      preview.addEventListener("click", () => openQuoteModal());
-      preview.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openQuoteModal(); }
-      });
-    }
+    const previewHint = $("#preview-open-hint");
+    if (previewHint) previewHint.addEventListener("click", () => openQuoteModal());
+    bindSheetEdits();
     const qClose = $("#btn-quote-close"); if (qClose) qClose.addEventListener("click", () => closeQuoteModal());
     document.querySelectorAll("button[data-font]").forEach((el) => {
       el.addEventListener("click", () => setFontSize(el.getAttribute("data-font")));
@@ -2803,6 +2950,8 @@
     lineShareUrl,
     exportXlsx,
     exportPdf,
+    exportName,
+    quoteTitleText,
     copyText,
     setTax(v) { state.tax = !!v; renderQuote(); persist(); },
     setMeta(k, v, show) {
