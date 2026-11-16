@@ -63,7 +63,7 @@
   margin:0;
   padding:1.4rem 1.15rem;
   border:0;
-  background-color:rgba(20,20,20,.84);
+  background-color:var(--ink);
   color:var(--yellow);
   cursor:pointer;
   touch-action:manipulation;

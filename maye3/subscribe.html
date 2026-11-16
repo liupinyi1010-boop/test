@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.9" sizes="180x180">
 </head>
 <body class="subscribe-page">
-  <!-- 示範影片：把 shifusay-intro.mp4 放到同一資料夾即可顯示播放封面；可另放 shifusay-intro-poster.jpg 當底圖。 -->
+  <!-- 示範影片：把 shifusay-intro.mp4 放到同一資料夾即可顯示播放封面。 -->
 
   <header class="top" id="hero">
     <span class="top-ghost" aria-hidden="true">說</span>
@@ -185,7 +185,6 @@
     window.addEventListener("resize", fitWordmark);
 
     var VIDEO_SRC = "shifusay-intro.mp4?v=4.9";
-    var POSTER_SRC = "shifusay-intro-poster.jpg?v=4.9";
     var video = document.getElementById("intro-video");
     var stage = document.getElementById("video-stage");
     var cover = document.getElementById("video-cover");
@@ -232,9 +231,6 @@
 
     showPlaceholder();
     if (video) {
-      exists(POSTER_SRC).then(function (ok) {
-        if (ok) video.setAttribute("poster", POSTER_SRC);
-      });
       exists(VIDEO_SRC).then(function (ok) {
         if (!ok) {
           showPlaceholder();
@@ -246,13 +242,12 @@
         video.playsInline = true;
         video.removeAttribute("autoplay");
         video.removeAttribute("muted");
+        video.removeAttribute("poster");
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
         video.src = VIDEO_SRC;
         video.addEventListener("error", showPlaceholder);
         video.addEventListener("loadedmetadata", showVideo);
-        video.addEventListener("loadeddata", showVideo);
-        video.addEventListener("canplay", showVideo);
         if (cover) {
           cover.addEventListener("click", function () {
             playbackStarted = true;
