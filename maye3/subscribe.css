@@ -1,0 +1,354 @@
+/* 師傅說訂閱頁：沿用 v4.9 安全黃、大圓角白卡、墨黑按鈕，字級與點擊區偏大，方便 50 歲以上師傅操作。 */
+
+.subscribe-page .wrap{
+  max-width:680px;
+}
+
+.subscribe-page .top h1{font-size:2.2rem}
+.subscribe-page .brand .wordmark{letter-spacing:.18em}
+.hero-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.7rem .8rem;
+  flex-wrap:wrap;
+}
+
+.app-link{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:var(--tap);
+  min-width:var(--tap);
+  padding:.45rem 1.05rem;
+  background-color:var(--paper);
+  color:var(--ink);
+  border-radius:999px;
+  font-weight:700;
+  font-size:1rem;
+  line-height:1.2;
+  text-decoration:none;
+  box-shadow:0 .5rem 1.1rem -.6rem rgba(110,72,0,.55);
+  white-space:nowrap;
+  margin-left:auto;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .45s var(--spring),background-color .2s var(--ease-out);
+}
+.app-link:active{transform:scale(.96)}
+@media (hover:hover){
+  .app-link:hover{background-color:var(--tile)}
+}
+
+.hero-line{
+  margin:1.15rem 0 0;
+  max-width:16.5em;
+  font-family:var(--display);
+  font-weight:900;
+  font-size:1.7rem;
+  line-height:1.35;
+  letter-spacing:.01em;
+  text-wrap:balance;
+}
+
+/* 介紹影片：沒有檔案時只顯示佔位卡，不露出損壞的播放器 */
+.video-card{
+  margin:1.2rem 0 1.4rem;
+}
+.section-kicker{
+  font-size:1.3rem;
+  margin:0 0 .7rem;
+}
+.video-stage{
+  position:relative;
+  background-color:var(--ink);
+  border-radius:var(--r-card);
+  box-shadow:var(--shadow-ink);
+  overflow:hidden;
+}
+.video-stage video{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:80vh;
+  object-fit:contain;
+  background-color:var(--ink);
+  vertical-align:middle;
+}
+.video-stage video[hidden]{display:none!important}
+.video-placeholder{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.85rem;
+  min-height:16.5rem;
+  padding:2.2rem 1.2rem;
+  text-align:center;
+  color:var(--yellow);
+}
+.video-placeholder[hidden]{display:none!important}
+.video-placeholder p{
+  margin:0;
+  font-family:var(--display);
+  font-weight:900;
+  font-size:1.35rem;
+  line-height:1.35;
+  color:var(--yellow);
+}
+.play-badge{
+  width:4.2rem;
+  height:4.2rem;
+  border-radius:50%;
+  background-color:var(--yellow);
+  color:var(--ink);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.play-badge svg{width:1.7rem;height:1.7rem;margin-left:.15rem}
+
+.section-title{
+  font-size:1.55rem;
+  line-height:1.3;
+  margin:1.6rem 0 .9rem;
+  max-width:16em;
+  text-wrap:balance;
+}
+
+.pain-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.pain-card{
+  display:flex;
+  align-items:flex-start;
+  gap:.85rem;
+  margin:.7rem 0;
+  padding:1.15rem 1.05rem;
+}
+.pain-card .num{
+  flex:0 0 2.6rem;
+  width:2.6rem;
+  height:2.6rem;
+  border-radius:50%;
+  background-color:var(--ink);
+  color:var(--yellow);
+  font-family:var(--num);
+  font-weight:700;
+  font-size:1.45rem;
+  line-height:2.6rem;
+  text-align:center;
+}
+.pain-card p{
+  margin:0;
+  flex:1 1 auto;
+  font-size:1.08rem;
+  font-weight:600;
+  line-height:1.6;
+}
+
+.benefits-card{
+  margin-top:3.6rem;
+  padding:1.15rem 1.15rem 1.3rem;
+}
+.benefit-list{
+  list-style:none;
+  margin:.2rem 0 0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+}
+.benefit-list li{
+  display:flex;
+  align-items:flex-start;
+  gap:.7rem;
+}
+.benefit-list .check{
+  flex:0 0 2.2rem;
+  width:2.2rem;
+  height:2.2rem;
+  margin-top:.1rem;
+  border-radius:50%;
+  background-color:var(--yellow);
+  color:var(--ink);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.benefit-list .check svg{width:1.15rem;height:1.15rem}
+.benefit-list p{
+  margin:0;
+  font-size:1.08rem;
+  font-weight:500;
+  line-height:1.6;
+  color:var(--on-ink);
+}
+
+.cta-block{
+  margin:2rem 0 1.2rem;
+  text-align:center;
+}
+.cta-block h2{
+  font-size:2rem;
+  line-height:1.25;
+  margin:0 0 1rem;
+}
+.cta-block .pill-cta{
+  width:100%;
+  max-width:24rem;
+  margin:0 auto;
+}
+
+.pricing-card{
+  padding:1.5rem 1.15rem 1.4rem;
+  margin:1rem 0 1.6rem;
+  text-align:center;
+}
+.price-title{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.15rem;
+  color:var(--paper);
+}
+.price-lab{
+  font-size:1.05rem;
+  font-weight:700;
+  color:var(--on-ink-2);
+  letter-spacing:.06em;
+}
+.price-row{
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:.1rem;
+  color:var(--yellow);
+}
+.price-num{
+  font-family:var(--num);
+  font-weight:700;
+  font-size:min(3.4rem, 18vw);
+  line-height:1;
+  letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+}
+.price-unit{
+  font-family:var(--display);
+  font-weight:900;
+  font-size:1.35rem;
+  line-height:1;
+}
+.trial-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:1rem 0 .4rem;
+  padding:.4rem 1rem;
+  min-height:2.4rem;
+  border-radius:999px;
+  background-color:var(--yellow);
+  color:var(--ink);
+  font-weight:800;
+  font-size:1.05rem;
+}
+.rules{
+  list-style:none;
+  margin:1rem 0 0;
+  padding:0;
+  text-align:left;
+  color:var(--on-ink);
+}
+.rules li{
+  position:relative;
+  margin:0;
+  padding:.45rem 0 .45rem 1.5rem;
+  font-size:1.05rem;
+  font-weight:500;
+  line-height:1.55;
+}
+.rules li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.95rem;
+  width:.55rem;
+  height:.55rem;
+  border-radius:50%;
+  background-color:var(--yellow);
+}
+.pricing-actions{
+  flex-direction:column;
+  flex-wrap:nowrap;
+  margin-top:1.2rem;
+  gap:.7rem;
+}
+.pricing-actions .btn{
+  flex:0 0 auto;
+  width:100%;
+}
+.pricing-card .btn.sec{
+  background-color:transparent;
+  color:var(--paper);
+  box-shadow:inset 0 0 0 2px var(--yellow);
+}
+@media (hover:hover){
+  .pricing-card .btn.sec:hover:not(:disabled){
+    background-color:#1F1F1F;
+    color:var(--paper);
+  }
+}
+
+.sub-foot{
+  padding:0 0 calc(1.6rem + env(safe-area-inset-bottom));
+}
+.sub-foot .wrap{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+  flex-wrap:wrap;
+  padding-top:0;
+  padding-bottom:0;
+}
+.sub-foot p{
+  margin:0;
+  font-family:var(--display);
+  font-weight:900;
+  font-size:1.15rem;
+}
+.sub-foot .wordmark{
+  margin:0 0 0 .15rem;
+  color:var(--ink);
+}
+.foot-link{
+  box-shadow:0 .4rem 1rem -.6rem rgba(110,72,0,.5);
+}
+
+#pay-modal .modal-box h2{
+  font-size:1.35rem;
+  line-height:1.4;
+  margin:.2rem .4rem 1.1rem;
+  text-wrap:balance;
+}
+
+a.btn{text-decoration:none;color:inherit}
+a.pill-cta{color:var(--paper)}
+.card-ink a.pill-cta{color:var(--ink)}
+
+@media (max-width:420px){
+  .hero-line{font-size:1.45rem}
+  html[data-font="l"] .hero-line{font-size:1.35rem}
+  .cta-block h2{font-size:1.7rem}
+  .price-num{font-size:min(3rem, 16vw)}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .app-link{transition:none}
+}

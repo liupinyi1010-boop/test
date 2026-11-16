@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FFC928">
+  <title>訂閱 · 師傅說 ShifuSay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=4.9">
+  <link rel="stylesheet" href="subscribe.css?v=4.9">
+  <link rel="icon" href="favicon.svg?v=4.9" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=4.9" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.9" sizes="180x180">
+</head>
+<body class="subscribe-page">
+  <!-- 介紹影片：把 shifusay-intro.mp4 放到同一資料夾即可自動顯示；可另放 shifusay-intro-poster.jpg 當封面。 -->
+
+  <header class="top" id="hero">
+    <span class="top-ghost" aria-hidden="true">說</span>
+    <div class="wrap">
+      <div class="hero-bar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <img class="brand-mark-img" src="logo-ink.svg?v=4.9" alt="" width="84" height="120">
+          </div>
+          <div class="brand-text">
+            <h1>師傅說</h1>
+            <p class="wordmark">ShifuSay</p>
+          </div>
+        </div>
+        <a class="app-link" href="./?v=4.9">開啟估價通</a>
+      </div>
+      <p class="hero-line">用說的就能出報價單，匯出 3 秒傳給客戶</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="intro-video-section" class="video-card" aria-labelledby="intro-video-title">
+      <h2 id="intro-video-title" class="section-kicker">介紹影片</h2>
+      <div class="video-stage is-placeholder" id="video-stage">
+        <div class="video-placeholder" id="video-placeholder">
+          <span class="play-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+              <path d="M8 5.5v13l11-6.5L8 5.5z"></path>
+            </svg>
+          </span>
+          <p>介紹影片製作中</p>
+        </div>
+        <video id="intro-video" controls playsinline preload="none" hidden></video>
+      </div>
+    </section>
+
+    <section id="pains" aria-labelledby="pains-title">
+      <h2 id="pains-title" class="section-title">師傅們是不是有這樣的困擾：</h2>
+      <ol class="pain-list">
+        <li class="card pain-card">
+          <span class="num" aria-hidden="true">1</span>
+          <p>工作繁忙，現場了解後回去打報價單已經三更半夜，同時也忘了現場的項目</p>
+        </li>
+        <li class="card pain-card">
+          <span class="num" aria-hidden="true">2</span>
+          <p>手寫報價單加總時不小心算錯，導致報錯價格</p>
+        </li>
+        <li class="card pain-card">
+          <span class="num" aria-hidden="true">3</span>
+          <p>即使用 Excel 編輯報價單，項目很多，每個項目都要一個一個 key，等打完報價單，同行已經先搶到案子。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="benefits" class="example benefits-card" aria-labelledby="benefits-title">
+      <img class="example-art" src="shifu-speaking.webp?v=4.9" alt="" width="520" height="516" decoding="async">
+      <h2 id="benefits-title" class="example-lab">使用師傅說後</h2>
+      <ol class="benefit-list">
+        <li>
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"></path>
+            </svg>
+          </span>
+          <p>即時說，報價單即時出現，現場需求隨時不漏接</p>
+        </li>
+        <li>
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"></path>
+            </svg>
+          </span>
+          <p>報價單直接加總，還能算含稅價格，不怕報錯價</p>
+        </li>
+        <li>
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"></path>
+            </svg>
+          </span>
+          <p>唸完項目就完成，不用每項打字，還能匯出 Excel，也能直接轉成 PDF 傳給客戶</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="cta" class="cta-block" aria-labelledby="cta-title">
+      <h2 id="cta-title">立即馬上體驗～</h2>
+      <a class="btn lg pill-cta" id="btn-cta-trial" href="./?v=4.9">
+        <span class="pill-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="M13 6l6 6-6 6"></path>
+          </svg>
+        </span>
+        <span>免費試用 3 天</span>
+      </a>
+    </section>
+
+    <section id="pricing" class="card card-ink pricing-card" aria-labelledby="pricing-title">
+      <h2 id="pricing-title" class="price-title">
+        <span class="price-lab">月費</span>
+        <span class="price-row">
+          <span class="price-num">NT$500</span><span class="price-unit">／月</span>
+        </span>
+      </h2>
+      <p class="trial-badge">免費試用 3 天</p>
+      <ul class="rules">
+        <li>免費試用 3 天，<br>試用期滿自動續訂</li>
+      </ul>
+      <div class="actions pricing-actions">
+        <a class="btn lg pill-cta" id="btn-trial" href="./?v=4.9">
+          <span class="pill-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="M13 6l6 6-6 6"></path>
+            </svg>
+          </span>
+          <span>免費試用 3 天</span>
+        </a>
+        <button type="button" class="btn lg sec" id="btn-subscribe">訂閱 NT$500／月</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="sub-foot">
+    <div class="wrap">
+      <p>師傅說 <span class="wordmark">ShifuSay</span></p>
+      <a class="app-link foot-link" href="./?v=4.9">開啟估價通</a>
+    </div>
+  </footer>
+
+  <div id="pay-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-modal-close="1"></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title">
+      <div class="sheet-grabber" aria-hidden="true"></div>
+      <h2 id="pay-modal-title">線上付款（綠界）即將開放，敬請期待</h2>
+      <div class="actions modal-actions">
+        <button type="button" class="btn lg" id="btn-pay-close">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    document.addEventListener("touchstart", function () {}, { passive: true });
+
+    function fitWordmark() {
+      var title = document.querySelector(".brand h1");
+      var wm = document.querySelector(".brand .wordmark");
+      if (!title || !wm) return;
+      wm.style.letterSpacing = "0px";
+      var target = title.getBoundingClientRect().width;
+      if (!(target > 8)) return;
+      function widthAt(sp) {
+        wm.style.letterSpacing = sp + "px";
+        return wm.getBoundingClientRect().width;
+      }
+      if (widthAt(0) >= target - 0.5) return;
+      var lo = 0, hi = 1;
+      while (widthAt(hi) < target && hi < 20) hi *= 2;
+      hi = Math.min(hi, 20);
+      for (var i = 0; i < 16; i++) {
+        var mid = (lo + hi) / 2;
+        if (widthAt(mid) < target) lo = mid;
+        else hi = mid;
+      }
+      wm.style.letterSpacing = ((lo + hi) / 2) + "px";
+    }
+    function afterFonts(fn) {
+      var jobs = [];
+      try {
+        if (document.fonts && document.fonts.load) {
+          jobs.push(document.fonts.load('900 64px "Noto Sans TC"', "師傅說"));
+          jobs.push(document.fonts.load('600 24px "Barlow Condensed"', "ShifuSay"));
+        }
+        if (document.fonts && document.fonts.ready) jobs.push(document.fonts.ready);
+      } catch (e) {}
+      if (jobs.length) Promise.all(jobs).then(fn).catch(fn);
+      else fn();
+    }
+    afterFonts(function () { fitWordmark(); setTimeout(fitWordmark, 80); });
+    window.addEventListener("load", fitWordmark);
+    window.addEventListener("resize", fitWordmark);
+
+    var VIDEO_SRC = "shifusay-intro.mp4?v=4.9";
+    var POSTER_SRC = "shifusay-intro-poster.jpg?v=4.9";
+    var video = document.getElementById("intro-video");
+    var placeholder = document.getElementById("video-placeholder");
+    var stage = document.getElementById("video-stage");
+
+    function showPlaceholder() {
+      if (video) {
+        video.hidden = true;
+        video.removeAttribute("src");
+        video.removeAttribute("poster");
+        try { video.load(); } catch (e) {}
+      }
+      if (placeholder) placeholder.hidden = false;
+      if (stage) stage.classList.add("is-placeholder");
+    }
+
+    function showVideo() {
+      if (video) video.hidden = false;
+      if (placeholder) placeholder.hidden = true;
+      if (stage) stage.classList.remove("is-placeholder");
+    }
+
+    function exists(url) {
+      return fetch(url, { method: "HEAD", cache: "no-store" }).then(function (r) {
+        if (r.ok) return true;
+        if (r.status === 405 || r.status === 501) {
+          return fetch(url, {
+            method: "GET",
+            headers: { Range: "bytes=0-0" },
+            cache: "no-store"
+          }).then(function (r2) { return r2.ok || r2.status === 206; });
+        }
+        return false;
+      }).catch(function () { return false; });
+    }
+
+    showPlaceholder();
+    if (video) {
+      exists(POSTER_SRC).then(function (ok) {
+        if (ok) video.setAttribute("poster", POSTER_SRC);
+      });
+      exists(VIDEO_SRC).then(function (ok) {
+        if (!ok) {
+          showPlaceholder();
+          return;
+        }
+        video.src = VIDEO_SRC;
+        video.addEventListener("error", showPlaceholder);
+        video.addEventListener("loadeddata", showVideo);
+        video.addEventListener("canplay", showVideo);
+        try { video.load(); } catch (e) {}
+      });
+    }
+
+    var modal = document.getElementById("pay-modal");
+    var openBtn = document.getElementById("btn-subscribe");
+    var closeBtn = document.getElementById("btn-pay-close");
+
+    function openModal() {
+      if (!modal) return;
+      modal.hidden = false;
+      document.body.classList.add("modal-open");
+      if (closeBtn) closeBtn.focus();
+    }
+    function closeModal() {
+      if (!modal) return;
+      modal.hidden = true;
+      document.body.classList.remove("modal-open");
+      if (openBtn) openBtn.focus();
+    }
+    if (openBtn) openBtn.addEventListener("click", openModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (modal) {
+      var backdrop = modal.querySelector("[data-modal-close]");
+      if (backdrop) backdrop.addEventListener("click", closeModal);
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modal && !modal.hidden) closeModal();
+    });
+  })();
+  </script>
+</body>
+</html>
