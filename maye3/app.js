@@ -2326,11 +2326,10 @@
     if (cur || !out.length) out.push(cur);
     return out;
   }
-  function drawQuoteJpg(ctx, W, draw) {
-    // draw=false：只量高度；draw=true：真的畫
-    const P = 64, R = W - P, CW = W - P * 2;
-    const t = totals();
-    let y = 0;
+  // v4.9.4：圖片 JPG 自動分頁，每頁 1080×1920，項目不跨頁
+  const JPG_W = 1080, JPG_H = 1920, JPG_P = 64, JPG_BOTTOM = 72;
+  function jpgCtx(ctx, draw) {
+    const W = JPG_W, P = JPG_P, R = W - P, CW = W - P * 2;
     const font = (w, s) => { ctx.font = w + " " + s + "px " + JPG_FONT; };
     const text = (s, x, yy, color, align) => {
       if (!draw) return;
@@ -2342,111 +2341,191 @@
       ctx.beginPath(); ctx.moveTo(P, yy); ctx.lineTo(R, yy); ctx.stroke();
     };
     ctx.textBaseline = "alphabetic";
-    // 標題列
-    font("900", 76);
-    const titleLines = wrapText(ctx, quoteTitleText(), CW);
+    return { W, P, R, CW, font, text, rule };
+  }
+  function clampLines(lines, max) {
+    if (lines.length <= max) return lines;
+    const out = lines.slice(0, max);
+    out[max - 1] = out[max - 1].replace(/.$/, "…");
+    return out;
+  }
+  // 每個區塊：傳入起始 y，回傳結束 y；draw=false 只量高度
+  function jpgHeader(ctx, draw, pageNo, pageCount) {
+    const g = jpgCtx(ctx, draw);
+    const pn = "第 " + pageNo + "／" + pageCount + " 頁";
+    g.font("700", 34);
+    const pnW = ctx.measureText(pn).width;
+    g.font("900", 76);
+    const titleLines = clampLines(wrapText(ctx, quoteTitleText(), g.CW - pnW - 32), 2);
     const headH = 70 + titleLines.length * 92 + 20;
-    if (draw) { ctx.fillStyle = "#141414"; ctx.fillRect(0, 0, W, headH); ctx.fillStyle = "#FFC928"; ctx.fillRect(0, headH, W, 10); }
-    y = 70;
-    titleLines.forEach((s) => { y += 76; text(s, P, y, "#FFC928"); y += 16; });
-    y = headH + 10 + 64;
-    font("400", 34);
-    text("日期：" + lineDateText(), P, y, "#5C574B");
+    if (draw) { ctx.fillStyle = "#141414"; ctx.fillRect(0, 0, g.W, headH); ctx.fillStyle = "#FFC928"; ctx.fillRect(0, headH, g.W, 10); }
+    let y = 70;
+    titleLines.forEach((s) => { y += 76; g.text(s, g.P, y, "#FFC928"); y += 16; });
+    g.font("700", 34);
+    g.text(pn, g.R, 70 + 76, "#FFFFFF", "right");
+    return headH + 10;
+  }
+  function jpgIntro(ctx, draw, y) {
+    const g = jpgCtx(ctx, draw);
+    y += 64;
+    g.font("400", 34);
+    g.text("日期：" + lineDateText(), g.P, y, "#5C574B");
     const meta = visibleMetaLines();
     if (meta.length) {
       y += 92;
-      font("700", 40);
-      text("客戶資料", P, y, "#141414");
-      y += 18; rule(y, "#141414", 4); y += 4;
-      font("400", 40);
-      meta.forEach((m) => {
-        wrapText(ctx, m, CW).forEach((s) => { y += 60; text(s, P, y); });
-      });
+      g.font("700", 40);
+      g.text("客戶資料", g.P, y, "#141414");
+      y += 18; g.rule(y, "#141414", 4); y += 4;
+      g.font("400", 40);
+      meta.forEach((m) => { wrapText(ctx, m, g.CW).forEach((s) => { y += 60; g.text(s, g.P, y); }); });
       y += 8;
     }
-    y += 92;
-    font("700", 40);
-    text("施工項目", P, y, "#141414");
-    y += 18; rule(y, "#141414", 4); y += 10;
-    state.items.forEach((row, i) => {
-      font("700", 44);
-      const nameLines = wrapText(ctx, (i + 1) + ". " + row.name + itemTags(row), CW);
-      nameLines.forEach((s) => { y += 62; text(s, P, y); });
-      font("400", 38);
-      const detail = "數量 " + row.qty + " " + row.unit + " × 單價 " + itemPriceText(row);
-      const amt = "NT$" + fmt(lineAmount(row));
-      ctx.font = "800 44px " + JPG_FONT;
-      const amtW = ctx.measureText(amt).width;
-      font("400", 38);
-      const dLines = wrapText(ctx, detail, CW - amtW - 32);
-      dLines.forEach((s, k) => {
-        y += 56;
-        text(s, P, y, "#3A372F");
-        if (k === dLines.length - 1) { ctx.font = "800 44px " + JPG_FONT; text(amt, R, y, "#141414", "right"); font("400", 38); }
-      });
-      const note = String(row.note || "").trim();
-      if (note) {
-        font("400", 34);
-        wrapText(ctx, "備註：" + note, CW).forEach((s) => { y += 50; text(s, P, y, "#5C574B"); });
-      }
-      y += 28; rule(y, "#D9D3C3", 2); y += 4;
+    return y;
+  }
+  function jpgHeading(ctx, draw, y, cont) {
+    const g = jpgCtx(ctx, draw);
+    y += cont ? 72 : 92;
+    g.font("700", 40);
+    g.text(cont ? "施工項目（續）" : "施工項目", g.P, y, "#141414");
+    y += 18; g.rule(y, "#141414", 4); y += 10;
+    return y;
+  }
+  function jpgItem(ctx, draw, y, row, i) {
+    const g = jpgCtx(ctx, draw);
+    g.font("700", 44);
+    clampLines(wrapText(ctx, (i + 1) + ". " + row.name + itemTags(row), g.CW), 4).forEach((s) => { y += 62; g.text(s, g.P, y); });
+    const detail = "數量 " + row.qty + " " + row.unit + " × 單價 " + itemPriceText(row);
+    const amt = "NT$" + fmt(lineAmount(row));
+    g.font("800", 44);
+    const amtW = ctx.measureText(amt).width;
+    g.font("400", 38);
+    const dLines = clampLines(wrapText(ctx, detail, g.CW - amtW - 32), 3);
+    dLines.forEach((s, k) => {
+      y += 56;
+      g.text(s, g.P, y, "#3A372F");
+      if (k === dLines.length - 1) { g.font("800", 44); g.text(amt, g.R, y, "#141414", "right"); g.font("400", 38); }
     });
-    if (!state.items.length) { font("400", 38); y += 60; text("還沒有項目", P, y, "#5C574B"); y += 30; }
-    // 合計
+    const note = String(row.note || "").trim();
+    if (note) {
+      g.font("400", 34);
+      clampLines(wrapText(ctx, "備註：" + note, g.CW), 4).forEach((s) => { y += 50; g.text(s, g.P, y, "#5C574B"); });
+    }
+    y += 28; g.rule(y, "#D9D3C3", 2); y += 4;
+    return y;
+  }
+  function jpgEmpty(ctx, draw, y) {
+    const g = jpgCtx(ctx, draw);
+    g.font("400", 38); y += 60; g.text("還沒有項目", g.P, y, "#5C574B"); return y + 30;
+  }
+  function jpgTotals(ctx, draw, y) {
+    const g = jpgCtx(ctx, draw);
+    const t = totals();
     y += 30;
-    const tot = [["小計", "NT$" + fmt(t.sub)], ["營業稅 5%", state.tax ? "NT$" + fmt(t.tax) : "未加"]];
-    font("400", 40);
-    tot.forEach(([k, v]) => { y += 60; text(k, P, y, "#3A372F"); text(v, R, y, "#141414", "right"); });
+    g.font("400", 40);
+    [["小計", "NT$" + fmt(t.sub)], ["營業稅 5%", state.tax ? "NT$" + fmt(t.tax) : "未加"]].forEach(([k, v]) => {
+      y += 60; g.text(k, g.P, y, "#3A372F"); g.text(v, g.R, y, "#141414", "right");
+    });
     y += 34;
     const boxH = 110;
-    if (draw) { ctx.fillStyle = "#FFC928"; ctx.fillRect(P - 16, y, CW + 32, boxH); }
-    font("900", 52);
-    text("總計", P + 8, y + 74, "#141414");
-    text("NT$" + fmt(t.total), R - 8, y + 74, "#141414", "right");
+    if (draw) { ctx.fillStyle = "#FFC928"; ctx.fillRect(g.P - 16, y, g.CW + 32, boxH); }
+    g.font("900", 52);
+    g.text("總計", g.P + 8, y + 74, "#141414");
+    g.text("NT$" + fmt(t.total), g.R - 8, y + 74, "#141414", "right");
     y += boxH + 50;
-    font("400", 30);
-    wrapText(ctx, "單價依市場行情，可再自行調整。沒有行情者標示待填。", CW).forEach((s) => { y += 44; text(s, P, y, "#5C574B"); });
-    y += 64;
-    return Math.ceil(y);
+    g.font("400", 30);
+    wrapText(ctx, "單價依市場行情，可再自行調整。沒有行情者標示待填。", g.CW).forEach((s) => { y += 44; g.text(s, g.P, y, "#5C574B"); });
+    return y;
   }
-  async function quoteJpegCanvas() {
-    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
-    const W = 1080;
+  function quoteJpegLayout() {
+    // 先量高度、排好每頁內容，再畫
     const m = document.createElement("canvas");
-    m.width = W; m.height = 10;
-    const H = Math.min(16000, Math.max(800, drawQuoteJpg(m.getContext("2d"), W, false)));
-    const c = document.createElement("canvas");
-    c.width = W; c.height = H;
-    const ctx = c.getContext("2d");
-    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
-    drawQuoteJpg(ctx, W, true);
-    return c;
+    m.width = JPG_W; m.height = 10;
+    const ctx = m.getContext("2d");
+    const bodyTop = jpgHeader(ctx, false, 99, 99);
+    const limit = JPG_H - JPG_BOTTOM;
+    const pages = [];
+    let page = { intro: true, cont: false, heading: false, items: [], totals: false };
+    pages.push(page);
+    let y = jpgIntro(ctx, false, bodyTop);
+    const newPage = () => { page = { intro: false, cont: false, heading: false, items: [], totals: false }; pages.push(page); y = bodyTop; };
+    state.items.forEach((row, i) => {
+      const h = jpgItem(ctx, false, 0, row, i);
+      let headH = page.heading ? 0 : jpgHeading(ctx, false, 0, pages.length > 1);
+      if (y + headH + h > limit && (page.items.length || page.intro)) {
+        newPage();
+        headH = jpgHeading(ctx, false, 0, true);
+      }
+      if (!page.heading) { page.heading = true; page.cont = pages.length > 1; y += headH; }
+      page.items.push({ i, top: y, bottom: y + h });
+      y += h;
+    });
+    if (!state.items.length) { page.empty = true; y = jpgEmpty(ctx, false, y); }
+    const th = jpgTotals(ctx, false, 0);
+    if (y + th > limit) newPage();
+    page.totals = true;
+    page.totalsTop = y; page.totalsBottom = y + th;
+    return { W: JPG_W, H: JPG_H, bodyTop, limit, pages };
+  }
+  async function quoteJpegPages() {
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+    const L = quoteJpegLayout();
+    const M = L.pages.length;
+    return L.pages.map((pg, k) => {
+      const c = document.createElement("canvas");
+      c.width = L.W; c.height = L.H;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, L.W, L.H);
+      let y = jpgHeader(ctx, true, k + 1, M);
+      if (pg.intro) y = jpgIntro(ctx, true, y);
+      if (pg.heading) y = jpgHeading(ctx, true, y, pg.cont);
+      pg.items.forEach((it) => { y = jpgItem(ctx, true, y, state.items[it.i], it.i); });
+      if (pg.empty) y = jpgEmpty(ctx, true, y);
+      if (pg.totals) jpgTotals(ctx, true, y);
+      return c;
+    });
+  }
+  async function quoteJpegBlobs() {
+    const pages = await quoteJpegPages();
+    const out = [];
+    for (const c of pages) {
+      const blob = await new Promise((res) => c.toBlob(res, "image/jpeg", 0.92));
+      if (!blob) throw new Error("jpeg");
+      out.push(blob);
+    }
+    return out;
   }
   async function quoteJpegBlob() {
-    const c = await quoteJpegCanvas();
-    const blob = await new Promise((res) => c.toBlob(res, "image/jpeg", 0.92));
-    if (!blob) throw new Error("jpeg");
-    return blob;
+    return (await quoteJpegBlobs())[0];
+  }
+  function jpgPageName(n) {
+    const title = quoteTitleText().replace(/[\\/:*?"<>|\s]+/g, "").slice(0, 20) || QUOTE_TITLE;
+    return title + "-" + n + ".jpg";
   }
   async function exportLineJpg() {
-    const blob = await quoteJpegBlob();
-    const name = exportName("jpg");
-    let file = null;
-    try { file = new File([blob], name, { type: "image/jpeg" }); } catch (e) { file = null; }
+    const blobs = await quoteJpegBlobs();
+    const names = blobs.map((b, i) => jpgPageName(i + 1));
+    let files = null;
+    try { files = blobs.map((b, i) => new File([b], names[i], { type: "image/jpeg" })); } catch (e) { files = null; }
+    const info = { count: blobs.length, names, types: blobs.map((b) => b.type), size: blobs[0] ? blobs[0].size : 0, type: blobs[0] ? blobs[0].type : "", name: names[0] };
     let canFiles = false;
-    try { canFiles = !!(file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })); } catch (e) { canFiles = false; }
+    try { canFiles = !!(files && navigator.share && navigator.canShare && navigator.canShare({ files })); } catch (e) { canFiles = false; }
     if (canFiles) {
       try {
-        await navigator.share({ files: [file], title: quoteTitleText() });
-        lineNotice("已開啟分享，請選 LINE 把報價單圖片傳給客戶。");
-        return { mode: "share", type: blob.type, size: blob.size, name };
+        await navigator.share({ files, title: quoteTitleText() });
+        lineNotice(blobs.length > 1 ? "已開啟分享（共 " + blobs.length + " 張），請選 LINE 把報價單圖片傳給客戶。" : "已開啟分享，請選 LINE 把報價單圖片傳給客戶。");
+        return Object.assign({ mode: "share" }, info);
       } catch (e) {
-        if (e && e.name === "AbortError") { lineNotice("已取消分享。"); return { mode: "cancel", type: blob.type, size: blob.size, name }; }
+        if (e && e.name === "AbortError") { lineNotice("已取消分享。"); return Object.assign({ mode: "cancel" }, info); }
       }
     }
-    saveBlob(name, blob);
-    lineNotice("已下載報價單圖片（JPG）。請打開 LINE 聊天室，按「＋」或相片圖示，選這張圖片傳給客戶。");
-    return { mode: "download", type: blob.type, size: blob.size, name };
+    for (let i = 0; i < blobs.length; i++) {
+      saveBlob(names[i], blobs[i]);
+      if (i < blobs.length - 1) await new Promise((r) => setTimeout(r, 400));
+    }
+    lineNotice(blobs.length > 1
+      ? "已下載報價單圖片（JPG，共 " + blobs.length + " 張）。請打開 LINE 聊天室，按「＋」或相片圖示，依序選這 " + blobs.length + " 張圖片傳給客戶。"
+      : "已下載報價單圖片（JPG）。請打開 LINE 聊天室，按「＋」或相片圖示，選這張圖片傳給客戶。");
+    return Object.assign({ mode: "download" }, info);
   }
   async function exportLineText() {
     const text = lineText();
@@ -3197,6 +3276,9 @@
     lineShareUrl,
     lineText,
     quoteJpegBlob,
+    quoteJpegBlobs,
+    quoteJpegPages,
+    quoteJpegLayout,
     exportLineJpg,
     exportLineText,
     showToast,
