@@ -2206,9 +2206,26 @@
       if (!el) return;
       applySheetEdit(el, { trim: false });
     });
+    // v4.9.5：單價顯示「待填」時，點一下就清空，可以直接打數字；沒填就離開會恢復「待填」
+    document.addEventListener("focusin", (e) => {
+      const el = e.target && e.target.closest && e.target.closest('.quote-sheet [data-edit="unitPrice"]');
+      if (!el) return;
+      if (editPlain(el) !== "待填") return;
+      el.textContent = "";
+      el.classList.add("is-pending-cleared");
+      try {
+        const sel = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (err) {}
+    });
     document.addEventListener("focusout", (e) => {
       const el = e.target && e.target.closest && e.target.closest(".quote-sheet [data-edit]");
       if (!el) return;
+      el.classList.remove("is-pending-cleared");
       applySheetEdit(el, { commit: true });
     });
     document.addEventListener("keydown", (e) => {
