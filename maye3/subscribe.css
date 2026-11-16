@@ -9,36 +9,8 @@
 .hero-bar{
   display:flex;
   align-items:center;
-  justify-content:space-between;
   gap:.7rem .8rem;
   flex-wrap:wrap;
-}
-
-.app-link{
-  flex:0 0 auto;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:var(--tap);
-  min-width:var(--tap);
-  padding:.45rem 1.05rem;
-  background-color:var(--paper);
-  color:var(--ink);
-  border-radius:999px;
-  font-weight:700;
-  font-size:1rem;
-  line-height:1.2;
-  text-decoration:none;
-  box-shadow:0 .5rem 1.1rem -.6rem rgba(110,72,0,.55);
-  white-space:nowrap;
-  margin-left:auto;
-  touch-action:manipulation;
-  -webkit-tap-highlight-color:transparent;
-  transition:transform .45s var(--spring),background-color .2s var(--ease-out);
-}
-.app-link:active{transform:scale(.96)}
-@media (hover:hover){
-  .app-link:hover{background-color:var(--tile)}
 }
 
 .hero-line{
@@ -311,7 +283,6 @@
 .sub-foot .wrap{
   display:flex;
   align-items:center;
-  justify-content:space-between;
   gap:.8rem;
   flex-wrap:wrap;
   padding-top:0;
@@ -327,10 +298,6 @@
   margin:0 0 0 .15rem;
   color:var(--ink);
 }
-.foot-link{
-  box-shadow:0 .4rem 1rem -.6rem rgba(110,72,0,.5);
-}
-
 #pay-modal .modal-box h2{
   font-size:1.35rem;
   line-height:1.4;
@@ -349,6 +316,3 @@ a.pill-cta{color:var(--paper)}
   .price-num{font-size:min(3rem, 16vw)}
 }
 
-@media (prefers-reduced-motion: reduce){
-  .app-link{transition:none}
-}

@@ -30,7 +30,6 @@
             <p class="wordmark">ShifuSay</p>
           </div>
         </div>
-        <a class="app-link" href="./?v=4.9">開啟估價通</a>
       </div>
       <p class="hero-line">用說的就能出報價單，匯出 3 秒傳給客戶</p>
     </div>
@@ -103,7 +102,7 @@
 
     <section id="cta" class="cta-block" aria-labelledby="cta-title">
       <h2 id="cta-title">立即馬上體驗～</h2>
-      <a class="btn lg pill-cta" id="btn-cta-trial" href="./?v=4.9">
+      <a class="btn lg pill-cta" id="btn-cta-trial" href="#plan">
         <span class="pill-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14"></path>
@@ -114,7 +113,7 @@
       </a>
     </section>
 
-    <section id="pricing" class="card card-ink pricing-card" aria-labelledby="pricing-title">
+    <section id="plan" class="card card-ink pricing-card" aria-labelledby="pricing-title">
       <h2 id="pricing-title" class="price-title">
         <span class="price-lab">月費</span>
         <span class="price-row">
@@ -143,7 +142,6 @@
   <footer class="sub-foot">
     <div class="wrap">
       <p>師傅說 <span class="wordmark">ShifuSay</span></p>
-      <a class="app-link foot-link" href="./?v=4.9">開啟估價通</a>
     </div>
   </footer>
 
@@ -252,6 +250,19 @@
         video.addEventListener("loadeddata", showVideo);
         video.addEventListener("canplay", showVideo);
         try { video.load(); } catch (e) {}
+      });
+    }
+
+    var ctaTrial = document.getElementById("btn-cta-trial");
+    var planCard = document.getElementById("plan");
+    if (ctaTrial && planCard) {
+      ctaTrial.addEventListener("click", function (e) {
+        e.preventDefault();
+        var reduce = false;
+        try {
+          reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+        } catch (err) {}
+        planCard.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
       });
     }
 
