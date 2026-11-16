@@ -18,6 +18,8 @@
       document.documentElement.setAttribute("data-theme","dark");
       document.documentElement.setAttribute("data-font","m");
     }
+    // v4.9.6：開場動畫一次瀏覽只出現一次
+    try{ if(!sessionStorage.getItem("maye-splash-v1")) document.documentElement.setAttribute("data-splash","on"); }catch(e){}
     // 讓 iOS Safari 的按壓（:active）樣式即時生效
     document.addEventListener("touchstart",function(){},{passive:true});
   })();
@@ -25,12 +27,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.9.5">
+  <link rel="stylesheet" href="styles.css?v=4.9.6">
   <link rel="icon" href="favicon.svg?v=4.9" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png?v=4.9" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.9" sizes="180x180">
+  <noscript><style>#splash{display:none!important}html[data-splash="on"] body{overflow:auto!important}</style></noscript>
 </head>
 <body>
+  <div id="splash" class="splash play" role="dialog" aria-modal="true" aria-labelledby="splash-title">
+    <button type="button" id="splash-mute" class="sp-mute" aria-pressed="false" aria-label="聲音：開（點一下關閉聲音）">
+      <svg class="sp-ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>
+      <svg class="sp-ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"></path><path d="M17 9l5 6M22 9l-5 6"></path></svg>
+      <span class="sp-mute-lab" id="splash-mute-lab">聲音 開</span>
+    </button>
+    <div class="sp-stage" aria-hidden="true">
+      <div class="sp-bubbles"><span class="sp-b" style="--x:-120px;--y:-150px;--s:64px;--d:0.00s"></span><span class="sp-b" style="--x:130px;--y:-120px;--s:48px;--d:0.10s"></span><span class="sp-b" style="--x:-150px;--y:40px;--s:40px;--d:0.20s"></span><span class="sp-b" style="--x:140px;--y:70px;--s:58px;--d:0.30s"></span><span class="sp-b" style="--x:-60px;--y:150px;--s:34px;--d:0.40s"></span><span class="sp-b" style="--x:80px;--y:-190px;--s:30px;--d:0.50s"></span><span class="sp-b" style="--x:170px;--y:-20px;--s:26px;--d:0.60s"></span><span class="sp-b" style="--x:-170px;--y:-60px;--s:28px;--d:0.70s"></span></div>
+      <div class="sp-mark"><svg class="sp-mark-svg" viewBox="80 40 840 1196" aria-hidden="true" focusable="false"><path fill="#FFC928" d="M 308.00 40.00 H 692.00 A 228.00 228.00 0 0 1 920.00 268.00 V 772.00 A 228.00 228.00 0 0 1 692.00 1000.00 H 468.00 L 205.53 1229.42 A 10.00 10.00 0 0 1 200.07 1226.22 L 248.00 1000.00 H 308.00 A 228.00 228.00 0 0 1 80.00 772.00 V 268.00 A 228.00 228.00 0 0 1 308.00 40.00 Z"/><path fill="#141414" d="M491.18688524590164 821.1999999999999Q417.32459016393443 821.1999999999999 348.4983606557377 804.4131147540984Q279.672131147541 787.6262295081967 235.18688524590166 760.7672131147541L298.97704918032787 616.4Q340.944262295082 640.7409836065574 392.56393442622954 655.4295081967214Q444.18360655737706 670.1180327868852 492.86557377049184 670.1180327868852Q521.4032786885246 670.1180327868852 537.7704918032787 666.3409836065573Q554.1377049180328 662.5639344262295 561.6918032786886 655.4295081967213Q569.2459016393443 648.295081967213 569.2459016393443 638.2229508196722Q569.2459016393443 622.2754098360656 551.6196721311476 613.0426229508197Q533.9934426229509 603.8098360655738 505.03606557377054 597.5147540983606Q476.0786885245902 591.2196721311475 441.66557377049185 584.0852459016394Q407.25245901639346 576.9508196721312 372.41967213114754 565.2Q337.58688524590167 553.4491803278688 308.6295081967213 534.144262295082Q279.672131147541 514.8393442622951 262.04590163934427 483.3639344262295Q244.41967213114756 451.8885245901639 244.41967213114756 404.88524590163934Q244.41967213114756 350.327868852459 275.05573770491804 305.4229508196721Q305.69180327868855 260.5180327868852 366.544262295082 233.65901639344258Q427.3967213114754 206.79999999999995 518.0459016393443 206.79999999999995Q577.639344262295 206.79999999999995 635.5540983606558 219.3901639344262Q693.4688524590165 231.98032786885244 739.6327868852459 258.0L680.0393442622951 401.527868852459Q636.3934426229508 379.70491803278685 595.6852459016393 368.7934426229508Q554.9770491803279 357.88196721311476 516.3672131147541 357.88196721311476Q487.82950819672135 357.88196721311476 471.0426229508197 362.91803278688525Q454.25573770491803 367.95409836065573 447.1213114754098 376.34754098360656Q439.98688524590165 384.74098360655734 439.98688524590165 394.81311475409836Q439.98688524590165 409.9213114754098 457.6131147540984 418.7344262295082Q475.2393442622951 427.54754098360655 504.19672131147547 433.4229508196721Q533.1540983606558 439.29836065573767 567.9868852459017 446.0131147540983Q602.8196721311476 452.727868852459 637.232786885246 464.4786885245901Q671.6459016393443 476.22950819672127 700.6032786885246 495.5344262295082Q729.560655737705 514.8393442622951 747.1868852459017 545.8950819672132Q764.8131147540984 576.9508196721312 764.8131147540984 623.1147540983607Q764.8131147540984 676.8327868852459 734.1770491803279 721.7377049180328Q703.5409836065573 766.6426229508197 643.1081967213115 793.9213114754098Q582.6754098360656 821.1999999999999 491.18688524590164 821.1999999999999Z"/></svg></div>
+    </div>
+    <p class="sp-title" id="splash-title"><span class="sp-ch" style="--d:1.30s">師</span><span class="sp-ch" style="--d:1.45s">傅</span><span class="sp-ch" style="--d:1.60s">說</span><span class="sp-word" lang="en">ShifuSay</span></p>
+    <button type="button" id="splash-start" class="sp-start">點一下開始</button>
+  </div>
+  <script src="splash.js?v=4.9.6"></script>
   <!--
   THESIS: 一顆巨大的錄音鍵就是整個 app；不做深色玻璃質感的工具頁，改成工地安全黃的整片色面。
   OWN-WORLD: 安全黃 #FFC928 鋪滿頁面，內容放在大圓角白卡上，墨黑 #141414 做按鈕、圖示與反白色塊；扁平色塊、無漸層、無玻璃。
@@ -43,6 +60,9 @@
   <header class="top no-print">
     <span class="top-ghost" aria-hidden="true">說</span>
     <div class="wrap">
+      <button type="button" id="btn-settings" class="gear-btn" aria-label="設定" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">
           <img class="brand-mark-img" src="logo-ink.svg?v=4.9" alt="" width="84" height="120">
@@ -251,9 +271,41 @@
     </div>
   </div>
 
+  <div id="settings-modal" class="modal settings-modal" hidden>
+    <div class="modal-backdrop" data-settings-close="1"></div>
+    <div class="modal-box settings-box" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <h2 id="settings-title">我的訂閱與個人資料</h2>
+      <section class="set-sec" aria-labelledby="set-sub-h">
+        <h3 id="set-sub-h">訂閱資料</h3>
+        <dl class="set-dl">
+          <div><dt>方案</dt><dd id="set-plan">月費 NT$499／月</dd></div>
+          <div><dt>狀態</dt><dd id="set-status">未訂閱</dd></div>
+        </dl>
+      </section>
+      <section class="set-sec" aria-labelledby="set-period-h">
+        <h3 id="set-period-h">訂閱期間</h3>
+        <p class="set-val" id="set-period">尚無資料</p>
+      </section>
+      <section class="set-sec" aria-labelledby="set-pay-h">
+        <h3 id="set-pay-h">付款設定</h3>
+        <div class="set-pay">
+          <button type="button" class="btn lg sec set-soon" id="btn-pay-account" data-soon="扣款帳號"><span class="btn-lab">扣款帳號</span><span class="soon-tag">即將開放</span></button>
+          <button type="button" class="btn lg sec set-soon" id="btn-pay-phone" data-soon="併入手機帳單"><span class="btn-lab">併入手機帳單</span><span class="soon-tag">即將開放</span></button>
+          <button type="button" class="btn lg sec set-soon" id="btn-pay-cancel" data-soon="取消訂閱"><span class="btn-lab">取消訂閱</span><span class="soon-tag">即將開放</span></button>
+        </div>
+        <p class="set-note" id="set-pay-status" role="status" aria-live="polite"></p>
+      </section>
+      <section class="set-sec" aria-labelledby="set-me-h">
+        <h3 id="set-me-h">個人資料</h3>
+        <p class="set-val" id="set-me">尚無資料</p>
+      </section>
+      <button type="button" class="btn lg" id="btn-settings-close">關閉</button>
+    </div>
+  </div>
+
   <div id="print-sheet" aria-hidden="true"></div>
 
   <script src="ai-adapter.js?v=4.9"></script>
-  <script src="app.js?v=4.9.5"></script>
+  <script src="app.js?v=4.9.6"></script>
 </body>
 </html>

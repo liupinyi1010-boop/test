@@ -442,7 +442,9 @@
     });
     if (opts.save) {
       try {
-        localStorage.setItem(PREFS_KEY, JSON.stringify({ font, theme: "dark" }));
+        let prev = {};
+        try { prev = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}") || {}; } catch (e) { prev = {}; }
+        localStorage.setItem(PREFS_KEY, JSON.stringify(Object.assign({}, prev, { font, theme: "dark" })));
       } catch (e) {}
     }
     scheduleFitBrand();
